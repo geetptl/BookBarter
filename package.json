@@ -1,0 +1,12 @@
+{
+    "name": "se-backend",
+    "version": "1.0.0",
+    "description": "Node.js on Docker",
+    "author": "Geet Rajendra Patel <geetpofficial@gmail.com>",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "dependencies": {
+    }
+  }
