@@ -19,3 +19,8 @@ docker run -itd --rm -p 3000:3000 backend
 ```
 curl -i localhost:3000
 ```
+### How to stop Docker Image
+
+```
+docker stop <container-id>
+```
