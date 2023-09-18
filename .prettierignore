@@ -2,6 +2,7 @@
 **/.svn
 **/.hg
 **/node_modules
+**/*.md
 
 build
 coverage
