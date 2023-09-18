@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "pretty": "npx prettier . --write",
-    "test": "echo \"No tests yet!\" && exit 0"
+    "test": "node --test"
   },
   "pre-commit": [
     "pretty",
