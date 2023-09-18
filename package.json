@@ -7,13 +7,14 @@
   "scripts": {
     "start": "node index.js",
     "pretty": "npx prettier . --write",
-    "test": "node --test"
+    "test": "mocha"
   },
   "pre-commit": [
     "pretty",
     "test"
   ],
   "devDependencies": {
+    "mocha": "^10.2.0",
     "pre-commit": "^1.2.2",
     "prettier": "3.0.3"
   }

@@ -32,9 +32,9 @@ docker stop <container-id>
 1. Clone the forked repository onto your computer
 1. Run ```npm install```
 1. Make your changes and write appropriate tests
-    1. Name your test files ```<filename>.test.js``` (check [index.test.js](./index.test.js) for template)
-    1. To run a specific test file, use ```node --test <filename>.test.js```
-    1. Validate all tests using ```node --test```
+    1. Keep your test files in ```test``` directory as ```test/<filename>.js``` (check [test/test.js](./test/test.js) for template)
+    1. To run a specific test file, use ```npm test test/<filename>.js```
+    1. Validate all tests using ```npm test```
 1. Use docker to run the project locally
 1. After satisfaction, commit and push your changes
 1. Submit a pull request (PR)
