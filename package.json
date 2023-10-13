@@ -7,10 +7,12 @@
     "scripts": {
         "start": "node index.js",
         "pretty": "npx prettier . --write",
-        "test": "jasmine"
+        "test": "jasmine",
+        "add": "git add ."
     },
     "pre-commit": [
         "pretty",
+        "add",
         "test"
     ],
     "devDependencies": {

@@ -1,5 +1,5 @@
 services:
-  node:
-    build: node-server/.
-    ports:
-      - 3000:3000
+    node:
+        build: .
+        ports:
+            - 3000:3000
