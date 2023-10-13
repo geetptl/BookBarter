@@ -1,0 +1,21 @@
+{
+    "name": "se-backend",
+    "version": "1.0.0",
+    "description": "Node.js on Docker",
+    "author": "Geet Rajendra Patel <geetpofficial@gmail.com>",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "pretty": "npx prettier . --write",
+        "test": "jasmine"
+    },
+    "pre-commit": [
+        "pretty",
+        "test"
+    ],
+    "devDependencies": {
+        "jasmine": "^5.1.0",
+        "pre-commit": "^1.2.2",
+        "prettier": "3.0.3"
+    }
+}
