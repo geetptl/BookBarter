@@ -19,5 +19,8 @@
         "jasmine": "^5.1.0",
         "pre-commit": "^1.2.2",
         "prettier": "3.0.3"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
     }
 }

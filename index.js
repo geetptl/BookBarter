@@ -1,14 +1,16 @@
 const http = require("http");
+const express = require("express");
+const app = express();
 
-const hostname = "0.0.0.0";
 const port = 3000;
 
-const server = http.createServer(async (req, res) => {
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "text/plain");
-    res.end("Hello World");
+app.get("/", (req, res) => {
+    res.send("Hello World!");
 });
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+var userRoute = require("./routes/user");
+app.use("/user", userRoute);
+
+app.listen(port, () => {
+    console.log(`Example app listening on ${port}`);
 });
