@@ -3,6 +3,10 @@ const db = require("../db");
 
 const router = new Router();
 
+router.get(["/", "/node", "/nodejs"], async (req, res) => {
+    res.send("node.js server is running");
+});
+
 router.get("/postgres", async (req, res) => {
     try {
         const result = await db.query("SELECT id, full_name FROM contributors");

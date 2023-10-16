@@ -3,26 +3,34 @@ services:
         # Runs on default port 5432
         build: postgres/.
         environment:
-            - POSTGRES_PASSWORD=bookbarter_pass
-            - POSTGRES_USER=bookbarter_user
-            - POSTGRES_DB=bookbarter_db
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
 
     node:
         build: .
         ports:
             - 8000:8000
         environment:
-            - PGHOST=postgres
-            - PGUSER=bookbarter_user
-            - PGDATABASE=bookbarter_db
-            - PGPASSWORD=bookbarter_pass
-            - PGPORT=5432
+            PGHOST: postgres
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${POSTGRES_DB}
+            PGPORT: 5432
         depends_on:
             - postgres
 
     adminer:
-        image: dockette/adminer:postgres
+        image: michalhosna/adminer
         ports:
-            - 8001:80
+            - 8001:8080
+        environment:
+            ADMINER_DRIVER: pgsql
+            ADMINER_SERVER: postgres
+            ADMINER_USERNAME: ${POSTGRES_USER}
+            ADMINER_PASSWORD: ${POSTGRES_PASSWORD}
+            ADMINER_DB: ${POSTGRES_DB}
+            ADMINER_AUTOLOGIN: 1
+            ADMINER_NAME: BookBarter Adminer
         depends_on:
             - postgres
