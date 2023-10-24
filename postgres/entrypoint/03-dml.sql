@@ -1,0 +1,2 @@
+INSERT INTO users (user_id, password_hash, email, phone_number, first_name, last_name, latitude, longitude, is_auth) VALUES
+('geet', 'pwd', 'geet.patel@rutgers.edu', '7325226060', 'Geet', 'Patel', 10.0, 20.0, FALSE);

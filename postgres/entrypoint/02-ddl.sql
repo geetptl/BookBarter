@@ -1,5 +1,5 @@
 -- Member Table
-CREATE TABLE member (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -40,7 +40,7 @@ CREATE TABLE book_listing (
     id SERIAL PRIMARY KEY,
     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    owner_id INTEGER REFERENCES member(id),
+    owner_id INTEGER REFERENCES users(id),
     book_id INTEGER REFERENCES book(id),
     status TEXT,
     status_code INTEGER,
@@ -61,7 +61,7 @@ CREATE TABLE session (
     id SERIAL PRIMARY KEY,
     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    user_id INTEGER REFERENCES member(id),
+    user_id INTEGER REFERENCES users(id),
     time_to_live timestamp without time zone
 );
 
@@ -70,8 +70,8 @@ CREATE TABLE request (
     id SERIAL PRIMARY KEY,
     created timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_modified timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    borrower_id INTEGER REFERENCES member(id),
-    lender_id INTEGER REFERENCES member(id),
+    borrower_id INTEGER REFERENCES users(id),
+    lender_id INTEGER REFERENCES users(id),
     book_listing_id INTEGER REFERENCES book_listing(id),
     time_to_live timestamp without time zone,
     status TEXT,
@@ -83,8 +83,8 @@ CREATE TABLE exchange_history (
     id SERIAL PRIMARY KEY,
     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    lender_id INTEGER REFERENCES member(id),
-    borrower_id INTEGER REFERENCES member(id),
+    lender_id INTEGER REFERENCES users(id),
+    borrower_id INTEGER REFERENCES users(id),
     book_id INTEGER REFERENCES book(id),
     request_id INTEGER REFERENCES request(id)
 );

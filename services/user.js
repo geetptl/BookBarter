@@ -1,6 +1,9 @@
-function validateUserId(userId) {
-    let idRegex = /^[0-9]{1,}$/g;
-    return idRegex.test(userId);
+const db = require("../db");
+
+async function validateUserId(userId) {
+    const result = await db.query(`SELECT * FROM users WHERE id = ${userId}`);
+    console.log(result);
+    return result.rowCount != 0;
 }
 
 module.exports = {

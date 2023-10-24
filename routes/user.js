@@ -4,9 +4,9 @@ const Router = require("express-promise-router");
 const router = new Router();
 
 router.get("/id/:id", async (req, res) => {
-    const validUser = userService.validateUserId(req.params.id);
+    const validUser = await userService.validateUserId(req.params.id);
     if (validUser) {
-        res.send(`Finding user with id ${req.params.id}`);
+        res.send(`Found user with id ${req.params.id}`);
     } else {
         res.status(404).send("Invalid id");
     }
