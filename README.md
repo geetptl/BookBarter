@@ -9,11 +9,11 @@ BookBarter simplifies the book-sharing experience for bibliophiles by facilitati
 1. Fork this repository
 1. Clone the forked repository onto your computer
 1. Back-end:
-   1. Open the backend folder.
-   2. Follow the contribution steps in `BACKEND.md`.
+   1. Open the [`backend`](./backend/) folder.
+   1. Follow the contribution steps in [`BACKEND.md`](./backend/BACKEND.md).
 1. Front-end:
-   1. Open the frontend folder.
-   2. Follow the contribution steps in `FRONTEND.md`.
+   1. Open the [`frontend`](./frontend/) folder.
+   1. Follow the contribution steps in [`FRONTEND.md`](./frontend/FRONTEND.md).
 1. After satisfaction, commit and push your changes.
 1. Submit a pull request (PR)
 1. Follow the comments on your PR
