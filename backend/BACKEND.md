@@ -45,4 +45,5 @@ This takes down all the containers running the application, and removes the atta
     1. Keep your test files in `spec` directory as `spec/<filename>Spec.js` (check [`spec/userSpec.js`](./spec/userSpec.js) for template)
     1. To run a specific test file, use `npm test spec/<filename>.js`
     1. Validate all tests using `npm test`
+    1. Run `npm run pretty` to automatically format the code.
 1. Use docker to run the project locally as described above.
