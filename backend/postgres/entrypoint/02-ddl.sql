@@ -22,10 +22,7 @@ CREATE TABLE book (
     title TEXT NOT NULL,
     author TEXT NOT NULL,
     rating DECIMAL(3,2),
-    description TEXT,
-    language TEXT,
-    isbn TEXT
-    -- Need to figure out issue with unique ISBN
+    image_url TEXT NOT NULL
 );
 
 -- Genre Table
