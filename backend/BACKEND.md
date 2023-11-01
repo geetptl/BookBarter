@@ -14,11 +14,15 @@ POSTGRES_DB=bookbarter_db
 
 ### Docker compose up
 
-This deploys a multi-container application (a `node.js` application, a `postgres` database and an `adminer` database moniter)
+This deploys a multi-container application (a `postgres` database and an `adminer` database moniter)
 
 ```bash
 docker compose up -d
 ```
+
+### Running Node server
+
+Run `node index.js` to start the node server on port 8000.
 
 ### Test it out
 
