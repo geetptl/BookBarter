@@ -73,7 +73,15 @@ describe("Request Routes", () => {
 
         // You can add more test cases, for instance, for handling errors or other conditions
     });
-
+    fdescribe('invalidateOldRequests', () => {
+        it('should invalidate old requests and return true when requests are found', async () => {
+    
+            const res = await request(app).put("/requests/invalidateOldRequests");
+            
+            expect(res.status).toBe(200);
+        });
+    
+    });
     // Similarly, create tests for other endpoints ("/invalidateOldRequests", "/approveRequest", "/rejectRequest")
 
 });
