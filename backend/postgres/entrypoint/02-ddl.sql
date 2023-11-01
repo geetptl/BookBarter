@@ -63,6 +63,10 @@ CREATE TABLE session (
     time_to_live timestamp without time zone
 );
 
+-- Create an enumerated type for request statuses
+CREATE TYPE request_status AS ENUM ('Pending', 'Accepted', 'Rejected', 'Expired');
+
+
 -- Request Table
 CREATE TABLE request (
     id SERIAL PRIMARY KEY,
@@ -72,8 +76,7 @@ CREATE TABLE request (
     lender_id INTEGER REFERENCES users(id),
     book_listing_id INTEGER REFERENCES book_listing(id),
     time_to_live timestamp without time zone,
-    status TEXT,
-    status_code INTEGER
+    status request_status
 );
 
 -- ExchangeHistory Table
