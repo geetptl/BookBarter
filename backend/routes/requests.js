@@ -15,7 +15,7 @@ router.post("/raiseBorrowRequest", async (req, res) => {
 
         // Retrieve lender_id using the getLenderIdByListingId function
         const lenderId = await requestService.getLenderIdByListingId(listingId);
-
+        console.log(lenderId)
         if (lenderId !== null) {
             // Now, you have the lender_id, you can proceed to create the request
             const result = await requestService.raiseBorrowRequest(borrowerId, lenderId, listingId, borrowDuration);

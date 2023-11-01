@@ -27,7 +27,7 @@ async function getLenderIdByListingId(listingId) {
 }
 
 
-async function raiseBorrowRequest(borrowerId, listingId, lenderId, borrowDuration) {
+async function raiseBorrowRequest(borrowerId, lenderId, listingId, borrowDuration) {
     try {
         // Use placeholders to prevent SQL injection
         const query = `
@@ -35,11 +35,11 @@ async function raiseBorrowRequest(borrowerId, listingId, lenderId, borrowDuratio
             VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending', 0)
         `;
         
-        const values = [borrowerId, listingId, lenderId];
-
+        const values = [borrowerId, lenderId, listingId];
+        console.log("dfdfsfd")
         // Execute the query
         const result = await db.query(query, values);
-
+        console.log(query)
         if (result.rowCount === 1) {
             console.log("Request created successfully.");
             return true;

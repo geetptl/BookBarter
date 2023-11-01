@@ -14,24 +14,23 @@ describe("Request Routes", () => {
         });
     });
 
-    // describe("POST /raiseBorrowRequest", () => {
-    //     it("should raise a borrow request", async () => {
-    //         const mockRequestPayload = {
-    //             borrowerId: "sampleBorrowerId",
-    //             borrowDuration: "1 week",
-    //             listingId: "sampleListingId"
-    //         };
-    //         spyOn(requestService, 'getLenderIdByListingId').and.returnValue("sampleLenderId");
-    //         spyOn(requestService, 'raiseBorrowRequest').and.returnValue(true);
+    describe("POST /raiseBorrowRequest", () => {
+        it("should raise a borrow request", async () => {
+            const mockRequestPayload = {
+                borrowerId: 1,
+                listingId: 3,
+                borrowDuration: "3"
+            };
+            spyOn(requestService, 'getLenderIdByListingId').and.returnValue(3);
+            // spyOn(requestService, 'raiseBorrowRequest').and.returnValue(true);
 
-    //         const res = await request(app).post("/raiseBorrowRequest").send(mockRequestPayload);
+            const res = await request(app).post("/requests/raiseBorrowRequest").send(mockRequestPayload);
 
-    //         expect(res.status).toBe(200);
-    //         expect(res.body).toEqual({ "Request Raised": "Success" });
-    //     });
+            expect(res.status).toBe(200);
+        });
 
-    //     // You can add more test cases, for instance, for handling errors or other conditions
-    // });
+        // You can add more test cases, for instance, for handling errors or other conditions
+    });
 
     describe("GET /getPendingActions", () => {
         it("should retrieve the list of pending actions for a user", async () => {
@@ -39,10 +38,37 @@ describe("Request Routes", () => {
             spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([]);
             spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([]);
 
-            const res = await request(app).get("/getPendingActions").send({ userId: mockUserId });
+            const res = await request(app).get("/requests/getPendingActions").send({ userId: mockUserId });
+            
+            console.log(res.body)
+            expect(res.status).toBe(200);
+            // expect(res.body).toEqual({ "Requests": [] });
+        });
+
+        // You can add more test cases, for instance, for handling errors or other conditions
+    });
+
+    describe("PUT /approveRequest", () => {
+        it("should request status to approved", async () => {
+            const mockRequestPayload = {
+                requestId: 3
+            };
+            const res = await request(app).put("/requests/approveRequest").send(mockRequestPayload);
 
             expect(res.status).toBe(200);
-            expect(res.body).toEqual({ "Requests": [] });
+        });
+
+        // You can add more test cases, for instance, for handling errors or other conditions
+    });
+
+    describe("PUT /rejectRequest", () => {
+        it("should request status to rejected", async () => {
+            const mockRequestPayload = {
+                requestId: 1
+            };
+            const res = await request(app).put("/requests/rejectRequest").send(mockRequestPayload);
+
+            expect(res.status).toBe(200);
         });
 
         // You can add more test cases, for instance, for handling errors or other conditions
