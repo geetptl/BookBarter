@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const routes = require("./routes");
 
@@ -9,5 +10,6 @@ app.use(express.static("public"));
 routes.mountRoutes(app);
 
 app.listen(port, () => {
+    console.log(process.env.POSTGRES_PASSWORD)
     console.log(`Example app listening on ${port}`);
 });
