@@ -31,7 +31,7 @@ async function raiseBorrowRequest(borrowerId, lenderId, listingId, borrowDuratio
     try {
         // Use placeholders to prevent SQL injection
         const query = `
-            INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status, status_code)
+            INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
             VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending', 0)
         `;
         

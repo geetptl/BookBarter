@@ -73,7 +73,7 @@ describe("Request Routes", () => {
 
         // You can add more test cases, for instance, for handling errors or other conditions
     });
-    fdescribe('invalidateOldRequests', () => {
+    describe('PUT /invalidateOldRequests', () => {
         it('should invalidate old requests and return true when requests are found', async () => {
     
             const res = await request(app).put("/requests/invalidateOldRequests");
