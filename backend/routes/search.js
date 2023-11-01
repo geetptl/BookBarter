@@ -10,10 +10,6 @@ router.get("/query/:query", async (req, res) => {
     res.json(filteredBooks);
 });
 
-router.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "public/html", "search.html"));
-});
-
 router.get("/all", async (req, res) => {
     res.json(books);
 });
