@@ -24,7 +24,8 @@ CREATE TABLE book (
     rating DECIMAL(3,2),
     description TEXT,
     language TEXT,
-    isbn TEXT UNIQUE
+    isbn TEXT
+    -- Need to figure out issue with unique ISBN
 );
 
 -- Genre Table
