@@ -65,7 +65,7 @@ const books = [
     {
         isbn: "10",
         title: "Red, White and Royal Blue",
-        author: "",
+        author: "Casey McQuinston",
         genre: "Romance",
         cover: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1566742512i/41150487.jpg",
     },
