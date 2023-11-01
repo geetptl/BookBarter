@@ -1,6 +1,5 @@
 const db = require("../db");
 
-
 async function getLenderIdByListingId(listingId) {
     try {
         const query = `
@@ -28,7 +27,7 @@ async function getLenderIdByListingId(listingId) {
 }
 
 
-async function raiseRequest(borrowerId, listingId, lenderId) {
+async function raiseBorrowRequest(borrowerId, listingId, lenderId, borrowDuration) {
     try {
         // Use placeholders to prevent SQL injection
         const query = `
@@ -50,11 +49,11 @@ async function raiseRequest(borrowerId, listingId, lenderId) {
         }
     } catch (error) {
         console.error("Error creating request:", error);
-        return false;
+        throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
 
-async function getRequestsByLender(lenderId) {
+async function getPendingActionsByLenderId(lenderId) {
     try {
         const query = `
             SELECT *
@@ -73,6 +72,46 @@ async function getRequestsByLender(lenderId) {
         }
     } catch (error) {
         console.error("Error retrieving requests:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+async function getPendingActionsByBorrowerId(borrowerId) {
+    try {
+        const query = `
+            SELECT *
+            FROM request
+            WHERE borrower_id = $1
+        `;
+
+        const values = [borrowerId];
+
+        const result = await db.query(query, values);
+
+        if (result.rowCount > 0) {
+            return result.rows;
+        } else {
+            return null; // No requests found for the borrower
+        }
+    } catch (error) {
+        console.error("Error retrieving requests:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+async function invalidateOldRequests() {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'Expired'
+            WHERE time_to_live < NOW() - INTERVAL '2 days';
+        `;
+
+        const result = await db.query(query);
+
+        return result.rowCount === 1;
+    } catch (error) {
+        console.error("Error approving request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
@@ -117,8 +156,10 @@ async function rejectRequest(requestId) {
 
 module.exports = {
     getLenderIdByListingId,
-    raiseRequest,
-    getRequestsByLender,
+    raiseBorrowRequest,
+    getPendingActionsByLenderId,
+    getPendingActionsByBorrowerId,
+    invalidateOldRequests,
     approveRequest,
     rejectRequest,
 };

@@ -12,3 +12,5 @@ routes.mountRoutes(app);
 app.listen(port, () => {
     console.log(`Example app listening on ${port}`);
 });
+
+module.exports = app;
