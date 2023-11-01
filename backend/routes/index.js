@@ -1,6 +1,7 @@
 const user = require("./user");
 const status = require("./status");
 const express = require("express");
+const exchange = require("./exchange");
 
 const mountRoutes = (app) => {
     app.use(express.json());
@@ -10,6 +11,7 @@ const mountRoutes = (app) => {
 
     app.use("/user", user);
     app.use("/status", status);
+    app.use("/exchange", exchange);
 };
 
 module.exports = { mountRoutes };
