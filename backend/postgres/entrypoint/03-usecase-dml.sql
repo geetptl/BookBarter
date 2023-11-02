@@ -13,7 +13,11 @@ VALUES
     ('Book 2', 'Author 2', 3.8, 'https://example.com/image2.jpg'),
     ('Book 3', 'Author 3', 4.2, 'https://example.com/image3.jpg'),
     ('Book 4', 'Author 4', 4.0, 'https://example.com/image4.jpg'),
-    ('Book 5', 'Author 5', 4.8, 'https://example.com/image5.jpg');
+    ('Book 5', 'Author 5', 4.8, 'https://example.com/image5.jpg'),
+    ('Book 6', 'Author 5', 4.8, 'https://example.com/image5.jpg'),
+    ('Book 7', 'Author 5', 4.8, 'https://example.com/image5.jpg'),
+    ('Book 8', 'Author 5', 4.8, 'https://example.com/image5.jpg');
+
 
 -- Genre
 INSERT INTO genre (name)
@@ -26,10 +30,14 @@ VALUES
 -- BookListing
 INSERT INTO book_listing (owner_id, book_id, status, status_code)
 VALUES 
-(1, 1, 'Available', 1),
-(2, 2, 'Available', 1),
-(3, 3, 'Not Available', 0),
-(4, 4, 'Available', 1);
+(1, 1, 'Available', 1), -- 1
+(1, 2, 'Available', 1), -- 2
+(2, 3, 'Available', 1), -- 3
+(2, 4, 'Available', 1), -- 4
+(3, 5, 'Available', 1), -- 5
+(3, 6, 'Available', 1), -- 6
+(4, 7, 'Available', 1), -- 7
+(4, 8, 'Available', 1); -- 8
 
 -- BookGenreMapping
 INSERT INTO book_genre_mapping (book_id, genre_id)
@@ -50,11 +58,14 @@ VALUES
 -- Request
 INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
 VALUES 
-(1, 2, 2, '2023-01-05 12:00:00', 'Expired'),
-(3, 4, 4, '2024-01-06 12:00:00', 'Accepted'),
-(4, 1, 1, '2024-01-07 12:00:00', 'Accepted');
-(1, 3, 3, '2024-01-07 12:00:00', 'Pending');
-(1, 3, 4, '2024-01-07 12:00:00', 'Rejected');
+(1, 2, 3, '2023-01-05 12:00:00', 'Expired'),
+(1, 3, 5, '2024-01-07 12:00:00', 'Pending'),
+(1, 4, 7, '2024-01-07 12:00:00', 'Rejected'),
+(1, 2, 4, '2024-01-07 12:00:00', 'Accepted'),
+(3, 4, 8, '2023-01-06 12:00:00', 'Pending'), 
+(4, 1, 1, '2024-01-07 12:00:00', 'Pending'),
+(1, 4, 1, '2024-01-07 12:00:00', 'Accepted');
+
 
 
 -- Payment
