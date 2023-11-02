@@ -54,7 +54,7 @@ delete from temp_books_2 where imgUrl = '';
 delete from temp_books_2 where stars = '';
 delete from temp_books_2 where category_name is null;
 
-insert into genre(name) select category_name from temp_books_2 group by 1;
+insert into genre(name) select DISTINCT category_name from temp_books_2 ON CONFLICT (name) DO NOTHING;;
 
 alter table book add column copy_ref_id int;
 
