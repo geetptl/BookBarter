@@ -8,6 +8,7 @@ async function createNewListing(bookListingData) {
         if (result.rowCount === 1) {
             console.log("Request created successfully.");
             return true;
+            
         } else {
             console.log("Failed to create request.");
             return false;
