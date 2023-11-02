@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- ... (same as before) ... -->
+    <script src="https://js.stripe.com/v3/"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
     <link rel="stylesheet" type="text/css" href="../../styles/requests/requests.css">
-
 </head>
 <body>
     <div class="navbar">
@@ -14,7 +13,12 @@
     </div>
     <div id="pending-actions" class="actions-container"></div>
 
+    <h2>Enter your card details</h2>
+    <input type="text" id="email" placeholder="Email Address" />
+    <div id="card-element"></div>
+    <button id="submit-button">Submit</button>
+    <div id="error-message" style="color: red;"></div>
+
     <script src="../../scripts/requests/requests.js"></script>
-    <!-- ... (other scripts as before) ... -->
 </body>
 </html>

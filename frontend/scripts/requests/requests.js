@@ -1,3 +1,4 @@
+
 window.onload = function () {
     const userId = '1'; // This should be fetched dynamically based on the logged-in user.
     fetch(`http://localhost:8000/requests/getPendingActions/${userId}`, {
@@ -10,6 +11,8 @@ window.onload = function () {
     .then(response => response.json())
     .then(displayPendingActions)
     .catch(console.error);
+    saveCard();
+
 };
 
 async function getUserNameFromIdAPI(userId) {
@@ -146,5 +149,54 @@ function handleReject(event) {
         }
     })
     .catch(console.error);
+}
+
+function saveCard() {
+    const stripe = Stripe('pk_test_51O7q8CJvFHmzlX92OVAQU6H0GFuN5tiUGEdOy4bNFa4hWbTWEPFA4YFMQl1Pye6FkFkl0npuYAUyPZFmMzgzau6o00uSYykKHk');
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    card.addEventListener('change', ({error}) => {
+        const displayError = document.getElementById('error-message');
+        if (error) {
+            displayError.textContent = error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    const submitButton = document.getElementById('submit-button');
+    submitButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const {token, error} = await stripe.createToken(card);
+
+        if (error) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = error.message;
+        } else if (!email) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = 'Email is required';
+        } else {
+            fetch('http://localhost:8000/payment/saveCard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email, card: {token: token.id}}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                alert('Card saved successfully!');
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Error saving the card. Please try again.');
+            });
+        }
+    });
 }
 
