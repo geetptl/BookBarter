@@ -67,8 +67,32 @@ async function getBookListing(bookid){
 
 }
 
+async function getBookbyUserid(userid){
+    try{
+        const result = await db.query(`SELECT b.*
+                                        FROM book b
+                                        INNER JOIN book_listing bl ON b.id = bl.book_id
+                                        INNER JOIN users u ON bl.owner_id = u.id
+                                        WHERE u.id = ${userid}; `);
+        if(result.rowCount >1){
+            console.log("Retrieved available books for given user id");
+            return result.rows;
+        }
+        else{
+            console.log("No available books for the userid.");
+            return result.rows;
+        }
+    }
+    catch{
+        console.log("user id doesnt exist.")
+        return false;
+    } 
+
+}
+
 module.exports = {
     createNewListing,
     getBookName,
-    getBookListing
+    getBookListing,
+    getBookbyUserid
 };

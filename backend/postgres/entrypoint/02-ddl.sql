@@ -42,7 +42,8 @@ CREATE TABLE book_listing (
     book_id INTEGER REFERENCES book(id),
     status TEXT,
     status_code INTEGER,
-    returns_on DATE
+    returns_on DATE,
+    UNIQUE(owner_id, book_id) 
 );
 
 -- BookGenreMapping Table

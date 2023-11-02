@@ -38,6 +38,19 @@ router.get("/getBookListing/:id", async (req, res) => {
     }
 });
 
+router.get("/getBookbyUserid/:id", async (req, res) => {
+    const getBooksbyUserid = await listingService.getBooksbyUserid(req.params.id);
+    console.log(getBooksbyUserid);
+    if (availableUsers) {
+        res.send(getBooksbyUserid);
+    } 
+    else if(getBooksbyUserid == false){
+        res.status(404).json({"userListings": null});
+    }
+    else {
+        res.status(200).json({"userListings": []});
+    }
+});
 
 
 module.exports = router;

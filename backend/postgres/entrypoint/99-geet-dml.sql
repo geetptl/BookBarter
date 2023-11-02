@@ -16,5 +16,3 @@ INSERT INTO users (user_id, password_hash, email, phone_number, first_name, last
 INSERT INTO users (user_id, password_hash, email, phone_number, first_name, last_name, latitude, longitude, is_auth) VALUES
 ('hasnain', 'pwd', 'hasnain@rutgers.edu', '7325226065', 'Hasnain', 'Gandhiji', 10.0, 20.0, FALSE);
 
-INSERT INTO book_listing (owner_id, book_id) VALUES
-(1,1),(1,2),(1,3),(2,1),(2,3),(2,4),(2,5),(3,6),(4,1),(4,5),(5,1);
