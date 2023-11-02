@@ -7,7 +7,7 @@ router.get("/get/:bookId", async (req, res) => {
     if (bookData) {
         res.json(bookData);
     } else {
-        res.status(404).json({ errMessage : "Requested book not found!" })
+        res.status(404).json({ errMessage: "Requested book not found!" });
     }
 });
 
