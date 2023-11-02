@@ -16,6 +16,7 @@ document.querySelector("#previous-page").addEventListener("click", function (eve
         fetchBooks(currentPage);
         updatePagination();
     }
+    this.blur();
 });
 
 document.querySelector("#next-page").addEventListener("click", function (event) {
@@ -25,6 +26,7 @@ document.querySelector("#next-page").addEventListener("click", function (event) 
         fetchBooks(currentPage);
         updatePagination();
     }
+    this.blur();
 });
 
 document.querySelector(".btn").addEventListener("click", function (event) {
