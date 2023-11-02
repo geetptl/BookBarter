@@ -14,4 +14,14 @@ router.post('/createListing', async (req, res) => {
     }
 });
 
+router.get("/getBookName/:id", async (req, res) => {
+    const validBook = await listingService.getBookName(req.params.id);
+    console.log(validBook);
+    if (validBook) {
+        res.send(validBook);
+    } else {
+        res.status(404).send("Invalid id");
+    }
+});
+
 module.exports = router;

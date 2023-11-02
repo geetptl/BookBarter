@@ -28,6 +28,22 @@ async function getUserNameFromIdAPI(userId) {
     }
 }
 
+async function getBookNameFromListingIdAPI(listingId) {
+    const apiUrl = `http://localhost:8000/booklisting/getBookName/${listingId}`;
+    
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`API request failed with status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.title; // Assuming the API returns an object with a BookName property
+    } catch (error) {
+        console.error("Error fetching book name:", error);
+        return "N/A"; // Return a default value or handle the error as needed
+    }
+}
+
 
 function displayPendingActions(actions) {
     const actionsDiv = document.getElementById("pending-actions");
@@ -38,8 +54,9 @@ function displayPendingActions(actions) {
                 const actionDiv = document.createElement("div");
                 actionDiv.className = "action-card";
                 const userName = await getUserNameFromIdAPI(act.lender_id);
+                const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
                 actionDiv.innerHTML = `
-                    <h3>Borrow request for ${act.book_listing_id} from ${userName}</h3>
+                    <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
                     <!-- ... (display other action details as desired) ... -->
                     <button data-id="${act.book_listing_id}" class="btn btn-primary approve-btn">Approve</button>
                     <button data-id="${act.status}" class="btn btn-danger reject-btn">Reject</button>
@@ -51,12 +68,13 @@ function displayPendingActions(actions) {
         if("asBorrower" in action){
             action.asBorrower.forEach(async act => {
                 const userName = await getUserNameFromIdAPI(act.lender_id);
+                const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
 
                 if(act.status === "Accepted"){
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow requested accepted by ${userName} for Book listing ${act.book_listing_id}</h3>
+                        <h3>Borrow request accepted by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
                         <button data-id="${act.book_listing_id}" class="btn btn-primary approve-btn">Make Payment</button>
                         <button data-id="${act.status}" class="btn btn-danger reject-btn">Decline Payment</button>
@@ -68,7 +86,7 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow requested rejected by ${userName} for Book listing ${act.book_listing_id}</h3>
+                        <h3>Borrow request rejected by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
                         <button data-id="${act.status}" class="btn btn-primary reject-btn">Okay</button>
                     `;
