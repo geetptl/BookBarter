@@ -62,8 +62,8 @@ function displayPendingActions(actions) {
                     actionDiv.innerHTML = `
                         <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
                         <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn btn-primary approve-request-btn">Approve</button>
-                        <button data-id="${act.id}" class="btn btn-danger reject-request-btn">Reject</button>
+                        <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
+                        <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
                     `;
                     actionsDiv.appendChild(actionDiv);
                 }
@@ -81,8 +81,8 @@ function displayPendingActions(actions) {
                     actionDiv.innerHTML = `
                         <h3>Borrow request accepted by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn btn-primary pymt-approve-btn">Make Payment</button>
-                        <button data-id="${act.id}" class="btn btn-danger pymt-decline-btn">Decline Payment</button>
+                        <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
+                        <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -93,7 +93,7 @@ function displayPendingActions(actions) {
                     actionDiv.innerHTML = `
                         <h3>Borrow request rejected by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn btn-primary ok-btn">Okay</button>
+                        <button data-id="${act.id}" class="btn ok-btn">Okay</button>
                     `;
                     actionsDiv.appendChild(actionDiv);
 

@@ -12,6 +12,7 @@ button {
 .btn {
     background-color: #3B6562 !important;
     border: #3B6562 !important;
+    color: white !important;
 }
 
 .btn:hover {
