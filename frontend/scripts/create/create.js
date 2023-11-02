@@ -10,7 +10,7 @@ function createUser() {
     };
   
     fetch('http://localhost:8000/user/create', {
-      method: 'POST',
+      method: 'POST', 
       headers: {
         'Content-Type': 'application/json',
       },
