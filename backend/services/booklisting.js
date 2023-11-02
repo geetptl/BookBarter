@@ -23,6 +23,13 @@ async function createNewListing(bookListingData) {
     }
 }
 
+async function getBookName(listingid) {
+    const result = await db.query(`SELECT b.title FROM book_listing bl JOIN book b ON bl.book_id = b.id WHERE bl.id = ${listingid}`);
+    return result.rows[0];
+}
+
+
 module.exports = {
     createNewListing,
+    getBookName
 };

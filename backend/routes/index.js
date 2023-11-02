@@ -3,6 +3,8 @@ const status = require("./status");
 const search = require("./search");
 const requests = require("./requests");
 const booklisting = require("./booklisting");
+const payment = require("./payment")
+
 const express = require("express");
 
 const mountRoutes = (app) => {
@@ -16,6 +18,7 @@ const mountRoutes = (app) => {
     app.use("/search", search);
     app.use("/requests", requests);
     app.use("/booklisting", booklisting);
+    app.use("/payment", payment);
 };
 
 module.exports = { mountRoutes };

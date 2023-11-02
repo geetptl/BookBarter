@@ -88,7 +88,7 @@ CREATE TABLE exchange_history (
     borrower_id INTEGER REFERENCES users(id),
     book_id INTEGER REFERENCES book(id),
     request_id INTEGER REFERENCES request(id)
-);
+); 
 
 -- Payment Table
 CREATE TABLE payment (
@@ -100,3 +100,15 @@ CREATE TABLE payment (
     txn_id TEXT UNIQUE,
     payment_status TEXT
 );
+
+-- -- Cards Tables
+-- CREATE TABLE cards(
+--     id SERIAL PRIMARY KEY,
+--     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+--     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+--     payer_id INTEGER REFERENCES users(id)
+--     card_number 
+--     expiration
+--     cvv
+
+-- );

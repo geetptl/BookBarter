@@ -65,29 +65,19 @@ describe("Request Routes", () => {
             // spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([]);
             // spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([]);
 
-            const res = await request(app)
-                .get("/requests/getPendingActions")
-                .send({ userId: mockUserId });
-
-            console.log(res.body);
+            const res = await request(app).get(`/requests/getPendingActions/${mockUserId}`);
+            
+            console.log(res.body)
             expect(res.status).toBe(200);
         });
 
         it("should retrieve no pending actions for a user", async () => {
             const mockUserId = "100"; // Assuming this user does not have any requests
-            spyOn(
-                requestService,
-                "getPendingActionsByLenderId",
-            ).and.returnValue(null);
-            spyOn(
-                requestService,
-                "getPendingActionsByBorrowerId",
-            ).and.returnValue(null);
-
-            const res = await request(app)
-                .get("/requests/getPendingActions")
-                .send({ userId: mockUserId });
-
+            spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue(null);
+            spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue(null);
+    
+            const res = await request(app).get(`/requests/getPendingActions/${mockUserId}`);
+    
             expect(res.status).toBe(200);
         });
     });
@@ -117,12 +107,11 @@ describe("Request Routes", () => {
             expect(res.status).toBe(200);
         });
     });
-    describe("PUT /invalidateOldRequests", () => {
-        it("should invalidate old requests and return true when requests are found", async () => {
-            const res = await request(app).put(
-                "/requests/invalidateOldRequests",
-            );
-
+    describe('invalidateOldRequests', () => {
+        it('should invalidate old requests and return true when requests are found', async () => {
+    
+            const res = await request(app).put("/requests/invalidateOldRequests");
+            
             expect(res.status).toBe(200);
         });
     });
