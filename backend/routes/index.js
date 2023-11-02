@@ -1,9 +1,8 @@
 const user = require("./user");
 const status = require("./status");
 const search = require("./search");
-const exchange = require("./exchange");
-const book = require("./book");
-
+const requests = require("./requests");
+const booklisting = require("./booklisting")
 const express = require("express");
 
 const mountRoutes = (app) => {
@@ -15,8 +14,10 @@ const mountRoutes = (app) => {
     app.use("/user", user);
     app.use("/status", status);
     app.use("/search", search);
-    app.use("/exchange", exchange);
-    app.use("/book", book);
+    app.use("/requests", requests);
+    app.use("/booklisting", booklisting);
+
+
 };
 
 module.exports = { mountRoutes };
