@@ -26,20 +26,24 @@ async function getLenderIdByListingId(listingId) {
     }
 }
 
-
-async function raiseBorrowRequest(borrowerId, lenderId, listingId, borrowDuration) {
+async function raiseBorrowRequest(
+    borrowerId,
+    lenderId,
+    listingId,
+    borrowDuration,
+) {
     try {
         // Use placeholders to prevent SQL injection
         const query = `
             INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
             VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending')
         `;
-        
+
         const values = [borrowerId, lenderId, listingId];
-        console.log("dfdfsfd")
+        console.log("dfdfsfd");
         // Execute the query
         const result = await db.query(query, values);
-        console.log(query)
+        console.log(query);
         if (result.rowCount === 1) {
             console.log("Request created successfully.");
             return true;
