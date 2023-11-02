@@ -102,13 +102,10 @@ CREATE TABLE payment (
 );
 
 -- -- Cards Tables
--- CREATE TABLE cards(
---     id SERIAL PRIMARY KEY,
---     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
---     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
---     payer_id INTEGER REFERENCES users(id)
---     card_number 
---     expiration
---     cvv
-
--- );
+CREATE TABLE cards(
+    id SERIAL PRIMARY KEY,
+    created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    payer_id INTEGER REFERENCES users(id),
+    stripe_customer_id TEXT UNIQUE
+);
