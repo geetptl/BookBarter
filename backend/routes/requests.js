@@ -41,12 +41,12 @@ router.post("/raiseBorrowRequest", async (req, res) => {
 });
 
 
-router.get("/getPendingActions", async (req, res) => {
+router.get("/getPendingActions/:userId", async (req, res) => {
     try {
 
         // Create a list of pending actions for a user both as a borrower and a lender.
         var pendingActions = [];
-        const userId = req.body.userId;
+        const userId = req.params.userId;
 
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
         const requestsByLender = await requestService.getPendingActionsByLenderId(userId);
