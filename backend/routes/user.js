@@ -1,8 +1,8 @@
 const userService = require("../services/user");
 const Router = require("express-promise-router");
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 router.get("/id/:id", async (req, res) => {
     const validUser = await userService.validateUserId(req.params.id);
@@ -13,7 +13,7 @@ router.get("/id/:id", async (req, res) => {
     }
 });
 
-router.post('/create', async (req, res) => {
+router.post("/create", async (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password_hash;
     const email = req.body.email;
@@ -27,26 +27,38 @@ router.post('/create', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const newUser = await userService.create(user_id, hashedPassword, email, phone_number, first_name, last_name, latitude, longitude, is_auth);
+        const newUser = await userService.create(
+            user_id,
+            hashedPassword,
+            email,
+            phone_number,
+            first_name,
+            last_name,
+            latitude,
+            longitude,
+            is_auth,
+        );
         console.log("newUser");
         console.log(newUser);
         if (newUser) {
             res.status(200).json({ "User Created": "True" });
         }
-
-    } catch(error) {
-        if (error.message === 'User with the same user_id, email or phone number already exists') {
-            res.status(400).json({ "User Created": "False", "error": "User with the same user_id, email or phone number already exists" });
+    } catch (error) {
+        if (
+            error.message ===
+            "User with the same user_id, email or phone number already exists"
+        ) {
+            res.status(400).json({
+                "User Created": "False",
+                error: "User with the same user_id, email or phone number already exists",
+            });
+        } else {
+            res.status(500).json({ error: "Server error" });
         }
-        else {
-            res.status(500).json({ "error": "Server error" });
-        }
-        
-        
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password_hash;
 
@@ -54,13 +66,11 @@ router.post('/login', async (req, res) => {
         const loggedInUser = await userService.login(user_id, password);
         if (loggedInUser) {
             res.status(200).json({ "User Login": "True" });
-        }
-        else {
+        } else {
             res.status(400).json({ "User Login": "False" });
         }
-
-    } catch(error) {
-        res.status(500).json({ "error": "Server error" });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
     }
 });
 
