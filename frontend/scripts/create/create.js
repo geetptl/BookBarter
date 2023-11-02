@@ -6,7 +6,7 @@ function createUser() {
         "last_name" :document.getElementById("last_name").value,
         "phone_number" : document.getElementById("phonenumber").value,
         "user_id" : document.getElementById("username").value,
-        "password" : document.getElementById("password").value
+        "password_hash" : document.getElementById("password").value
     };
   
     fetch('http://localhost:8000/user/create', {
