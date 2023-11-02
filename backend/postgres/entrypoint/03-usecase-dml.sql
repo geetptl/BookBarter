@@ -4,7 +4,8 @@ VALUES
 ('user1', 'hashed_pass1', 'user1@email.com', 'User', 'One'),
 ('user2', 'hashed_pass2', 'user2@email.com', 'User', 'Two'),
 ('user3', 'hashed_pass3', 'user3@email.com', 'User', 'Three'),
-('user4', 'hashed_pass4', 'user4@email.com', 'User', 'Four');
+('user4', 'hashed_pass4', 'user4@email.com', 'User', 'Four'),
+('user5', 'hashed_pass5', 'user5@email.com', 'User', 'Five');
 
 -- Book
 INSERT INTO book (title, author, rating, image_url)
@@ -26,11 +27,10 @@ VALUES
 -- BookListing
 INSERT INTO book_listing (owner_id, book_id, status, status_code)
 VALUES 
-(1, 1, 'Available', 1),
 (2, 2, 'Available', 1),
 (3, 3, 'Not Available', 0),
-(4, 4, 'Available', 1);
-
+(4, 4, 'Available', 1),
+(5,5, 'Available', 1);
 -- BookGenreMapping
 INSERT INTO book_genre_mapping (book_id, genre_id)
 VALUES 
