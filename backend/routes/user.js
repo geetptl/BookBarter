@@ -3,6 +3,7 @@ const Router = require("express-promise-router");
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 router.get("/id/:id", async (req, res) => {
     const validUser = await userService.validateUserId(req.params.id);
@@ -53,6 +54,30 @@ router.post('/login', async (req, res) => {
     try {
         const loggedInUser = await userService.login(user_id, password);
         if (loggedInUser) {
+            console.log(process.env.JWT_KEY);
+            console.log(process.env.JWT_EXPIRESIN);
+            console.log(loggedInUser);
+            try {
+                const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
+                    expiresIn: process.env.JWT_EXPIRESIN
+                });
+                console.log(token);
+                const options = {
+                    httpOnly: true,
+                    secure: false
+                };
+                
+                res.cookie('jwtToken', token, options);
+
+                // checked how cookie is stored
+                // console.log("cookie header")
+                // const cookieHeader = res.getHeader('set-cookie');
+                // console.log('Cookie Header:', cookieHeader);
+                
+            } catch (error) {
+                console.log(error);
+            }
+            
             res.status(200).json({ "User Login": "True" });
         }
         else {
