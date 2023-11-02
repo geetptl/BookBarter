@@ -41,7 +41,7 @@ router.get("/getBookListing/:id", async (req, res) => {
 router.get("/getBookbyUserid/:id", async (req, res) => {
     const getBooksbyUserid = await listingService.getBooksbyUserid(req.params.id);
     console.log(getBooksbyUserid);
-    if (availableUsers) {
+    if (getBooksbyUserid) {
         res.send(getBooksbyUserid);
     } 
     else if(getBooksbyUserid == false){

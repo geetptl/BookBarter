@@ -67,7 +67,7 @@ async function getBookListing(bookid){
 
 }
 
-async function getBookbyUserid(userid){
+async function getBooksbyUserid(userid){
     try{
         const result = await db.query(`SELECT b.*
                                         FROM book b
@@ -94,5 +94,5 @@ module.exports = {
     createNewListing,
     getBookName,
     getBookListing,
-    getBookbyUserid
+    getBooksbyUserid
 };
