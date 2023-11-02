@@ -50,9 +50,12 @@ VALUES
 -- Request
 INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
 VALUES 
-(1, 2, 2, '2023-01-05 12:00:00', 'Pending'),
+(1, 2, 2, '2023-01-05 12:00:00', 'Expired'),
 (3, 4, 4, '2024-01-06 12:00:00', 'Accepted'),
-(4, 1, 1, '2024-01-07 12:00:00', 'Pending');
+(4, 1, 1, '2024-01-07 12:00:00', 'Accepted');
+(1, 3, 3, '2024-01-07 12:00:00', 'Pending');
+(1, 3, 4, '2024-01-07 12:00:00', 'Rejected');
+
 
 -- Payment
 INSERT INTO payment (req_id, amount, txn_id, payment_status)
