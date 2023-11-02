@@ -40,7 +40,7 @@ async function getBookNameFromListingIdAPI(listingId) {
             throw new Error(`API request failed with status: ${response.status}`);
         }
         const data = await response.json();
-        return data.title; // Assuming the API returns an object with a BookName property
+        return data[0].title; // Assuming the API returns an object with a BookName property
     } catch (error) {
         console.error("Error fetching book name:", error);
         return "N/A"; // Return a default value or handle the error as needed
