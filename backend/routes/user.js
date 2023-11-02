@@ -74,4 +74,21 @@ router.post("/login", async (req, res) => {
     }
 });
 
+router.get('/getUsername/:userId', async (req, res) => {
+    const id = req.params.userId;
+
+    try {
+        const result = await userService.getUsername(id);
+        if (result) {
+            res.status(200).json({ "User ID": result });
+        }
+        else {
+            res.status(400).json({ "User Login": "No User Exists" });
+        }
+
+    } catch(error) {
+        res.status(500).json({ "error": "Server error" });
+    }
+});
+
 module.exports = router;
