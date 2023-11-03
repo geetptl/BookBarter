@@ -60,18 +60,6 @@ router.post("/create", async (req, res) => {
 });
 
 
-router.get("/getUpdateDetails", async (req, res) => {
-    try {
-        const query = `SELECT * FROM USERS WHERE user_id=$1`;
-        const values = [req.cookies];
-        const result = await db.query(query, values);
-        res.json(result.rows);
-    } catch (error) {
-        console.error("Error retrieving books:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
-
 router.put('/update/:user_id', async (req, res) => {
     const user_id = req.params.user_id;
     const email = req.body.email;
@@ -116,9 +104,8 @@ router.post('/login', async (req, res) => {
         };        
         const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
         res.setHeader('Set-Cookie', cookieString);
-        console.log("hello1");
         // Send the response here after setting the cookie.
-        res.status(200).json({ "User Login": "True" });
+        res.status(200).json({ "User Login": "True", "token": token});
       } else {
         console.log("hello");
         res.status(400).json({ "User Login": "False" });
