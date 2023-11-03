@@ -11,8 +11,6 @@ window.onload = function () {
     .then(response => response.json())
     .then(displayPendingActions)
     .catch(console.error);
-    saveCard();
-
 };
 
 async function getUserNameFromIdAPI(userId) {
@@ -60,10 +58,14 @@ function displayPendingActions(actions) {
                     const userName = await getUserNameFromIdAPI(act.borrower_id);
                     const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
                     actionDiv.innerHTML = `
-                        <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
-                        <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
+                        <div class="action-card-left">
+                            <h3>Borrow request for the book: ${bookName}</h3>
+                            <div class="action-cards-controls">
+                                <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
+                                <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
+                            </div>
+                        </div>
+                        <span>Borrower: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
                 }
@@ -79,10 +81,14 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow request accepted by ${userName} for the book: ${bookName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
-                        <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
+                        <div class="action-card-left">
+                            <h3>Your request for ${bookName} accepted!</h3>
+                            <div class="action-cards-controls">
+                                <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
+                                <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
+                            </div>
+                        </div>
+                        <span>Lender: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -91,9 +97,11 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow request rejected by ${userName} for the book: ${bookName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn ok-btn">Okay</button>
+                        <div class="action-card-left">
+                        <h3>Your request for ${bookName} was rejected.</h3>
+                        <button data-id="${act.id}" class="btn req-close-btn">Close Request</button>
+                        </div>
+                        <span class="lender-id">Lender: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -117,11 +125,31 @@ document.addEventListener("DOMContentLoaded", () => {
             handleApprove(target.getAttribute("data-id"));
         } else if (target.classList.contains(".pymt-decline-btn")) {
             handleReject(target.getAttribute("data-id"));
-        } else if (target.classList.contains("ok-btn")) {
-        handleReject(target.getAttribute("data-id"));
+        } else if (target.classList.contains("req-close-btn")) {
+            handleRequestClose(target.getAttribute("data-id"));
         }
     });
 });
+
+function handleRequestClose(requestId) {
+    fetch(`http://localhost:8000/requests/setStatusToExpired`, {
+        method: 'PUT',
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data["Request close status"] == "Success") {
+            alert("Request closed successfully.");
+            window.location.reload(); // Refresh the page to reflect the changes
+        } else {
+            alert(data.message || "Error approving the request.");
+        }
+    })
+    .catch(console.error);
+}
 
 function handleApprove(requestId) {
     fetch(`http://localhost:8000/requests/approveRequest`, {
@@ -135,13 +163,22 @@ function handleApprove(requestId) {
     .then(data => {
         if (data["Request approval status"] == "Success") {
             alert("Request approved successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
+            // Check if user has a card
+            if (data.hasCard) {
+                // Redirect to payment page
+                window.location.href = 'http://localhost:8000/payment/pay'; // TODO: Update with actual payment page URL
+            } else {
+                // Redirect to add card page or display message
+                alert(data.message);
+                window.location.href = 'http://localhost:8000/payment/card/add'; // Update with actual add card page URL
+            }
         } else {
             alert(data.message || "Error approving the request.");
         }
     })
     .catch(console.error);
 }
+
 
 function handleReject(requestId) {
     fetch(`http://localhost:8000/requests/rejectRequest`, {
@@ -203,54 +240,5 @@ function handlePaymentDecline(requestId) {
         }
     })
     .catch(console.error);
-}
-
-function saveCard() {
-    const stripe = Stripe('pk_test_51O7q8CJvFHmzlX92OVAQU6H0GFuN5tiUGEdOy4bNFa4hWbTWEPFA4YFMQl1Pye6FkFkl0npuYAUyPZFmMzgzau6o00uSYykKHk');
-    const elements = stripe.elements();
-    const card = elements.create('card');
-    card.mount('#card-element');
-
-    card.addEventListener('change', ({error}) => {
-        const displayError = document.getElementById('error-message');
-        if (error) {
-            displayError.textContent = error.message;
-        } else {
-            displayError.textContent = '';
-        }
-    });
-
-    const submitButton = document.getElementById('submit-button');
-    submitButton.addEventListener('click', async (event) => {
-        event.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const {token, error} = await stripe.createToken(card);
-
-        if (error) {
-            const errorElement = document.getElementById('error-message');
-            errorElement.textContent = error.message;
-        } else if (!email) {
-            const errorElement = document.getElementById('error-message');
-            errorElement.textContent = 'Email is required';
-        } else {
-            fetch('http://localhost:8000/payment/saveCard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({email, card: {token: token.id}}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                alert('Card saved successfully!');
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error saving the card. Please try again.');
-            });
-        }
-    });
 }
 
