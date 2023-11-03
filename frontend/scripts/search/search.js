@@ -100,7 +100,7 @@ function displayBooks(data) {
             <div class="card-body">
                 <h2 class="card-title">${book.title}</h2>
                 <p class="card-text">Author: ${book.author}</p>
-                <p class="card-text">Genre: ${book.genre}</p>
+                <p class="card-text">Genre: ${book.genre.join(', ') || 'NA'}</p>
             </div>
         `;
         resultsDiv.appendChild(bookDiv);

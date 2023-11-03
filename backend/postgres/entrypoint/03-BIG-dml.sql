@@ -1,66 +1,89 @@
 CREATE TABLE temp_books (
-    asin TEXT,
+    bookId TEXT,
     title TEXT,
+    series TEXT,
     author TEXT,
-    soldBy TEXT,
-    imgUrl TEXT,
-    productURL TEXT,
-    stars TEXT,
-    reviews TEXT,
-    price TEXT,
-    isKindleUnlimited TEXT,
-    category_id TEXT,
-    isBestSeller TEXT,
-    isEditorsPick TEXT,
-    isGoodReadsChoice TEXT,
-    publishedDate TEXT,
-    category_name TEXT
+    rating TEXT,
+    description TEXT,
+    language TEXT,
+    isbn TEXT,
+    genres TEXT,
+    characters TEXT,
+    bookFormat TEXT,
+    edition TEXT,
+    pages TEXT,
+    publisher TEXT,
+    publishDate TEXT,
+    firstPublishDate TEXT,
+    awards TEXT,
+    numRatings TEXT,
+    ratingsByStars TEXT,
+    likedPercent TEXT,
+    setting TEXT,
+    coverImg TEXT,
+    bbeScore TEXT,
+    bbeVotes TEXT,
+    price TEXT
 );
 
 CREATE TABLE temp_books_2 (
     id SERIAL PRIMARY KEY,
-    asin TEXT,
+    bookId TEXT,
     title TEXT,
+    series TEXT,
     author TEXT,
-    soldBy TEXT,
-    imgUrl TEXT,
-    productURL TEXT,
-    stars TEXT,
-    reviews TEXT,
-    price TEXT,
-    isKindleUnlimited TEXT,
-    category_id TEXT,
-    isBestSeller TEXT,
-    isEditorsPick TEXT,
-    isGoodReadsChoice TEXT,
-    publishedDate TEXT,
-    category_name TEXT
+    rating TEXT,
+    description TEXT,
+    language TEXT,
+    isbn TEXT,
+    genres TEXT,
+    characters TEXT,
+    bookFormat TEXT,
+    edition TEXT,
+    pages TEXT,
+    publisher TEXT,
+    publishDate TEXT,
+    firstPublishDate TEXT,
+    awards TEXT,
+    numRatings TEXT,
+    ratingsByStars TEXT,
+    likedPercent TEXT,
+    setting TEXT,
+    coverImg TEXT,
+    bbeScore TEXT,
+    bbeVotes TEXT,
+    price TEXT
 );
 
--- This file comes from https://www.kaggle.com/datasets/asaniczka/amazon-kindle-books-dataset-2023-130k-books
-\copy temp_books from 'docker-entrypoint-initdb.d/kindle_data-v2.csv' CSV HEADER;
+-- This file comes from https://zenodo.org/records/4265096
+\copy temp_books from 'docker-entrypoint-initdb.d/books_1.Best_Books_Ever.csv' CSV HEADER;
 
-insert into temp_books_2(asin,title,author,soldBy,imgUrl,productURL,stars,reviews,price,isKindleUnlimited,category_id,isBestSeller,isEditorsPick,isGoodReadsChoice,publishedDate,category_name) select asin,title,author,soldBy,imgUrl,productURL,stars,reviews,price,isKindleUnlimited,category_id,isBestSeller,isEditorsPick,isGoodReadsChoice,publishedDate,category_name from temp_books;
+insert into temp_books_2(bookId,title,series,author,rating,description,language,isbn,genres,characters,bookFormat,edition,pages,publisher,publishDate,firstPublishDate,awards,numRatings,ratingsByStars,likedPercent,setting,coverImg,bbeScore,bbeVotes,price)
+    select bookId,title,series,author,rating,description,language,isbn,genres,characters,bookFormat,edition,pages,publisher,publishDate,firstPublishDate,awards,numRatings,ratingsByStars,likedPercent,setting,coverImg,bbeScore,bbeVotes,price from temp_books;
 
 delete from temp_books_2 where title is null;
 delete from temp_books_2 where author is null;
-delete from temp_books_2 where imgUrl is null;
-delete from temp_books_2 where stars is null;
-delete from temp_books_2 where category_name is null;
+delete from temp_books_2 where coverImg is null;
+delete from temp_books_2 where description is null;
+delete from temp_books_2 where rating is null;
+delete from temp_books_2 where isbn is null;
+delete from temp_books_2 where genres is null;
 
 delete from temp_books_2 where title = '';
 delete from temp_books_2 where author = '';
-delete from temp_books_2 where imgUrl = '';
-delete from temp_books_2 where stars = '';
-delete from temp_books_2 where category_name is null;
+delete from temp_books_2 where coverImg = '';
+delete from temp_books_2 where description = '';
+delete from temp_books_2 where rating = '';
+delete from temp_books_2 where isbn = '';
+delete from temp_books_2 where genres = '';
 
-insert into genre(name) select DISTINCT category_name from temp_books_2 ON CONFLICT (name) DO NOTHING;;
+insert into genre(name) select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) from temp_books_2 group by 1;
 
 alter table book add column copy_ref_id int;
 
-insert into book(title, author, rating, image_url, copy_ref_id) select title, author, stars::decimal, imgUrl, id from temp_books_2;
+insert into book(title, author, rating, image_url, description, isbn, copy_ref_id) select title, author, rating::decimal, coverImg, description, isbn, id from temp_books_2;
 
-create table temp_genre_mapping as select category_name genre, b.id book_id, b.title from temp_books_2 t join book b on b.copy_ref_id=t.id;
+create table temp_genre_mapping as select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) genre, b.id book_id, b.title from temp_books_2 t join book b on b.copy_ref_id=t.id;
 
 create index temp_genre_mapping_genre on temp_genre_mapping(genre);
 

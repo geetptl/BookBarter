@@ -8,9 +8,6 @@ router.get("/query", async (req, res) => {
     const keywords = req.query.keywords;
     const page = req.query.page || 1;
     const limit = req.query.limit || 18;
-    console.log(page);
-    console.log(limit);
-    console.log(keywords);
     const filteredBooks = await searchService.filterBooks(
         keywords,
         page,
