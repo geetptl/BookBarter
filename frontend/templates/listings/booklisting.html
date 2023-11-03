@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+        <link rel="stylesheet" type="text/css" href="../../styles/listing/booklisting.css">
+        <link rel="stylesheet" type="text/css" href="../../styles/pop-ups/popUp.css">
+
+    </head>
+<body>
+    <div id="idContainer" hidden="true"></div>
+    <nav class="navbar bg-light">
+        
+        <div class="container-fluid">
+            <div class="navbar-title">
+                <img class="navbar-logo" src="../../assets/favicon.png"></img>
+                <div class="navbar-brand">Book Barter</div>
+            </div>
+            
+            <div class="d-flex">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../../index.html'">Home</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='./requests.html'">PendingActions</button>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div id="book-details">
+        <!-- The book details will be displayed here -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../scripts/listing/booklisting.js"></script>
+    <script src="../../scripts/pop-ups/popUp.js"></script>
+
+    <script>
+        // Function to parse query parameters
+        function getParameterByName(name) {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            return params.get(name);
+        }
+
+        // Retrieve the 'id' parameter from the URL
+        const id = getParameterByName('id');
+
+        // Display the ID in the 'idContainer' div
+        const idContainer = document.getElementById('idContainer');
+        if (id) {
+            idContainer.textContent = `${id}`;
+        } else {
+            idContainer.textContent = 'ID not found in the URL';
+        }
+    </script>
+
+</body>
+</html>

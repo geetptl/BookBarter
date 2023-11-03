@@ -103,6 +103,9 @@ function displayBooks(data) {
                 <p class="card-text">Genre: ${book.genre.join(', ') || 'NA'}</p>
             </div>
         `;
+        bookDiv.addEventListener("click", function () {
+            showBookDetails(book.id);
+        });
         resultsDiv.appendChild(bookDiv);
     });
 }
