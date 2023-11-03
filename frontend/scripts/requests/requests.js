@@ -40,7 +40,7 @@ async function getBookNameFromListingIdAPI(listingId) {
             throw new Error(`API request failed with status: ${response.status}`);
         }
         const data = await response.json();
-        return data.title; // Assuming the API returns an object with a BookName property
+        return data[0].title; // Assuming the API returns an object with a BookName property
     } catch (error) {
         console.error("Error fetching book name:", error);
         return "N/A"; // Return a default value or handle the error as needed
@@ -54,17 +54,19 @@ function displayPendingActions(actions) {
     actions.Requests.forEach(action => {
         if("asLender" in action){
             action.asLender.forEach(async act => {
-                const actionDiv = document.createElement("div");
-                actionDiv.className = "action-card";
-                const userName = await getUserNameFromIdAPI(act.lender_id);
-                const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
-                actionDiv.innerHTML = `
-                    <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
-                    <!-- ... (display other action details as desired) ... -->
-                    <button data-id="${act.book_listing_id}" class="btn btn-primary approve-btn">Approve</button>
-                    <button data-id="${act.status}" class="btn btn-danger reject-btn">Reject</button>
-                `;
-                actionsDiv.appendChild(actionDiv);
+                if(act.status === "Pending"){
+                    const actionDiv = document.createElement("div");
+                    actionDiv.className = "action-card";
+                    const userName = await getUserNameFromIdAPI(act.borrower_id);
+                    const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
+                    actionDiv.innerHTML = `
+                        <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
+                        <!-- ... (display other action details as desired) ... -->
+                        <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
+                        <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
+                    `;
+                    actionsDiv.appendChild(actionDiv);
+                }
             });
         }
 
@@ -79,8 +81,8 @@ function displayPendingActions(actions) {
                     actionDiv.innerHTML = `
                         <h3>Borrow request accepted by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.book_listing_id}" class="btn btn-primary approve-btn">Make Payment</button>
-                        <button data-id="${act.status}" class="btn btn-danger reject-btn">Decline Payment</button>
+                        <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
+                        <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -91,7 +93,7 @@ function displayPendingActions(actions) {
                     actionDiv.innerHTML = `
                         <h3>Borrow request rejected by ${userName} for the book: ${bookName}</h3>
                         <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.status}" class="btn btn-primary reject-btn">Okay</button>
+                        <button data-id="${act.id}" class="btn ok-btn">Okay</button>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -99,19 +101,30 @@ function displayPendingActions(actions) {
             });
         }
     });
-
-    // Set event listeners for the approve and reject buttons
-    document.querySelectorAll(".approve-btn").forEach(btn => {
-        btn.addEventListener("click", handleApprove);
-    });
-    document.querySelectorAll(".reject-btn").forEach(btn => {
-        btn.addEventListener("click", handleReject);
-    });
 }
 
-function handleApprove(event) {
-    const requestId = event.target.getAttribute("data-id");
-    fetch(`http://localhost:8000/approveRequest`, {
+document.addEventListener("DOMContentLoaded", () => {
+    const actionsDiv = document.getElementById("pending-actions");
+
+    // Use event delegation to capture click events on the actionsDiv
+    actionsDiv.addEventListener("click", event => {
+        const target = event.target;
+        if (target.classList.contains("approve-request-btn")) {
+            handleApprove(target.getAttribute("data-id"));
+        } else if (target.classList.contains("reject-request-btn")) {
+            handleReject(target.getAttribute("data-id"));
+        } else if (target.classList.contains(".pymt-approve-btn")) {
+            handleApprove(target.getAttribute("data-id"));
+        } else if (target.classList.contains(".pymt-decline-btn")) {
+            handleReject(target.getAttribute("data-id"));
+        } else if (target.classList.contains("ok-btn")) {
+        handleReject(target.getAttribute("data-id"));
+        }
+    });
+});
+
+function handleApprove(requestId) {
+    fetch(`http://localhost:8000/requests/approveRequest`, {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
@@ -120,7 +133,7 @@ function handleApprove(event) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (data["Request approval status"] == "Success") {
             alert("Request approved successfully.");
             window.location.reload(); // Refresh the page to reflect the changes
         } else {
@@ -130,9 +143,8 @@ function handleApprove(event) {
     .catch(console.error);
 }
 
-function handleReject(event) {
-    const requestId = event.target.getAttribute("data-id");
-    fetch(`http://localhost:8000/rejectRequest`, {
+function handleReject(requestId) {
+    fetch(`http://localhost:8000/requests/rejectRequest`, {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
@@ -141,7 +153,49 @@ function handleReject(event) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (data["Request rejection status"] == "Success") {
+            alert("Request rejected successfully.");
+            window.location.reload(); // Refresh the page to reflect the changes
+        } else {
+            alert(data.message || "Error rejecting the request.");
+        }
+    })
+    .catch(console.error);
+}
+
+function handlePaymentApprove(requestId) {
+    // Mansi
+    fetch(`http://localhost:8000/requests/approveRequest`, {
+        method: 'PUT',
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data["Request approval status"] == "Success") {
+            alert("Request approved successfully.");
+            window.location.reload(); // Refresh the page to reflect the changes
+        } else {
+            alert(data.message || "Error approving the request.");
+        }
+    })
+    .catch(console.error);
+}
+
+function handlePaymentDecline(requestId) {
+    // Mansi
+    fetch(`http://localhost:8000/requests/rejectRequest`, {
+        method: 'PUT',
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data["Request rejection status"] == "Success") {
             alert("Request rejected successfully.");
             window.location.reload(); // Refresh the page to reflect the changes
         } else {
