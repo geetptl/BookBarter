@@ -2,7 +2,7 @@
 .modal-content {
     background-color: #fff;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid #888;  
     max-width: 80%; 
     text-align: center;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
