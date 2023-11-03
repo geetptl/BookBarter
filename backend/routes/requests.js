@@ -1,6 +1,6 @@
 const express = require("express");
 const requestService = require("../services/requests");
-const paymentService = require("../services/requests")
+const paymentService = require("../services/payment")
 const router = express.Router();
 
 router.get("/test", async (req, res) => {

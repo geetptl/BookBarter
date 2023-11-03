@@ -101,26 +101,16 @@ router.post('/pay', async (req, res) => {
             amount,
             currency,
             customerId,
-            description,
-            source
+            description
         } = req.body;
         console.log(req.body);
 
-        // Optionally add a new source (e.g., card token) to the customer
-        if (source) {
-            await stripe.customers.createSource(customerId, {
-                source: source,
-            });
-        }
-
-        // Create a charge: this will charge the customer's card
+        // Create a charge: this will charge the customer's default card
         const charge = await stripe.charges.create({
             amount, // Amount is in cents (e.g., 10 dollars = 1000 cents)
             currency, // 'usd', 'eur', etc.
-            source: customerId, // This assumes you have passed the Stripe Customer ID
+            customer: customerId, // Use customer to charge their default source
             description, // Optional: Description of the charge
-            confirm: true,
-            payment_method: 'pm_card_visa'
         });
 
         // If the charge is successful, you can send back any information needed to the client
