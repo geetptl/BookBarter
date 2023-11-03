@@ -18,11 +18,81 @@ async function createNewListing(bookListingData) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating request:", error);
+        console.log(error.code);
+        if (error.code === '23505') { // 23505 is the error code for unique violation in PostgreSQL
+        
+            console.error("Duplicate listing entry:", error);
+            
+            throw new Error('Duplicate listing entry');
+        } else {
+            console.error("Error creating listing:", error);
+            throw error;
+        }
+    }
+}
+
+async function getBookName(listingid) {
+    try{
+        const result = await db.query(`SELECT b.title FROM book_listing bl 
+                                JOIN book b ON bl.book_id = b.id WHERE bl.id = ${listingid}`);
+        console.log("Retreieved the record and returned book name");
+        return result.rows;
+    }
+    catch{
+        console.log("Book id doesnt exist.")
         return false;
     }
+
+}
+
+async function getBookListing(bookid){
+    try{
+        const result = await db.query(`SELECT u.first_name, u.email, bl.status FROM 
+                            book_listing bl JOIN users u ON bl.owner_id = u.id 
+                            JOIN book b ON bl.book_id = b.id WHERE b.id = ${bookid} 
+                            AND bl.status = 'Available'; `);
+        if(result.rowCount >1){
+            console.log("Retrieved available Users for given book id");
+            return result.rows;
+        }
+        else{
+            console.log("No available users for the book id");
+            return result.rows;
+        }
+    }
+    catch{
+        console.log("Book id doesnt exist.")
+        return false;
+    } 
+
+}
+
+async function getBooksbyUserid(userid){
+    try{
+        const result = await db.query(`SELECT b.*
+                                        FROM book b
+                                        INNER JOIN book_listing bl ON b.id = bl.book_id
+                                        INNER JOIN users u ON bl.owner_id = u.id
+                                        WHERE u.id = ${userid}; `);
+        if(result.rowCount >1){
+            console.log("Retrieved available books for given user id");
+            return result.rows;
+        }
+        else{
+            console.log("No available books for the userid.");
+            return result.rows;
+        }
+    }
+    catch{
+        console.log("user id doesnt exist.")
+        return false;
+    } 
+
 }
 
 module.exports = {
     createNewListing,
+    getBookName,
+    getBookListing,
+    getBooksbyUserid
 };

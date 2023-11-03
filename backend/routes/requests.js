@@ -1,5 +1,6 @@
 const express = require("express");
 const requestService = require("../services/requests");
+const paymentService = require("../services/requests")
 const router = express.Router();
 
 router.get("/test", async (req, res) => {
@@ -55,11 +56,12 @@ router.post("/raiseBorrowRequest", async (req, res) => {
     }
 });
 
-router.get("/getPendingActions", async (req, res) => {
+
+router.get("/getPendingActions/:userId", async (req, res) => {
     try {
         // Create a list of pending actions for a user both as a borrower and a lender.
         var pendingActions = [];
-        const userId = req.body.userId;
+        const userId = req.params.userId;
 
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
         const requestsByLender =
@@ -85,6 +87,26 @@ router.get("/getPendingActions", async (req, res) => {
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({ "Request Raised": "Error" });
+    }
+});
+
+router.put("/setStatusToExpired", async (req, res) => {
+    try {
+        const requestId = req.body.requestId;
+
+        // Call the approveRequest service to approve the request
+        const result = await requestService.setStatusToExpired(requestId);
+
+        if (result) {
+            res.status(200).json({ "Request close status": "Success" });
+        } else {
+            res.status(404).json({
+                "Request close status": "Request not found",
+            });
+        }
+    } catch (error) {
+        console.error("Error handling request:", error);
+        res.status(500).json({ "Request Approved": "Error" });
     }
 });
 
@@ -114,10 +136,29 @@ router.put("/approveRequest", async (req, res) => {
         const requestId = req.body.requestId;
 
         // Call the approveRequest service to approve the request
-        const result = await requestService.approveRequest(requestId);
+        const { approved, user_id } = await requestService.approveRequest(requestId);
 
-        if (result) {
-            res.status(200).json({ "Request approval status": "Success" });
+        if (approved) {
+            // Check if the user has a card
+            const cardDetails = await paymentService.getCardDetailsByUserId(user_id);
+            
+            if (cardDetails) {
+                // User has a card, redirect to payment (or return success response to frontend to handle the redirection)
+                res.status(200).json({
+                    "Request approval status": "Success",
+                    "user_id": user_id,
+                    "hasCard": true,
+                    // Include any other data needed for payment processing
+                });
+            } else {
+                // User does not have a card, handle accordingly, perhaps redirect to add card page
+                res.status(200).json({
+                    "Request approval status": "Success",
+                    "user_id": user_id,
+                    "hasCard": false,
+                    "message": "User has no card on file, please add a card."
+                });
+            }
         } else {
             res.status(404).json({
                 "Request approval status": "Request not found",
@@ -128,6 +169,7 @@ router.put("/approveRequest", async (req, res) => {
         res.status(500).json({ "Request Approved": "Error" });
     }
 });
+
 
 // Define a route to reject a request
 router.put("/rejectRequest", async (req, res) => {

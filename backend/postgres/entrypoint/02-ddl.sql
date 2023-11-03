@@ -42,7 +42,8 @@ CREATE TABLE book_listing (
     book_id INTEGER REFERENCES book(id),
     status TEXT,
     status_code INTEGER,
-    returns_on DATE
+    returns_on DATE,
+    UNIQUE(owner_id, book_id) 
 );
 
 -- BookGenreMapping Table
@@ -88,7 +89,7 @@ CREATE TABLE exchange_history (
     borrower_id INTEGER REFERENCES users(id),
     book_id INTEGER REFERENCES book(id),
     request_id INTEGER REFERENCES request(id)
-);
+); 
 
 -- Payment Table
 CREATE TABLE payment (
@@ -99,4 +100,13 @@ CREATE TABLE payment (
     amount DECIMAL(10, 2),
     txn_id TEXT UNIQUE,
     payment_status TEXT
+);
+
+-- -- Cards Tables
+CREATE TABLE cards(
+    id SERIAL PRIMARY KEY,
+    created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    payer_id INTEGER REFERENCES users(id),
+    stripe_customer_id TEXT UNIQUE
 );

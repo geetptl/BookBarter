@@ -8,3 +8,41 @@ button {
     padding: 8px 16px;
     margin-right: 10px;
 }
+
+.btn {
+    background-color: #3B6562 !important;
+    border: #3B6562 !important;
+    color: white !important;
+}
+
+.btn:hover {
+    background-color: #5F8A75 !important;
+    border: #5F8A75 !important;
+}
+
+.bg-light {
+    background-color: #E8E6E0 !important;
+}
+
+.navbar-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-logo {
+    width: 15%;
+}
+
+.navbar-brand {
+    width: 85%;
+}
+
+.pagination {
+    --bs-pagination-active-bg: #3B6562; 
+    --bs-pagination-active-border-color: #3B6562;
+    --bs-pagination-color: #3B6562;
+    --bs-pagination-focus-color: #3B6562;
+    --bs-pagination-hover-color: #3B6562;
+}

@@ -36,7 +36,7 @@ async function raiseBorrowRequest(
         // Use placeholders to prevent SQL injection
         const query = `
             INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
-            VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending', 0)
+            VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending')
         `;
 
         const values = [borrowerId, lenderId, listingId];
@@ -120,6 +120,26 @@ async function invalidateOldRequests() {
     }
 }
 
+async function setStatusToExpired(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'Expired'
+            WHERE id = $1
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.rowCount === 1;
+    } catch (error) {
+        console.error("Error closing request:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+
 async function approveRequest(requestId) {
     try {
         const query = `
@@ -166,4 +186,5 @@ module.exports = {
     invalidateOldRequests,
     approveRequest,
     rejectRequest,
+    setStatusToExpired
 };
