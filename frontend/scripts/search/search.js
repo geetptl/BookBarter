@@ -95,6 +95,11 @@ function logout() {
     sessionStorage.removeItem('token');
     window.location.href = '../login/login.html';
 }
+
+function trimLongText(text, len_) {
+    return (text.length > len_ ? (text.substring(0, len_ - 3) + "...") : text);
+}
+
 function displayBooks(data) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -105,9 +110,9 @@ function displayBooks(data) {
         bookDiv.innerHTML = `
             <img src="${book.image_url}" class="card-img-top" alt="${book.title}">
             <div class="card-body">
-                <h2 class="card-title">${book.title}</h2>
-                <p class="card-text">Author: ${book.author}</p>
-                <p class="card-text">Genre: ${book.genre.join(", ") || "NA"}</p>
+                <h2 class="card-title">${trimLongText(book.title, 50)}</h2>
+                <p class="card-text">Author: ${trimLongText(book.author, 50)}</p>
+                <p class="card-text">Genre: ${trimLongText(book.genre.join(", ") || "NA", 70)}</p>
             </div>
         `;
         bookDiv.addEventListener("click", function () {

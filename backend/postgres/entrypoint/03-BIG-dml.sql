@@ -79,6 +79,8 @@ delete from temp_books_2 where genres = '';
 
 insert into genre(name) select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) from temp_books_2 group by 1;
 
+delete from genre where name='';
+
 alter table book add column copy_ref_id int;
 
 insert into book(title, author, rating, image_url, description, isbn, copy_ref_id) select title, author, rating::decimal, coverImg, description, isbn, id from temp_books_2;
