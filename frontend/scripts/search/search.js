@@ -62,49 +62,6 @@ function fetchFilteredBooks(keyword, page) {
         .then(displayBooks)
         .catch(console.error)
 }
-function showBookDetails(bookId) {
-
-    window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
-    /*fetch(`http://localhost:8000/book/get/${bookId}`)
-        .then((response) => response.json())
-        .then(bookDetails => {
-            const bookId = bookDetails.book.id;
-            //document.cookie = `bookId=${bookId};path=/;max-age=3600`; 
-            window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
-        })
-        .catch(console.error);*/      
-}
-
-function displayBookDetails(bookDetails) {
-    let usersListHTML = '';
-    bookDetails.users.forEach((user) => {
-        usersListHTML += `<li>${user.first_name} ${user.last_name} - ${user.email}</li>`;
-    });
-    console.log(usersListHTML);
-    const bookId = bookDetails.book.id;
-    document.cookie = `bookId=${bookId};path=/;max-age=3600`; 
-    window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html`;
-
-    
-
-    document.documentElement.innerHTML = `<!DOCTYPE html>
-    <html>
-    <head>
-        <title>${bookDetails.book.title}</title>
-    </head>
-    <body>
-        <h1>${bookDetails.book.title}</h1>
-        <img src="${bookDetails.book.image_url}" class="card-img-top" alt="${bookDetails.book.title}">
-        <p>Author: ${bookDetails.book.author}</p>
-        <p>Genre: ${bookDetails.book.genre}</p>
-        <p>Description: ${bookDetails.book.description}</p>
-        <h2>Users</h2>
-        <ul>
-            ${usersListHTML}
-        </ul>
-    </body>
-    </html>`;
-}
 
 
 function logout() {
