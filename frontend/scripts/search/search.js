@@ -64,17 +64,19 @@ function fetchFilteredBooks(keyword, page) {
 }
 
 function showBookDetails(bookId) {
-    fetch(`http://localhost:8000/book/get/${bookId}`)
+
+    window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
+    /*fetch(`http://localhost:8000/book/get/${bookId}`)
         .then((response) => response.json())
         .then(bookDetails => {
             const bookId = bookDetails.book.id;
             //document.cookie = `bookId=${bookId};path=/;max-age=3600`; 
             window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
         })
-        .catch(console.error);      
+        .catch(console.error);*/      
 }
 
-/*function displayBookDetails(bookDetails) {
+function displayBookDetails(bookDetails) {
     let usersListHTML = '';
     bookDetails.users.forEach((user) => {
         usersListHTML += `<li>${user.first_name} ${user.last_name} - ${user.email}</li>`;
@@ -103,7 +105,7 @@ function showBookDetails(bookId) {
         </ul>
     </body>
     </html>`;
-}*/
+}
 
 
 function displayBooks(data) {
