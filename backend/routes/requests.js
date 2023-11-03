@@ -38,21 +38,26 @@ router.post("/raiseBorrowRequest", async (req, res) => {
                 );
 
                 if (result) {
-                    res.status(200).json({ "Request Raised": "Success" }); // Status code 200 for success
+                    res.status(200).json({
+                        "Request Raised": "Success"
+                    }); // Status code 200 for success
                 } else {
                     res.status(400).json({
                         "Request Raised": "Fail",
-                        "Failure Reason":
-                            "Failed to create request due to server",
+                        "Failure Reason": "Failed to create request due to server",
                     }); // Status code 400 for bad request
                 }
             } else {
-                res.status(404).json({ "Request Raised": "Listing not found" }); // Status code 404 for not found
+                res.status(404).json({
+                    "Request Raised": "Listing not found"
+                }); // Status code 404 for not found
             }
         }
     } catch (error) {
         console.error("Error while creating borrow request:", error);
-        res.status(500).json({ Error: "Internal Server Error" }); // Status code 500 for internal server error
+        res.status(500).json({
+            Error: "Internal Server Error"
+        }); // Status code 500 for internal server error
     }
 });
 
@@ -72,21 +77,31 @@ router.get("/getPendingActions/:userId", async (req, res) => {
             await requestService.getPendingActionsByBorrowerId(userId);
 
         if (requestsByLender) {
-            pendingActions.push({ asLender: requestsByLender });
+            pendingActions.push({
+                asLender: requestsByLender
+            });
         }
 
         if (requestsByBorrower) {
-            pendingActions.push({ asBorrower: requestsByBorrower });
+            pendingActions.push({
+                asBorrower: requestsByBorrower
+            });
         }
 
         if (pendingActions) {
-            res.status(200).json({ Requests: pendingActions });
+            res.status(200).json({
+                Requests: pendingActions
+            });
         } else {
-            res.status(200).json({ Requests: "No requests found" });
+            res.status(200).json({
+                Requests: "No requests found"
+            });
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        res.status(500).json({ "Request Raised": "Error" });
+        res.status(500).json({
+            "Request Raised": "Error"
+        });
     }
 });
 
@@ -98,7 +113,9 @@ router.put("/setStatusToExpired", async (req, res) => {
         const result = await requestService.setStatusToExpired(requestId);
 
         if (result) {
-            res.status(200).json({ "Request close status": "Success" });
+            res.status(200).json({
+                "Request close status": "Success"
+            });
         } else {
             res.status(404).json({
                 "Request close status": "Request not found",
@@ -106,7 +123,9 @@ router.put("/setStatusToExpired", async (req, res) => {
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        res.status(500).json({ "Request Approved": "Error" });
+        res.status(500).json({
+            "Request Approved": "Error"
+        });
     }
 });
 
@@ -116,8 +135,7 @@ router.put("/invalidateOldRequests", async (req, res) => {
 
         if (requests) {
             res.status(200).json({
-                "Request invalidation status":
-                    "All requests successfully invalidated",
+                "Request invalidation status": "All requests successfully invalidated",
             });
         } else {
             res.status(200).json({
@@ -126,7 +144,9 @@ router.put("/invalidateOldRequests", async (req, res) => {
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        res.status(500).json({ "Request Raised": "Error" });
+        res.status(500).json({
+            "Request Raised": "Error"
+        });
     }
 });
 
@@ -136,29 +156,12 @@ router.put("/approveRequest", async (req, res) => {
         const requestId = req.body.requestId;
 
         // Call the approveRequest service to approve the request
-        const { approved, user_id } = await requestService.approveRequest(requestId);
+        const result = await requestService.approveRequest(requestId);
 
-        if (approved) {
-            // Check if the user has a card
-            const cardDetails = await paymentService.getCardDetailsByUserId(user_id);
-            
-            if (cardDetails) {
-                // User has a card, redirect to payment (or return success response to frontend to handle the redirection)
-                res.status(200).json({
-                    "Request approval status": "Success",
-                    "user_id": user_id,
-                    "hasCard": true,
-                    // Include any other data needed for payment processing
-                });
-            } else {
-                // User does not have a card, handle accordingly, perhaps redirect to add card page
-                res.status(200).json({
-                    "Request approval status": "Success",
-                    "user_id": user_id,
-                    "hasCard": false,
-                    "message": "User has no card on file, please add a card."
-                });
-            }
+        if (result) {
+            res.status(200).json({
+                "Request approval status": "Success"
+            });
         } else {
             res.status(404).json({
                 "Request approval status": "Request not found",
@@ -166,7 +169,9 @@ router.put("/approveRequest", async (req, res) => {
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        res.status(500).json({ "Request Approved": "Error" });
+        res.status(500).json({
+            "Request Approved": "Error"
+        });
     }
 });
 
@@ -180,7 +185,9 @@ router.put("/rejectRequest", async (req, res) => {
         const result = await requestService.rejectRequest(requestId);
 
         if (result) {
-            res.status(200).json({ "Request rejection status": "Success" });
+            res.status(200).json({
+                "Request rejection status": "Success"
+            });
         } else {
             res.status(404).json({
                 "Request rejection status": "Request not found",
@@ -188,7 +195,36 @@ router.put("/rejectRequest", async (req, res) => {
         }
     } catch (error) {
         console.error("Error handling request:", error);
-        res.status(500).json({ "Request Rejected": "Error" });
+        res.status(500).json({
+            "Request Rejected": "Error"
+        });
+    }
+});
+
+
+router.get("/getBorrowerIdFromRequestId/:requestId", async (req, res) => {
+
+    try {
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = req.params.requestId;
+        // Call the getPendingActionsByLenderId service to fetch requests for the lender
+        const borrowerId =
+            await requestService.getBorrowerIdFromRequestId(requestId);
+
+        if (borrowerId) {
+            console.log("borrowerId",borrowerId)
+            res.status(200).json({"borrowerId":borrowerId});
+        } 
+        else {
+            res.status(200).json({
+                "Error": "Not Found"
+            });
+        }
+    } catch (error) {
+        console.error("Error handling request:", error);
+        res.status(500).json({
+            "Request Raised": "Error"
+        });
     }
 });
 

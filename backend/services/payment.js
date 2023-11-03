@@ -26,7 +26,7 @@ async function addCard(email, paymentMethodId) {
 }
 async function getCardDetailsByUserId(userId) {
   try {
-    const queryString = 'SELECT * FROM cards WHERE payer_id = $1';
+    const queryString = 'SELECT stripe_customer_id FROM cards WHERE payer_id = $1';
     const params = [userId];
     const result = await db.query(queryString, params);
     if (result.rows.length > 0) {
