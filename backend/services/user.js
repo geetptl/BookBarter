@@ -140,5 +140,5 @@ async function getUserIdfromEmail(email) {
 
 
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername
 };
