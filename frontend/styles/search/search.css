@@ -21,13 +21,18 @@
     transition: 0.3s;
 }
 
-.with-icon {
-    padding-left: 30px; 
-    background-image: url('https://static.thenounproject.com/png/236432-200.png'); 
-    background-position: left center;
-    background-repeat: no-repeat;
-    background-size: 5px 5px; 
-  }  
+  
+  .icon-container {  
+    border-radius: 50%; 
+    overflow: hidden; 
+    display: inline-block; 
+  }
+  
+  .icon-container img {
+    width: 100%; 
+    height: auto;   
+    margin: -10px;  
+  }
   
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
@@ -54,4 +59,16 @@
 
 .card p {
     color: #777;
+}
+
+
+#profileButton .icon-container {
+    width: 30px; 
+    height: 20px; 
+    margin: 0; 
+}
+
+#profileButton .icon-container img {
+    width: 100%; 
+    height: 100%;  
 }
