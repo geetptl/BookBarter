@@ -58,6 +58,56 @@ router.post("/create", async (req, res) => {
     }
 });
 
+router.put('/update/:user_id', async (req, res) => {
+    const user_id = req.params.user_id;
+    const email = req.body.email;
+    const phone_number = req.body.phone_number;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const is_auth = req.body.is_auth;
+
+    try {
+        const updatedUser = await userService.updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        if (error.message === 'User not found') {
+            res.status(404).json({ "error": "User not found" });
+        } else if (error.message === 'Duplicate email or phone number found') {
+            res.status(400).json({ "error": "Duplicate email or phone number found" });
+        } else {
+            res.status(500).json({ "error": "Server error" });
+        }
+    }
+});
+
+router.put('/update/:user_id', async (req, res) => {
+    const user_id = req.params.user_id;
+    const email = req.body.email;
+    const phone_number = req.body.phone_number;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const is_auth = req.body.is_auth;
+
+    try {
+        const updatedUser = await userService.updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        if (error.message === 'User not found') {
+            res.status(404).json({ "error": "User not found" });
+        } else if (error.message === 'Duplicate email or phone number found') {
+            res.status(400).json({ "error": "Duplicate email or phone number found" });
+        } else {
+            res.status(500).json({ "error": "Server error" });
+        }
+    }
+});
+
+
+
 router.post("/login", async (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password_hash;
