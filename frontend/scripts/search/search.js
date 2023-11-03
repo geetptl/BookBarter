@@ -5,8 +5,19 @@ let lastPage = 7371;
 let limit = 18;
 
 window.onload = function () {
+    const tokenValue = getTokenFromSession();
+    if (tokenValue) {
+        logoutButton.style.display = 'block';
+        profileButton.style.display = 'block';
+    } else {
+        console.log('Token not found');
+        logoutButton.style.display = 'none';
+        profileButton.style.display = 'none';
+    }
+
     fetchBooks(currentPage);
     updatePagination();
+
 };
 
 document.querySelector("#previous-page").addEventListener("click", function (event) {
@@ -42,12 +53,23 @@ document.querySelector(".btn").addEventListener("click", function (event) {
     this.blur();
 });
 
-document.querySelector('input[name="query"]').addEventListener('keydown', function(event) {
+document.querySelector('input[name="query"]').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         document.querySelector('.btn').click();
     }
 });
+
+function getTokenFromSession() {
+    // tried cookies - cookies not being by document.cookie
+    // console.log('All Cookies:', document.cookie);
+    // const cookies = document.cookie.split('; ').map(cookie => cookie.split('='));
+    
+    var tokenValue = sessionStorage.getItem('token');
+    console.log(tokenValue);
+    return tokenValue;
+}
+
 
 function fetchBooks(page) {
     fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
@@ -81,7 +103,7 @@ function displayBooks(data) {
             <div class="card-body">
                 <h2 class="card-title">${book.title}</h2>
                 <p class="card-text">Author: ${book.author}</p>
-                <p class="card-text">Genre: ${book.genre}</p>
+                <p class="card-text">Genre: ${book.genre.join(', ') || 'NA'}</p>
             </div>
         `;
         bookDiv.addEventListener("click", function () {
@@ -94,7 +116,7 @@ function displayBooks(data) {
 function updatePagination() {
     const pagination = document.getElementsByClassName("pagination");
     const existingPageButtons = pagination[0].getElementsByClassName("page-button");
-    
+
     while (existingPageButtons.length > 0) {
         existingPageButtons[0].parentNode.removeChild(existingPageButtons[0]);
     }
