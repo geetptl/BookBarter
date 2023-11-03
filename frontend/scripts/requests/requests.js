@@ -121,10 +121,10 @@ document.addEventListener("DOMContentLoaded", () => {
             handleApprove(target.getAttribute("data-id"));
         } else if (target.classList.contains("reject-request-btn")) {
             handleReject(target.getAttribute("data-id"));
-        } else if (target.classList.contains(".pymt-approve-btn")) {
-            handleApprove(target.getAttribute("data-id"));
-        } else if (target.classList.contains(".pymt-decline-btn")) {
-            handleReject(target.getAttribute("data-id"));
+        } else if (target.classList.contains("pymt-approve-btn")) {
+            handlePaymentApprove(target.getAttribute("data-id"));
+        } else if (target.classList.contains("pymt-decline-btn")) {
+            handlePaymentDecline(target.getAttribute("data-id"));
         } else if (target.classList.contains("req-close-btn")) {
             handleRequestClose(target.getAttribute("data-id"));
         }
@@ -152,6 +152,7 @@ function handleRequestClose(requestId) {
 }
 
 function handleApprove(requestId) {
+    console.log("here!!")
     fetch(`http://localhost:8000/requests/approveRequest`, {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
@@ -163,22 +164,14 @@ function handleApprove(requestId) {
     .then(data => {
         if (data["Request approval status"] == "Success") {
             alert("Request approved successfully.");
-            // Check if user has a card
-            if (data.hasCard) {
-                // Redirect to payment page
-                window.location.href = 'http://localhost:8000/payment/pay'; // TODO: Update with actual payment page URL
-            } else {
-                // Redirect to add card page or display message
-                alert(data.message);
-                window.location.href = 'http://localhost:8000/payment/card/add'; // Update with actual add card page URL
-            }
+            window.location.reload(); // Refresh the page to reflect the changes
         } else {
             alert(data.message || "Error approving the request.");
         }
     })
     .catch(console.error);
 }
-
+    
 
 function handleReject(requestId) {
     fetch(`http://localhost:8000/requests/rejectRequest`, {
@@ -202,18 +195,36 @@ function handleReject(requestId) {
 
 function handlePaymentApprove(requestId) {
     // Mansi
-    fetch(`http://localhost:8000/requests/approveRequest`, {
-        method: 'PUT',
-        body: JSON.stringify({ requestId: requestId }),
+    fetch(`http://localhost:8000/requests/getBorrowerIdFromRequestId/${requestId}`, {
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     })
     .then(response => response.json())
     .then(data => {
-        if (data["Request approval status"] == "Success") {
-            alert("Request approved successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
+        // console.log(data)  // DESMOND,FIX ME 
+        if (data) {
+            fetch(`http://localhost:8000/payment/getCards/${data["borrowerId"]}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check if user has a card
+                if (data.hasCard) {
+                    // Redirect to payment page
+                    window.location.href = 'http://localhost:8000/payment/pay'; // TODO: Update with actual payment page URL
+                } else {
+                    // Redirect to add card page or display message
+                    alert(data.message);
+                    window.location.href = '../../templates/payment/addCard.html'; // Update with actual add card page URL
+                }
+                }
+            )
+            .catch(console.error);
         } else {
             alert(data.message || "Error approving the request.");
         }

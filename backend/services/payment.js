@@ -26,11 +26,12 @@ async function addCard(email, paymentMethodId) {
 }
 async function getCardDetailsByUserId(userId) {
   try {
-    const queryString = 'SELECT * FROM cards WHERE payer_id = $1';
+    const queryString = 'SELECT stripe_customer_id FROM cards WHERE payer_id = $1';
     const params = [userId];
     const result = await db.query(queryString, params);
     if (result.rows.length > 0) {
-      return result.rows[0]; // returns the first card found for simplicity
+      console.log(result.rows[0])
+      return result.rows[0].stripe_customer_id; // returns the first card found for simplicity
     } else {
       return null; // no card found
     }

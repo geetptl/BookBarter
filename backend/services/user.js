@@ -49,6 +49,49 @@ async function create(
     }
 }
 
+async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
+    try {
+        // Check if the new email or phone number already exists in the database for other users.
+        const checkDuplicateQuery = `
+            SELECT user_id
+            FROM users
+            WHERE (email = $1 OR phone_number = $2) AND user_id != $3
+        `;
+
+        const duplicateCheckResult = await db.query(checkDuplicateQuery, [email, phone_number, user_id]);
+
+        if (duplicateCheckResult.rows.length > 0) {
+            throw new Error('Duplicate email or phone number found');
+        }
+
+        // Update the user's information.
+        const updateQuery = `
+            UPDATE users
+            SET
+                email = $1,
+                phone_number = $2,
+                first_name = $3,
+                last_name = $4,
+                latitude = $5,
+                longitude = $6,
+                is_auth = $7
+            WHERE user_id = $8
+            RETURNING *
+        `;
+
+        const result = await db.query(updateQuery, [email, phone_number, first_name, last_name, latitude, longitude, is_auth, user_id]);
+
+        if (result.rows.length === 0) {
+            throw new Error('User not found');
+        }
+
+        return result.rows[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 async function login(user_id, password) {
     const result = await db.query("SELECT * FROM users WHERE user_id = $1", [
         user_id,
@@ -97,5 +140,5 @@ async function getUserIdfromEmail(email) {
 
 
 module.exports = {
-    validateUserId, create, login, getUsername,getUserIdfromEmail
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername
 };

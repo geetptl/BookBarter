@@ -21,6 +21,14 @@
     transition: 0.3s;
 }
 
+.with-icon {
+    padding-left: 30px; 
+    background-image: url('https://static.thenounproject.com/png/236432-200.png'); 
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 5px 5px; 
+  }  
+  
 .card:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
@@ -34,7 +42,7 @@
 }
 
 .card img {
-    width: 100%;
+    width: 100%;  
     height: auto;
 }
 
