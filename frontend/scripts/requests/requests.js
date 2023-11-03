@@ -60,10 +60,14 @@ function displayPendingActions(actions) {
                     const userName = await getUserNameFromIdAPI(act.borrower_id);
                     const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
                     actionDiv.innerHTML = `
-                        <h3>Borrow request for the book: ${bookName} from ${userName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
-                        <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
+                        <div class="action-card-left">
+                            <h3>Borrow request for the book: ${bookName}</h3>
+                            <div class="action-cards-controls">
+                                <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
+                                <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
+                            </div>
+                        </div>
+                        <span>Borrower: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
                 }
@@ -79,10 +83,14 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow request accepted by ${userName} for the book: ${bookName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
-                        <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
+                        <div class="action-card-left">
+                            <h3>Your request for ${bookName} accepted!</h3>
+                            <div class="action-cards-controls">
+                                <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
+                                <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
+                            </div>
+                        </div>
+                        <span>Lender: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -91,9 +99,11 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
-                        <h3>Borrow request rejected by ${userName} for the book: ${bookName}</h3>
-                        <!-- ... (display other action details as desired) ... -->
-                        <button data-id="${act.id}" class="btn ok-btn">Okay</button>
+                        <div class="action-card-left">
+                        <h3>Your request for ${bookName} was rejected.</h3>
+                        <button data-id="${act.id}" class="btn req-close-btn">Close Request</button>
+                        </div>
+                        <span class="lender-id">Lender: ${userName}</span>
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -117,11 +127,31 @@ document.addEventListener("DOMContentLoaded", () => {
             handleApprove(target.getAttribute("data-id"));
         } else if (target.classList.contains(".pymt-decline-btn")) {
             handleReject(target.getAttribute("data-id"));
-        } else if (target.classList.contains("ok-btn")) {
-        handleReject(target.getAttribute("data-id"));
+        } else if (target.classList.contains("req-close-btn")) {
+            handleRequestClose(target.getAttribute("data-id"));
         }
     });
 });
+
+function handleRequestClose(requestId) {
+    fetch(`http://localhost:8000/requests/setStatusToExpired`, {
+        method: 'PUT',
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data["Request close status"] == "Success") {
+            alert("Request closed successfully.");
+            window.location.reload(); // Refresh the page to reflect the changes
+        } else {
+            alert(data.message || "Error approving the request.");
+        }
+    })
+    .catch(console.error);
+}
 
 function handleApprove(requestId) {
     fetch(`http://localhost:8000/requests/approveRequest`, {
