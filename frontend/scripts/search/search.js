@@ -7,13 +7,13 @@ let limit = 18;
 window.onload = function () {
     const tokenValue = getTokenFromSession();
     if (tokenValue) {
-        // show logout button
-        console.log('Token:', tokenValue);
+        logoutButton.style.display = 'block';
+        profileButton.style.display = 'block';
     } else {
-        // show home page
         console.log('Token not found');
+        logoutButton.style.display = 'none';
+        profileButton.style.display = 'none';
     }
-
 
     fetchBooks(currentPage);
     updatePagination();
