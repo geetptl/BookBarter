@@ -7,21 +7,21 @@ let limit = 18;
 window.onload = function () {
     fetchBooks(currentPage);
     updatePagination();
-    document.addEventListener('DOMContentLoaded', function () {
-        var tokenValue = sessionStorage.getItem('token');
-        const logoutButton = document.getElementById('logoutButton');
-        const profileButton = document.getElementById('profileButton');
-    
-        if (tokenValue) {
-            logoutButton.style.display = 'block';
-            profileButton.style.display = 'block';
-        } else {
-            console.log('Token not found');
-            logoutButton.style.display = 'none';
-            profileButton.style.display = 'none';
-        }    
-    });
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    var tokenValue = sessionStorage.getItem('token');
+    const logoutButton = document.getElementById('logoutButton');
+    const profileButton = document.getElementById('profileButton');
+    if (tokenValue) {
+        logoutButton.style.display = 'block';
+        profileButton.style.display = 'block';
+    } else {
+        console.log('Token not found');
+        logoutButton.style.display = 'none';
+        profileButton.style.display = 'none';
+    }    
+});
 
 document.querySelector("#previous-page").addEventListener("click", function (event) {
     event.preventDefault();
