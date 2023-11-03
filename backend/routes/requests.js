@@ -89,6 +89,26 @@ router.get("/getPendingActions/:userId", async (req, res) => {
     }
 });
 
+router.put("/setStatusToExpired", async (req, res) => {
+    try {
+        const requestId = req.body.requestId;
+
+        // Call the approveRequest service to approve the request
+        const result = await requestService.setStatusToExpired(requestId);
+
+        if (result) {
+            res.status(200).json({ "Request close status": "Success" });
+        } else {
+            res.status(404).json({
+                "Request close status": "Request not found",
+            });
+        }
+    } catch (error) {
+        console.error("Error handling request:", error);
+        res.status(500).json({ "Request Approved": "Error" });
+    }
+});
+
 router.put("/invalidateOldRequests", async (req, res) => {
     try {
         const requests = await requestService.invalidateOldRequests();
