@@ -84,13 +84,10 @@ function fetchFilteredBooks(keyword, page) {
         .then(displayBooks)
         .catch(console.error)
 }
-
-
 function logout() {
     sessionStorage.removeItem('token');
     window.location.href = '../login/login.html';
 }
-
 function displayBooks(data) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
