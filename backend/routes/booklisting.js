@@ -19,18 +19,25 @@ router.get("/getBookName/:id", async (req, res) => {
     if (validBook) {
         res.send(validBook);
     } else {
-        res.status(404).send("Invalid id");
+        res.status(404).json({"bookName": null});
     }
 });
 
-router.get("/getBookName/:id", async (req, res) => {
-    const validBook = await listingService.getBookName(req.params.id);
-    console.log(validBook);
-    if (validBook) {
-        res.send(validBook);
-    } else {
-        res.status(404).send("Invalid id");
+
+router.get("/getBookListing/:id", async (req, res) => {
+    const availableUsers = await listingService.getBookListing(req.params.id);
+    console.log(availableUsers);
+    if (availableUsers) {
+        res.send(availableUsers);
+    } 
+    else if(availableUsers == false){
+        res.status(404).json({"userListings": null});
+    }
+    else {
+        res.status(200).json({"userListings": []});
     }
 });
+
+
 
 module.exports = router;

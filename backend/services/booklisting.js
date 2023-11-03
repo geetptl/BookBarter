@@ -18,18 +18,57 @@ async function createNewListing(bookListingData) {
             return false;
         }
     } catch (error) {
-        console.error("Error creating request:", error);
-        return false;
+        console.log(error.code);
+        if (error.code === '23505') { // 23505 is the error code for unique violation in PostgreSQL
+        
+            console.error("Duplicate listing entry:", error);
+            
+            throw new Error('Duplicate listing entry');
+        } else {
+            console.error("Error creating listing:", error);
+            throw error;
+        }
     }
 }
 
 async function getBookName(listingid) {
-    const result = await db.query(`SELECT b.title FROM book_listing bl JOIN book b ON bl.book_id = b.id WHERE bl.id = ${listingid}`);
-    return result.rows[0];
+    try{
+        const result = await db.query(`SELECT b.title FROM book_listing bl 
+                                JOIN book b ON bl.book_id = b.id WHERE bl.id = ${listingid}`);
+        console.log("Retreieved the record and returned book name");
+        return result.rows;
+    }
+    catch{
+        console.log("Book id doesnt exist.")
+        return false;
+    }
+
 }
 
+async function getBookListing(bookid){
+    try{
+        const result = await db.query(`SELECT u.first_name, u.email, bl.status FROM 
+                            book_listing bl JOIN users u ON bl.owner_id = u.id 
+                            JOIN book b ON bl.book_id = b.id WHERE b.id = ${bookid} 
+                            AND bl.status = 'Available'; `);
+        if(result.rowCount >1){
+            console.log("Retrieved available Users for given book id");
+            return result.rows;
+        }
+        else{
+            console.log("No available users for the book id");
+            return result.rows;
+        }
+    }
+    catch{
+        console.log("Book id doesnt exist.")
+        return false;
+    } 
+
+}
 
 module.exports = {
     createNewListing,
-    getBookName
+    getBookName,
+    getBookListing
 };
