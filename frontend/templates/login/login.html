@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
     <link rel="stylesheet" type="text/css" href="../../styles/login/login.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/create/create.css">
+
 </head>
 <body>
     <div class="container">
@@ -34,7 +36,13 @@
             <div class="form-group">
                 <button class="btn btn-primary btn-lg" onclick="validateLogin()">Sign In</button>
             </div>
-        </div>
+            <div id="customPopup">  
+                <div class="modal-content">
+                    <span class="close" onclick="closePopup()">&times;</span>
+                    <p>User doesn't exist!</p>
+                </div>
+            </div>  
+        </div>  
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,3 +1,10 @@
+function showPopup() {
+  document.getElementById('customPopup').style.display = 'block';
+}
+
+function closePopup() {
+  document.getElementById('customPopup').style.display = 'none';
+}
 
 function createUser() {
     const userData = {
