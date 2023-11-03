@@ -90,9 +90,54 @@ async function getBooksbyUserid(userid){
 
 }
 
+async function updateStatusAvailable(bookListingData){
+    try {
+        const bookId = bookListingData.book_id;
+        const userId = bookListingData.owner_id;
+        console.log(bookId, userId)
+        const result = await db.query(
+            `UPDATE book_listing SET status = 'Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
+        );
+        if (result.rowCount === 1) {
+            console.log("Update Successful");
+            return true;
+        } else {
+            console.log("Failed to update");
+            return false;
+        }
+    }
+    catch(error){
+        console.error("Error updating listing:", error);
+        throw error;
+    }
+}
+
+async function updateStatusNotAvailable(bookListingData){
+    try {
+        const bookId = bookListingData.book_id;
+        const userId = bookListingData.owner_id;
+        const result = await db.query(
+            `UPDATE book_listing SET status = 'Not Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
+        );
+        if (result.rowCount === 1) {
+            console.log("Update Successful");
+            return true;
+        } else {
+            console.log("Failed to update");
+            return false;
+        }
+    }
+    catch(error){
+        console.error("Error updating listing:", error);
+        throw error;
+    }
+}
+
 module.exports = {
     createNewListing,
     getBookName,
     getBookListing,
-    getBooksbyUserid
+    getBooksbyUserid,
+    updateStatusAvailable,
+    updateStatusNotAvailable
 };

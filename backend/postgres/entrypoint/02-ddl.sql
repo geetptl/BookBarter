@@ -35,6 +35,8 @@ CREATE TABLE genre (
     name TEXT NOT NULL UNIQUE
 );
 
+CREATE TYPE listing_status AS ENUM ('Available', 'Not_Available');
+
 -- BookListing Table
 CREATE TABLE book_listing (
     id SERIAL PRIMARY KEY,
@@ -42,8 +44,7 @@ CREATE TABLE book_listing (
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     owner_id INTEGER REFERENCES users(id),
     book_id INTEGER REFERENCES book(id),
-    status TEXT,
-    status_code INTEGER,
+    status listing_status,
     returns_on DATE,
     UNIQUE(owner_id, book_id) 
 );

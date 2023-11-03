@@ -6,6 +6,9 @@ let limit = 18;
 
 window.onload = function () {
     const tokenValue = getTokenFromSession();
+    const logoutButton = document.getElementById('logoutButton');
+    const profileButton = document.getElementById('profileButton');
+    
     if (tokenValue) {
         logoutButton.style.display = 'block';
         profileButton.style.display = 'block';
