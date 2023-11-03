@@ -62,7 +62,6 @@ function fetchFilteredBooks(keyword, page) {
         .then(displayBooks)
         .catch(console.error)
 }
-
 function showBookDetails(bookId) {
 
     window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
@@ -107,6 +106,11 @@ function displayBookDetails(bookDetails) {
     </html>`;
 }
 
+
+function logout() {
+    sessionStorage.removeItem('token');
+    window.location.href = '../login/login.html';
+}
 
 function displayBooks(data) {
     const resultsDiv = document.getElementById("results");
