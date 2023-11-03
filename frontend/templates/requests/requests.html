@@ -7,10 +7,21 @@
     <link rel="stylesheet" type="text/css" href="../../styles/requests/requests.css">
 </head>
 <body>
-    <div class="navbar">
-        <a href="../../index.html">Home</a>
-        <a href="./requests.html">Pending Actions</a>
-    </div>
+
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+            <div class="navbar-title">
+                <img class="navbar-logo" src="../../assets/favicon.png"></img>
+                <div class="navbar-brand">Book Barter</div>
+            </div>
+
+            <div class="d-flex">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../../index.html'">Home</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='./requests.html'">PendingActions</button>
+            </div>
+        </div>
+    </nav>
+
     <div id="pending-actions" class="actions-container"></div>
 
     <h2>Enter your card details</h2>
