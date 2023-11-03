@@ -1,7 +1,5 @@
 const express = require("express");
 const requestService = require("../services/requests");
-const requireAuth = require("../middleware/requireAuth");
-const currentUser = require("../middleware/currentUser");
 const router = express.Router();
 
 router.get("/test", async (req, res) => {
@@ -56,7 +54,6 @@ router.post("/raiseBorrowRequest", async (req, res) => {
         res.status(500).json({ Error: "Internal Server Error" }); // Status code 500 for internal server error
     }
 });
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxNSwiY3JlYXRlZF9vbiI6IjIwMjMtMTEtMDJUMDA6MTg6MjUuNjQyWiIsImxhc3RfdXBkYXRlZF9vbiI6IjIwMjMtMTEtMDJUMDA6MTg6MjUuNjQyWiIsInVzZXJfaWQiOiJqaGFuYXZpIiwicGFzc3dvcmRfaGFzaCI6IiQyYiQxMCRFLzZacTJWYWN6VnUxNG13TUh4dm5PZXRtak9JcnU3RDdFZVB5RW5FMkplNFRzWDUuT0NNQyIsImVtYWlsIjoiamhhbmF2aUBydXRnZXJzLmVkdSIsInBob25lX251bWJlciI6IjEyMzQiLCJmaXJzdF9uYW1lIjoiamhhbmF2aSIsImxhc3RfbmFtZSI6IlEiLCJsYXRpdHVkZSI6IjE1LjAwMDAwMCIsImxvbmdpdHVkZSI6IjI1LjAwMDAwMCIsImlzX2F1dGgiOmZhbHNlfSwiaWF0IjoxNjk4ODk2NTA2LCJleHAiOjE2OTg5MDAxMDZ9.h-r8I5Rz87QMxnYTRaD4vmj2NNBuNHWUZw75P5ZWBUg
 
 
 router.get("/getPendingActions/:userId", async (req, res) => {
