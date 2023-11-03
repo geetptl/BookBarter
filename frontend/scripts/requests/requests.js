@@ -59,13 +59,19 @@ function displayPendingActions(actions) {
                     const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
                     actionDiv.innerHTML = `
                         <div class="action-card-left">
-                            <h3>Borrow request for the book: ${bookName}</h3>
+                            <h3>Borrow request for the book: "<i>${bookName}</i>"</h3>
+                        </div>
+                        
+                        <div class="action-card-left">
+                            <span>Borrower: ${userName}</span>
                             <div class="action-cards-controls">
                                 <button data-id="${act.id}" class="btn approve-request-btn">Approve</button>
                                 <button data-id="${act.id}" class="btn reject-request-btn">Reject</button>
                             </div>
                         </div>
-                        <span>Borrower: ${userName}</span>
+                        
+                        
+                        
                     `;
                     actionsDiv.appendChild(actionDiv);
                 }
@@ -81,14 +87,19 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
+
                         <div class="action-card-left">
-                            <h3>Your request for ${bookName} accepted!</h3>
+                            <h3>Your request for "<i>${bookName}</i>" accepted!</h3>
+                        </div>
+                        
+                        <div class="action-card-left">
+                            <span>Lender: ${userName}</span>
                             <div class="action-cards-controls">
                                 <button data-id="${act.id}" class="btn pymt-approve-btn">Make Payment</button>
                                 <button data-id="${act.id}" class="btn pymt-decline-btn">Decline Payment</button>
                             </div>
                         </div>
-                        <span>Lender: ${userName}</span>
+                        
                     `;
                     actionsDiv.appendChild(actionDiv);
 
@@ -97,11 +108,18 @@ function displayPendingActions(actions) {
                     const actionDiv = document.createElement("div");
                     actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
+
                         <div class="action-card-left">
-                        <h3>Your request for ${bookName} was rejected.</h3>
-                        <button data-id="${act.id}" class="btn req-close-btn">Close Request</button>
+                            <h3>Your request for "<i>${bookName}</i>" was rejected.</h3>
                         </div>
-                        <span class="lender-id">Lender: ${userName}</span>
+                        
+                        <div class="action-card-left">
+                            <span class="lender-id">Lender: ${userName}</span>
+                            <div class="action-cards-controls">
+                                <button data-id="${act.id}" class="btn req-close-btn">Close Request</button>
+                            </div>
+                        </div>
+
                     `;
                     actionsDiv.appendChild(actionDiv);
 
