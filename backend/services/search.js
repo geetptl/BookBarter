@@ -2,11 +2,8 @@ const db = require("../db");
 const bookService = require("./book");
 
 async function filterBooks(keywords, page, limit) {
-    const queryStr = `SELECT b.* FROM book b WHERE LOWER(b.title) LIKE '${keywords}%' LIMIT ${limit} OFFSET ${
-        (page - 1) * limit
-    }`;
+    const queryStr = `SELECT b.* FROM book b WHERE LOWER(b.title) LIKE '${keywords}%' ORDER BY rating DESC LIMIT ${limit} OFFSET ${(page - 1) * limit}`;
     const bookResults = await db.query(queryStr);
-    console.log(bookResults);
     if (bookResults.rows.length == 0) {
         return null;
     }

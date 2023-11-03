@@ -5,19 +5,22 @@ let lastPage = 7371;
 let limit = 18;
 
 window.onload = function () {
-    const tokenValue = getTokenFromSession();
-    if (tokenValue) {
-        logoutButton.style.display = 'block';
-        profileButton.style.display = 'block';
-    } else {
-        console.log('Token not found');
-        logoutButton.style.display = 'none';
-        profileButton.style.display = 'none';
-    }
-
     fetchBooks(currentPage);
     updatePagination();
-
+    document.addEventListener('DOMContentLoaded', function () {
+        var tokenValue = sessionStorage.getItem('token');
+        const logoutButton = document.getElementById('logoutButton');
+        const profileButton = document.getElementById('profileButton');
+    
+        if (tokenValue) {
+            logoutButton.style.display = 'block';
+            profileButton.style.display = 'block';
+        } else {
+            console.log('Token not found');
+            logoutButton.style.display = 'none';
+            profileButton.style.display = 'none';
+        }    
+    });
 };
 
 document.querySelector("#previous-page").addEventListener("click", function (event) {
@@ -53,23 +56,12 @@ document.querySelector(".btn").addEventListener("click", function (event) {
     this.blur();
 });
 
-document.querySelector('input[name="query"]').addEventListener('keydown', function (event) {
+document.querySelector('input[name="query"]').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         document.querySelector('.btn').click();
     }
 });
-
-function getTokenFromSession() {
-    // tried cookies - cookies not being by document.cookie
-    // console.log('All Cookies:', document.cookie);
-    // const cookies = document.cookie.split('; ').map(cookie => cookie.split('='));
-    
-    var tokenValue = sessionStorage.getItem('token');
-    console.log(tokenValue);
-    return tokenValue;
-}
-
 
 function fetchBooks(page) {
     fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
@@ -84,6 +76,21 @@ function fetchFilteredBooks(keyword, page) {
         .then(displayBooks)
         .catch(console.error)
 }
+
+function showBookDetails(bookId) {
+
+    window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
+    /*fetch(`http://localhost:8000/book/get/${bookId}`)
+        .then((response) => response.json())
+        .then(bookDetails => {
+            const bookId = bookDetails.book.id;
+            //document.cookie = `bookId=${bookId};path=/;max-age=3600`; 
+            window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
+        })
+        .catch(console.error);*/      
+}
+
+
 function logout() {
     sessionStorage.removeItem('token');
     window.location.href = '../login/login.html';
@@ -103,6 +110,9 @@ function displayBooks(data) {
                 <p class="card-text">Genre: ${book.genre}</p>
             </div>
         `;
+        bookDiv.addEventListener("click", function () {
+            showBookDetails(book.id);
+        });
         resultsDiv.appendChild(bookDiv);
     });
 }
@@ -110,7 +120,7 @@ function displayBooks(data) {
 function updatePagination() {
     const pagination = document.getElementsByClassName("pagination");
     const existingPageButtons = pagination[0].getElementsByClassName("page-button");
-
+    
     while (existingPageButtons.length > 0) {
         existingPageButtons[0].parentNode.removeChild(existingPageButtons[0]);
     }
