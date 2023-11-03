@@ -6,11 +6,33 @@
     <link rel="stylesheet" type="text/css" href="../../styles/search/search.css">
 </head>
 <body>
-    <div class="search-bar">
-        <input type="text" name="query" placeholder="Search..." />
-        <button type="button" class="btn btn-primary">Search</button>
-    </div>
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+            <div class="navbar-title">
+                <img class="navbar-logo" src="../../assets/favicon.png"></img>
+                <a class="navbar-brand">Book Barter</a>
+            </div>
+
+            <form class="d-flex search-bar" role="search">
+                <input class="form-control me-3" type="text" placeholder="Search" aria-label="Search" name="query">
+                <button type="button" class="btn btn-primary">Search</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../../templates/login/login.html'">LogIn</button>
+            </form>
+        </div>
+    </nav>
+
     <div id="results" class="card-container" onclick="window.location.href='../../templates/login/login.html'"></div>
+    
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#" id="previous-page">Previous</a></li>
+            <li class="page-item page-button active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item page-button"><a class="page-link" href="#">2</a></li>
+            <li class="page-item page-button"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#" id="next-page">Next</a></li>
+        </ul>
+    </nav>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../scripts/search/search.js"></script>
 </body>
