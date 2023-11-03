@@ -5,6 +5,15 @@ let lastPage = 7371;
 let limit = 18;
 
 window.onload = function () {
+    const tokenValue = getTokenFromSession();
+    if (tokenValue) {
+        logoutButton.style.display = 'block';
+        profileButton.style.display = 'block';
+    } else {
+        console.log('Token not found');
+        logoutButton.style.display = 'none';
+        profileButton.style.display = 'none';
+    }
     fetchBooks(currentPage);
     updatePagination();
 };
@@ -54,6 +63,16 @@ function fetchBooks(page) {
         .then((response) => response.json())
         .then(displayBooks)
         .catch(console.error);
+}
+
+function getTokenFromSession() {
+    // tried cookies - cookies not being by document.cookie
+    // console.log('All Cookies:', document.cookie);
+    // const cookies = document.cookie.split('; ').map(cookie => cookie.split('='));
+
+    var tokenValue = sessionStorage.getItem('token');
+    console.log(tokenValue);
+    return tokenValue;
 }
 
 function fetchFilteredBooks(keyword, page) {
