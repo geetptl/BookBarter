@@ -37,7 +37,7 @@ function createUser() {
             throw new Error;
         } 
         console.log('User created:', result);
-        window.location.href = '../../templates/search/search.html';
+        window.location.href = '../../templates/login/login.html';
       })  
       .catch((error) => {
         console.error('Error creating user:', error);
