@@ -24,7 +24,8 @@ CREATE TABLE book (
     rating DECIMAL(3,2),
     image_url TEXT NOT NULL,
     description TEXT NOT NULL,
-    isbn TEXT NOT NULL
+    isbn TEXT NOT NULL,
+    language TEXT NOT NULL
 );
 
 -- Genre Table
