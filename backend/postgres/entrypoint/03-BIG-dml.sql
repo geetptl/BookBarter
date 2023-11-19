@@ -68,6 +68,7 @@ delete from temp_books_2 where description is null;
 delete from temp_books_2 where rating is null;
 delete from temp_books_2 where isbn is null;
 delete from temp_books_2 where genres is null;
+delete from temp_books_2 where language is null;
 
 delete from temp_books_2 where title = '';
 delete from temp_books_2 where author = '';
@@ -76,12 +77,15 @@ delete from temp_books_2 where description = '';
 delete from temp_books_2 where rating = '';
 delete from temp_books_2 where isbn = '';
 delete from temp_books_2 where genres = '';
+delete from temp_books_2 where language = '';
 
 insert into genre(name) select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) from temp_books_2 group by 1;
 
+delete from genre where name='';
+
 alter table book add column copy_ref_id int;
 
-insert into book(title, author, rating, image_url, description, isbn, copy_ref_id) select title, author, rating::decimal, coverImg, description, isbn, id from temp_books_2;
+insert into book(title, author, rating, image_url, description, isbn, language, copy_ref_id) select title, author, rating::decimal, coverImg, description, isbn, language, id from temp_books_2;
 
 create table temp_genre_mapping as select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) genre, b.id book_id, b.title from temp_books_2 t join book b on b.copy_ref_id=t.id;
 
