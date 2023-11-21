@@ -1,6 +1,7 @@
 const express = require("express");
 const requestService = require("../services/requests");
-const paymentService = require("../services/requests")
+const paymentService = require("../services/requests");
+const requireAuth = require("../middleware/requireAuth");
 const router = express.Router();
 
 router.get("/test", async (req, res) => {
@@ -62,7 +63,7 @@ router.post("/raiseBorrowRequest", async (req, res) => {
 });
 
 
-router.get("/getPendingActions/:userId", async (req, res) => {
+router.get("/getPendingActions/:userId", requireAuth, async (req, res) => {
     try {
         // Create a list of pending actions for a user both as a borrower and a lender.
         var pendingActions = [];
