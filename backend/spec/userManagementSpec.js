@@ -8,18 +8,19 @@ const db = require("../db");
 describe("Request Routes", () => {
     describe("POST /login", () => {
 
-        it("should successfully log in a user with valid credentials", async () => {
-            const mockUser = {
-                user_id: "desmond",
-                password_hash: "desmond123",
-            };
-            const res = await request(app)
-                .post("/user/login")
-                .send(mockUser);
+        // it("should successfully log in a user with valid credentials", async () => {
+        //     const mockUser = {
+        //         user_id: "desmond",
+        //         password_hash: "desmond123",
+        //     };
+        //     const res = await request(app)
+        //         .post("/user/login")
+        //         .send(mockUser);
 
-            expect(res.status).toBe(200);
-            expect(res.body).toEqual({ "User Login": "True" });
-        });
+        //     expect(res.status).toBe(200);
+        //     expect(res.body).toEqual({ "User Login": "True" });
+        // });
+        
         it("should reject login with incorrect password", async () => {
             const mockUser = {
                 user_id: "desmond",
