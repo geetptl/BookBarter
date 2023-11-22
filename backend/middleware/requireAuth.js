@@ -10,6 +10,7 @@ const requireAuth = (req, res, next) => {
   else {
     try {
       const payload = jwt.verify(token, process.env.JWT_KEY);
+      req.user_session = payload
       next();
     } catch (err) {
       console.log(err);
