@@ -16,17 +16,19 @@
             <form class="d-flex search-bar" role="search">
                 <input class="form-control me-3" type="text" placeholder="Search" aria-label="Search" name="query">
                 <button type="button" class="btn btn-primary">Search</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../login/login.html'">LogIn</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../requests/requests.html'">PendingActions</button>
                 <button type="button" class="btn btn-primary" id="logoutButton" onclick="logout()">Logout</button>
                 <button type="button" class="btn btn-primary" id="profileButton" onclick="window.location.href='../update/update.html'">
                     <div class="icon-container">  
                       <img src="https://static.thenounproject.com/png/236432-200.png" alt="Profile Icon">
                     </div>
-                  </button>              
+                </button>              
             </form>
         </div>  
     </nav>
 
-    <div id="results" class="card-container" onclick="window.location.href='../../templates/listings/booklisting.html'"></div>
+    <div id="results" class="card-container"></div>
     
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
