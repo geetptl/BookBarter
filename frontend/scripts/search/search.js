@@ -5,7 +5,7 @@ let lastPage = 7371;
 let limit = 18;
 
 window.onload = function () {
-    fetchBooks(currentPage);
+    fetchAllBooks(currentPage);
     updatePagination();
 };
 
@@ -47,7 +47,7 @@ document.querySelector(".btn").addEventListener("click", function (event) {
     event.preventDefault();
     const query = document.querySelector('input[type="text"]').value;
     if (query.trim() === "") {
-        fetchBooks(currentPage);
+        fetchAllBooks(currentPage);
         updatePagination();
     } else {
         fetchFilteredBooks(query, currentPage);
@@ -64,6 +64,18 @@ document.querySelector('input[name="query"]').addEventListener('keydown', functi
 });
 
 function fetchBooks(page) {
+    const query = document.querySelector('input[type="text"]').value;
+    if (query.trim() === "") {
+        fetchAllBooks(page);
+        updatePagination();
+    } else {
+        fetchFilteredBooks(query, page);
+        updatePagination();
+    }
+    this.blur();
+}
+
+function fetchAllBooks(page) {
     fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
         .then((response) => response.json())
         .then(displayBooks)
@@ -78,18 +90,14 @@ function fetchFilteredBooks(keyword, page) {
 }
 
 function showBookDetails(bookId) {
-
-    window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
-    /*fetch(`http://localhost:8000/book/get/${bookId}`)
-        .then((response) => response.json())
-        .then(bookDetails => {
-            const bookId = bookDetails.book.id;
-            //document.cookie = `bookId=${bookId};path=/;max-age=3600`; 
-            window.location.href = `../../se-backend/frontend/templates/listings/booklisting.html?id=${bookId}`;
-        })
-        .catch(console.error);*/      
+    const currentLocation = window.location.href;
+    if (currentLocation.search('index') > 0) {
+        window.location.href = `./templates/listings/booklisting.html?id=${bookId}`; 
+    }
+    else {
+        window.location.href = `../listings/booklisting.html?id=${bookId}`;     
+    }
 }
-
 
 function logout() {
     sessionStorage.removeItem('token');
