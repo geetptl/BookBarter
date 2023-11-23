@@ -1,8 +1,8 @@
 -- Users
 INSERT INTO users (user_id, password_hash, email, first_name, last_name)
 VALUES 
-('user1', 'hashed_pass1', 'user1@email.com', 'User', 'One'),
-('user2', 'hashed_pass2', 'user2@email.com', 'User', 'Two'),
+('user1', '$2b$10$L3OTZL1SnqGVxyVnnM6sduV13GZfe0iG71xCWR.jrHM85VEQMcmE6', 'user1@email.com', 'User', 'One'),
+('user2', '$2b$10$wQpxdRPOFnx9ONzZBY2bM.nPuvMDG7NGRSH1c3Ts4JkcTK41O.Fd2	', 'user2@email.com', 'User', 'Two'),
 ('user3', 'hashed_pass3', 'user3@email.com', 'User', 'Three'),
 ('user4', 'hashed_pass4', 'user4@email.com', 'User', 'Four');
 

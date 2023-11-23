@@ -69,9 +69,6 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
         // Create a list of pending actions for a user both as a borrower and a lender.
         var pendingActions = [];
 
-        // CHANGES AS PER JWT
-        // const userId = req.params.userId;
-
         var userId = req.user_session.user.id
 
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
@@ -83,7 +80,6 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
                 pendingActions.push(action);
             }
         }
-        
 
         // Call the getPendingActionsByBorrowerId service to fetch requests for the borrower
         const requestsByBorrower = await requestService.getPendingActionsByBorrowerId(userId);
@@ -113,7 +109,7 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
     }
 });
 
-router.put("/setStatusToExpired", async (req, res) => {
+router.put("/setStatusToExpired", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
@@ -137,7 +133,7 @@ router.put("/setStatusToExpired", async (req, res) => {
     }
 });
 
-router.put("/invalidateOldRequests", async (req, res) => {
+router.put("/invalidateOldRequests", requireAuth, async (req, res) => {
     try {
         const requests = await requestService.invalidateOldRequests();
 
@@ -159,7 +155,7 @@ router.put("/invalidateOldRequests", async (req, res) => {
 });
 
 // Define a route to approve a request
-router.put("/approveRequest", async (req, res) => {
+router.put("/approveRequest", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
@@ -185,7 +181,7 @@ router.put("/approveRequest", async (req, res) => {
 
 
 // Define a route to reject a request
-router.put("/rejectRequest", async (req, res) => {
+router.put("/rejectRequest", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
@@ -210,7 +206,7 @@ router.put("/rejectRequest", async (req, res) => {
 });
 
 // Define a route to reject a request
-router.put("/declinePayment", async (req, res) => {
+router.put("/declinePayment", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
@@ -235,7 +231,7 @@ router.put("/declinePayment", async (req, res) => {
 });
 
 
-router.get("/getBorrowerIdFromRequestId/:requestId", async (req, res) => {
+router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, res) => {
 
     try {
         // Create a list of pending actions for a user both as a borrower and a lender.

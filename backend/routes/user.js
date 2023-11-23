@@ -109,7 +109,7 @@ router.post('/login', async (req, res) => {
   
     try {
       const loggedInUser = await userService.login(user_id, password);
-      console.log(loggedInUser)
+      
       if (loggedInUser) {
         
         const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {

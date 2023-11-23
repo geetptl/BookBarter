@@ -1,12 +1,14 @@
 
 let currentActions = {}; // Object to track the current state of actions
+let token = null;
 
 function fetchPendingActions() {
-    const userId = '1'; // This should be dynamically fetched based on the logged-in user.
-    fetch(`http://localhost:8000/requests/getPendingActions/${userId}`, {
+    
+    fetch(`http://localhost:8000/requests/getPendingActions`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
@@ -15,11 +17,11 @@ function fetchPendingActions() {
 }
 
 function invalidateOldRequests() {
-    const userId = '1'; // This should be dynamically fetched based on the logged-in user.
     fetch(`http://localhost:8000/requests/invalidateOldRequests`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
@@ -27,6 +29,7 @@ function invalidateOldRequests() {
 }
 
 window.onload = function () {
+    token = sessionStorage.getItem('token');
     fetchPendingActions();
     setInterval(invalidateOldRequests, 10000); // Poll every 10 seconds
     setInterval(fetchPendingActions, 10000); // Poll every 10 seconds
@@ -208,7 +211,8 @@ function handleRequestClose(requestId) {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
@@ -229,7 +233,8 @@ function handleApprove(requestId) {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
@@ -250,7 +255,8 @@ function handleReject(requestId) {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
@@ -313,7 +319,8 @@ function handlePaymentDecline(requestId) {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
