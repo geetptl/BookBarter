@@ -21,15 +21,15 @@ VALUES
 
 
 -- Request
-INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
+INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
 VALUES 
-(1, 2, 3, '2024-01-05 12:00:00', 'Pending'),
+(1, 2, 3, '2024-01-05 12:00:00', 4, 'Pending'),
 -- (2, 1, 2, '2024-01-07 12:00:00', 'Pending'),
-(1, 3, 5, '2024-01-07 12:00:00', 'Accepted'),
-(1, 3, 6, '2024-01-07 12:00:00', 'Accepted'),
-(1, 4, 7, '2024-01-07 12:00:00', 'Rejected'),
-(2, 4, 8, '2024-01-06 12:00:00', 'Pending'), 
-(4, 1, 1, '2023-01-07 12:00:00', 'Pending');
+(1, 3, 5, '2024-01-07 12:00:00', 3, 'Accepted'),
+(1, 3, 6, '2024-01-07 12:00:00', 5, 'Accepted'),
+(1, 4, 7, '2024-01-07 12:00:00', 9, 'Rejected'),
+(2, 4, 8, '2024-01-06 12:00:00', 6, 'Pending'), 
+(4, 1, 1, '2024-01-07 12:00:00', 7, 'Pending');
 
 
 

@@ -13,7 +13,8 @@ router.post('/card/add', async (req, res) => {
     try {
         const {
             email,
-            paymentMethodId
+            paymentMethodId,
+            userId
         } = req.body;
         console.log("paymentMethodId", paymentMethodId)
         // Look up or create a customer based on the email address
@@ -39,7 +40,7 @@ router.post('/card/add', async (req, res) => {
                 default_payment_method: paymentMethodId,
             },
         });
-        const cardId = await paymentService.addCard(email, customer.id);
+        const cardId = await paymentService.addCard(email, customer.id, userId, paymentMethodId);
 
         res.json({
             customerId: customer.id,
@@ -93,6 +94,8 @@ router.get("/getCards/:borrowerId", async (req, res) => {
   }
 });
 
+
+
 router.post('/pay', async (req, res) => {
     try {
       const {
@@ -102,22 +105,23 @@ router.post('/pay', async (req, res) => {
         description,
         payment_method_id, 
       } = req.body;
-  
-      // Create a Payment Intent: this will handle the payment process
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount, // Amount is in cents (e.g., 10 dollars = 1000 cents)
-        currency, // 'usd', 'eur', etc.
-        customer: customerId, // This should be the Stripe Customer ID
-        payment_method: payment_method_id, // This should be the ID of the payment method to charge
-        off_session: true, // Set this to true if the customer is not present during payment
-        confirm: true, // This will confirm the payment at the same time
-        description, // Optional: Description of the payment
-      });
+      
+
+    // MANSI, YE PART COMPLETE KAR DE
+
+      const result = paymentService.makePayment(
+        amount,
+        currency,
+        customerId,
+        payment_method_id,
+        description,
+        )
+      
   
       // If the payment intent is successful, you can send back any information needed to the client
       res.json({
-        message: 'Payment successful',
-        paymentIntentId: paymentIntent.id
+        status: 'Success',
+        paymentIntentId: result.id
       });
     } catch (error) {
       console.error('Payment failed:', error);
