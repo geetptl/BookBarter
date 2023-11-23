@@ -68,7 +68,7 @@ CREATE TABLE session (
 );
 
 -- Create an enumerated type for request statuses
-CREATE TYPE request_status AS ENUM ('Pending', 'Accepted', 'Rejected', 'Expired');
+CREATE TYPE request_status AS ENUM ('Pending', 'Accepted', 'Rejected', 'Expired', 'PaymentDeclined');
 
 
 -- Request Table
@@ -80,6 +80,7 @@ CREATE TABLE request (
     lender_id INTEGER REFERENCES users(id),
     book_listing_id INTEGER REFERENCES book_listing(id),
     time_to_live timestamp without time zone,
+    borrow_duration INTEGER NOT NULL,
     status request_status
 );
 
@@ -111,5 +112,6 @@ CREATE TABLE cards(
     created_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     payer_id INTEGER REFERENCES users(id),
-    stripe_customer_id TEXT UNIQUE
+    stripe_customer_id TEXT UNIQUE,
+    payment_method_id TEXT UNIQUE
 );

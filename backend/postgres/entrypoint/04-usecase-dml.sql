@@ -1,8 +1,8 @@
 -- Users
 INSERT INTO users (user_id, password_hash, email, first_name, last_name)
 VALUES 
-('user1', 'hashed_pass1', 'user1@email.com', 'User', 'One'),
-('user2', 'hashed_pass2', 'user2@email.com', 'User', 'Two'),
+('user1', '$2b$10$L3OTZL1SnqGVxyVnnM6sduV13GZfe0iG71xCWR.jrHM85VEQMcmE6', 'user1@email.com', 'User', 'One'),
+('user2', '$2b$10$wQpxdRPOFnx9ONzZBY2bM.nPuvMDG7NGRSH1c3Ts4JkcTK41O.Fd2	', 'user2@email.com', 'User', 'Two'),
 ('user3', 'hashed_pass3', 'user3@email.com', 'User', 'Three'),
 ('user4', 'hashed_pass4', 'user4@email.com', 'User', 'Four');
 
@@ -21,15 +21,15 @@ VALUES
 
 
 -- Request
-INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
+INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
 VALUES 
-(1, 2, 3, '2023-01-05 12:00:00', 'Expired'),
-(1, 3, 5, '2024-01-07 12:00:00', 'Pending'),
-(1, 4, 7, '2024-01-07 12:00:00', 'Rejected'),
-(1, 2, 4, '2024-01-07 12:00:00', 'Accepted'),
-(3, 4, 8, '2023-01-06 12:00:00', 'Pending'), 
-(4, 1, 1, '2024-01-07 12:00:00', 'Pending'),
-(1, 4, 1, '2024-01-07 12:00:00', 'Accepted');
+(1, 2, 3, '2024-01-05 12:00:00', 4, 'Pending'),
+-- (2, 1, 2, '2024-01-07 12:00:00', 'Pending'),
+(1, 3, 5, '2024-01-07 12:00:00', 3, 'Accepted'),
+(1, 3, 6, '2024-01-07 12:00:00', 5, 'Accepted'),
+(1, 4, 7, '2024-01-07 12:00:00', 9, 'Rejected'),
+(2, 4, 8, '2024-01-06 12:00:00', 6, 'Pending'), 
+(4, 1, 1, '2024-01-07 12:00:00', 7, 'Pending');
 
 
 

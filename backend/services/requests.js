@@ -61,12 +61,11 @@ async function raiseBorrowRequest(
     try {
         // Use placeholders to prevent SQL injection
         const query = `
-            INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, status)
-            VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', 'Pending')
+            INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
+            VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', $4, 'Pending')
         `;
 
-        const values = [borrowerId, lenderId, listingId];
-        console.log("dfdfsfd");
+        const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
         console.log(query);
@@ -89,6 +88,8 @@ async function getPendingActionsByLenderId(lenderId) {
             SELECT *
             FROM request
             WHERE lender_id = $1
+            AND status <> 'Expired'
+            AND time_to_live >= NOW() - INTERVAL '2 days'; 
         `;
 
         const values = [lenderId];
@@ -112,6 +113,8 @@ async function getPendingActionsByBorrowerId(borrowerId) {
             SELECT *
             FROM request
             WHERE borrower_id = $1
+            AND status <> 'Expired'
+            AND time_to_live >= NOW() - INTERVAL '2 days';
         `;
 
         const values = [borrowerId];
@@ -204,6 +207,25 @@ async function rejectRequest(requestId) {
     }
 }
 
+async function declinePayment(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'PaymentDeclined'
+            WHERE id = $1
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.rowCount === 1;
+    } catch (error) {
+        console.error("Error declining payment request:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
 module.exports = {
     getLenderIdByListingId,
     raiseBorrowRequest,
@@ -213,5 +235,6 @@ module.exports = {
     approveRequest,
     rejectRequest,
     setStatusToExpired,
-    getBorrowerIdFromRequestId
+    getBorrowerIdFromRequestId,
+    declinePayment
 };

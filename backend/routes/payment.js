@@ -13,7 +13,8 @@ router.post('/card/add', async (req, res) => {
     try {
         const {
             email,
-            paymentMethodId
+            paymentMethodId,
+            userId
         } = req.body;
         console.log("paymentMethodId", paymentMethodId)
         // Look up or create a customer based on the email address
@@ -39,7 +40,7 @@ router.post('/card/add', async (req, res) => {
                 default_payment_method: paymentMethodId,
             },
         });
-        const cardId = await paymentService.addCard(email, customer.id);
+        const cardId = await paymentService.addCard(email, customer.id, userId, paymentMethodId);
 
         res.json({
             customerId: customer.id,
@@ -56,24 +57,22 @@ router.get("/getCards/:borrowerId", async (req, res) => {
   try {
       const borrowerId = req.params.borrowerId
       const customerId = await paymentService.getCardDetailsByUserId(borrowerId);
-
+      console.log("customerId is",customerId)
       if (customerId) {
           // Retrieve the customer's saved cards
-          const cards = await stripe.customers.listSources(
-              customerId, {
-                  object: 'card',
-                  limit: 10
-              }
-          );
-
+          const paymentMethods = await stripe.paymentMethods.list({
+            customer: customerId,
+            type: 'card',
+          });
+          console.log(paymentMethods)
           // Format and send the card information
-          const formattedCards = cards.data.map(card => ({
-              last4: card.last4,
-              brand: card.brand,
-              exp_month: card.exp_month,
-              exp_year: card.exp_year,
+          const formattedCards = paymentMethods.data.map(pm => ({
+            last4: pm.card.last4,
+            brand: pm.card.brand,
+            exp_month: pm.card.exp_month,
+            exp_year: pm.card.exp_year,
           }));
-
+          console.log(formattedCards)
           // User has a card, redirect to payment (or return success response to frontend to handle the redirection)
           res.status(200).json({
               "hasCard": true,
@@ -95,43 +94,40 @@ router.get("/getCards/:borrowerId", async (req, res) => {
   }
 });
 
+
+
 router.post('/pay', async (req, res) => {
     try {
-        const {
-            amount,
-            currency,
-            customerId,
-            description,
-            source
-        } = req.body;
-        console.log(req.body);
+      const {
+        amount,
+        currency,
+        customerId,
+        description,
+        payment_method_id, 
+      } = req.body;
+      
 
-        // Optionally add a new source (e.g., card token) to the customer
-        if (source) {
-            await stripe.customers.createSource(customerId, {
-                source: source,
-            });
-        }
+    // MANSI, YE PART COMPLETE KAR DE
 
-        // Create a charge: this will charge the customer's card
-        const charge = await stripe.charges.create({
-            amount, // Amount is in cents (e.g., 10 dollars = 1000 cents)
-            currency, // 'usd', 'eur', etc.
-            source: customerId, // This assumes you have passed the Stripe Customer ID
-            description, // Optional: Description of the charge
-            confirm: true,
-            payment_method: 'pm_card_visa'
-        });
-
-        // If the charge is successful, you can send back any information needed to the client
-        res.json({
-            message: 'Charge successful',
-            chargeId: charge.id
-        });
+      const result = paymentService.makePayment(
+        amount,
+        currency,
+        customerId,
+        payment_method_id,
+        description,
+        )
+      
+  
+      // If the payment intent is successful, you can send back any information needed to the client
+      res.json({
+        status: 'Success',
+        paymentIntentId: result.id
+      });
     } catch (error) {
-        console.error('Charge failed:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Payment failed:', error);
+      res.status(500).send('Internal Server Error');
     }
-});
+  });
+  
 
 module.exports = router;

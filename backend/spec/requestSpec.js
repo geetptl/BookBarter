@@ -64,6 +64,8 @@ describe("Request Routes", () => {
             const mockUserId = "1";
             // spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([]);
             // spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([]);
+            // spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([]);
+            // spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([]);
 
             const res = await request(app).get(`/requests/getPendingActions/${mockUserId}`);
             
@@ -93,6 +95,8 @@ describe("Request Routes", () => {
 
             expect(res.status).toBe(200);
         });
+
+        // You can add more test cases, for instance, for handling errors or other conditions
     });
 
     describe("PUT /rejectRequest", () => {
@@ -115,5 +119,7 @@ describe("Request Routes", () => {
             expect(res.status).toBe(200);
         });
     });
+
     // Similarly, create tests for other endpoints ("/invalidateOldRequests", "/approveRequest", "/rejectRequest")
+
 });
