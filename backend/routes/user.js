@@ -126,7 +126,7 @@ router.post('/login', async (req, res) => {
         // Send the response here after setting the cookie.
         res.status(200).json({ "User Login": "True", "token": token});
       } else {
-        // console.log("hello");
+        console.log("hello");
         res.status(400).json({ "User Login": "False" });
       }
     } catch (error) {
