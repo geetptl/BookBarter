@@ -46,3 +46,23 @@ button {
     --bs-pagination-focus-color: #3B6562;
     --bs-pagination-hover-color: #3B6562;
 }
+
+.actions-container {
+    padding: 20px;
+}
+
+.action-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    background-color: #f8f8f8;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+
+.action-card-left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

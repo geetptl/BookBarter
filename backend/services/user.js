@@ -48,7 +48,6 @@ async function create(
         }
     }
 }
-
 async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
     try {
         // Check if the new email or phone number already exists in the database for other users.
@@ -64,23 +63,24 @@ async function updateUserInfo(user_id, email, phone_number, first_name, last_nam
             throw new Error('Duplicate email or phone number found');
         }
 
-        // Update the user's information.
+        // Update the user's information.  
         const updateQuery = `
-            UPDATE users
-            SET
-                email = $1,
-                phone_number = $2,
-                first_name = $3,
-                last_name = $4,
-                latitude = $5,
-                longitude = $6,
-                is_auth = $7
-            WHERE user_id = $8
-            RETURNING *
+        UPDATE users
+        SET
+            email = COALESCE($1, email),
+            phone_number = COALESCE($2, phone_number),
+            first_name = COALESCE($3, first_name),
+            last_name = COALESCE($4, last_name),
+            latitude = COALESCE($5, latitude),
+            longitude = COALESCE($6, longitude),
+            is_auth = COALESCE($7, is_auth),
+            last_updated_on = current_timestamp
+        WHERE user_id = $8
+        RETURNING *
         `;
 
         const result = await db.query(updateQuery, [email, phone_number, first_name, last_name, latitude, longitude, is_auth, user_id]);
-
+        console.log("Result is"+result.email);
         if (result.rows.length === 0) {
             throw new Error('User not found');
         }
@@ -137,7 +137,7 @@ async function getUserIdfromEmail(email) {
     console.log(user_id)
     return user_id;
 }
-
+  
 
 module.exports = {
     validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername

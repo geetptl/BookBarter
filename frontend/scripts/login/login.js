@@ -32,6 +32,7 @@ function validateLogin() {
             }
             else {
                 sessionStorage.setItem('token', result.token);
+                sessionStorage.setItem('user_id', document.getElementById('username').value);
 
                 window.location.href = '../search/search.html';
             }

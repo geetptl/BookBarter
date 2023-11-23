@@ -112,3 +112,11 @@ h2 {
 .password-input .toggle-password.active .eye-slash-icon {
     display: block;
 }
+
+
+#button-container {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-top: 10px;   
+}

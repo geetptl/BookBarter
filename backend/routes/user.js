@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const db = require("../db");
 
 router.get("/id/:id", async (req, res) => {
     const validUser = await userService.validateUserId(req.params.id);
@@ -60,8 +61,23 @@ router.post("/create", async (req, res) => {
 });
 
 
-router.put('/update/:user_id', async (req, res) => {
-    const user_id = req.params.user_id;
+router.post("/getUpdateDetails", async (req, res) => {
+    try {
+        console.log("hello");
+        const query = `SELECT * FROM USERS WHERE user_id=$1`;
+        const user_id = req.body.user_id;
+        const values = [user_id];       
+        const result = await db.query(query, values);
+        res.json(result.rows);  
+    } catch (error) {
+        console.error("Error retrieving books:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.post('/update', async (req, res) => {       
+    const user_id = req.body.user_id;
+    console.log(user_id);  
     const email = req.body.email;
     const phone_number = req.body.phone_number;
     const first_name = req.body.first_name;
@@ -73,7 +89,9 @@ router.put('/update/:user_id', async (req, res) => {
     try {
         const updatedUser = await userService.updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth);
         res.status(200).json(updatedUser);
+        console.log("The updated user is"+updatedUser);  
     } catch (error) {
+        console.log(error);
         if (error.message === 'User not found') {
             res.status(404).json({ "error": "User not found" });
         } else if (error.message === 'Duplicate email or phone number found') {
@@ -83,6 +101,7 @@ router.put('/update/:user_id', async (req, res) => {
         }
     }
 });
+
 
 router.post('/login', async (req, res) => {
     const user_id = req.body.user_id;
@@ -99,7 +118,7 @@ router.post('/login', async (req, res) => {
  
         const options = {
           httpOnly: true,
-          secure: false,
+          secure: false,  
           path:'/'
         };        
         const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
