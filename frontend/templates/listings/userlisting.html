@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/listing/userlisting.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../../styles/pop-ups/popUp.css"> -->
+</head>
+<body>
+    <nav class="navbar bg-light">
+        <div class="container-fluid">
+            <div class="navbar-title">
+                <img class="navbar-logo" src="../../assets/favicon.png"></img>
+                <div class="navbar-brand">Book Barter</div>
+            </div>
+            
+            <div class="d-flex">
+                <button type="button" class="btn btn-primary" onclick="window.location.href='../../index.html'">Home</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='./requests.html'">PendingActions</button>
+            </div>
+        </div>
+    </nav>
+<div class="form-container"  onsubmit="submitListing(event)">
+    <h2>Book Listing Form</h2>
+    <form id="bookListingForm">
+        <div class="form-group">
+            <label for="userName">User Name:</label>
+            <input type="text" id="userName" name="userName" disabled>
+        </div>
+        
+        <div class="form-group">
+            <label for="bookName">Book Name:</label>
+            <select id="bookName" name="bookName" required>
+                <!-- Book options will be populated by JavaScript -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bookStatus">Status:</label>
+            <select id="bookStatus" name="bookStatus">
+                <option value="available">Available</option>
+                <option value="not_available">Not Available</option>
+            </select>
+        </div>
+        <button type="submit">Submit Listing</button>
+    </form>
+</div>
+
+<script src="../../scripts/listing/userlisting.js"></script>
+</body>
+</html>
