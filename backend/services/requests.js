@@ -68,7 +68,7 @@ async function raiseBorrowRequest(
         const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
-        console.log(query);
+        // console.log(query);
         if (result.rowCount === 1) {
             console.log("Request created successfully.");
             return true;
@@ -142,7 +142,7 @@ async function invalidateOldRequests() {
 
         const result = await db.query(query);
 
-        return result.rowCount === 1;
+        return result.rowCount >= 1;
     } catch (error) {
         console.error("Error approving request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
