@@ -39,14 +39,20 @@ fdescribe("Request Routes", () => {
                 listingId: 3,
                 borrowDuration: 3,
             };
-            spyOn(requestService, "getLenderIdByListingId").and.returnValue(3);
 
             // Mock the database query response
-            const mockQueryResponse = {
-                rowCount: 1, // Simulate a successful query execution
-            };
-
-            spyOn(db, 'query').and.returnValue(mockQueryResponse);
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('book_listing')) {
+                    return {
+                        rowCount: 1,
+                        rows: [{owner_id: 3}]
+                    };
+                } else {
+                    return {
+                        rowCount: 1
+                    }
+                }
+            });
             
             const res = await request(app)
                 .post("/requests/raiseBorrowRequest")
@@ -61,9 +67,16 @@ fdescribe("Request Routes", () => {
                 listingId: 999, // Assuming this listing does not exist
                 borrowDuration: 3,
             };
-            spyOn(requestService, "getLenderIdByListingId").and.returnValue(
-                null,
-            );
+
+            // Mock the database query response
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('book_listing')) {
+                    return {
+                        rowCount: 0
+                    };
+                }
+            });
+
 
             const res = await request(app)
                 .post("/requests/raiseBorrowRequest")
@@ -88,63 +101,83 @@ fdescribe("Request Routes", () => {
     });
 
     describe("GET /getPendingActions", () => {
+
         it("should retrieve the list of pending actions for a user", async () => {
-
-            spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([
-                {
-                  id: 6,
-                  borrower_id: 4,
-                  lender_id: 1,
-                  book_listing_id: 1,
-                  borrow_duration: 7,
-                  status: "Pending"
+            // Mock response for getPendingActionsByLenderId
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('lender_id')) {
+                return [
+                    {
+                    id: 6,
+                    borrower_id: 4,
+                    lender_id: 1,
+                    book_listing_id: 1,
+                    borrow_duration: 7,
+                    status: "Pending"
+                    }
+                ];
+                } else if (query.includes('borrower_id')) {
+                return [
+                    {
+                    id: 2,
+                    borrower_id: 1,
+                    lender_id: 3,
+                    book_listing_id: 5,
+                    borrow_duration: 3,
+                    status: 'Accepted'
+                    },
+                    {
+                    id: 4,
+                    borrower_id: 1,
+                    lender_id: 4,
+                    book_listing_id: 7,
+                    borrow_duration: 9,
+                    status: 'Rejected'
+                    }
+                ];
                 }
-              ]);
-            spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([
-                {
-                  id: 2,
-                  borrower_id: 1,
-                  lender_id: 3,
-                  book_listing_id: 5,
-                  borrow_duration: 3,
-                  status: 'Accepted'
-                },
-                {
-                  id: 4,
-                  borrower_id: 1,
-                  lender_id: 4,
-                  book_listing_id: 7,
-                  borrow_duration: 9,
-                  status: 'Rejected'
-                }
-              ]);
-
+            });
+          
+            // Add more expectations as needed
             const res = await request(app).get("/requests/getPendingActions").set("authorization", token);
             
             expect(res.status).toBe(200);
-        });
+          });
+
 
         it("should retrieve no pending actions for a user", async () => {
-            spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue(null);
-            spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue(null);
-    
+
+            // Mock response for getPendingActionsByLenderId
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('lender_id')) {
+                    return [];
+                } else if (query.includes('borrower_id')) {
+                    return [];
+                }
+            });
             const res = await request(app).get("/requests/getPendingActions").set("authorization", token);
     
             expect(res.status).toBe(200);
         });
-
+        
         it("should retrieve no pending actions for a user only as a lender", async () => {
-            spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue([
-                {
-                  id: 6,
-                  borrower_id: 4,
-                  lender_id: 1,
-                  book_listing_id: 1,
-                  borrow_duration: 7,
-                  status: "Pending"
+            
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('lender_id')) {
+                    return [
+                        {
+                          id: 6,
+                          borrower_id: 4,
+                          lender_id: 1,
+                          book_listing_id: 1,
+                          borrow_duration: 7,
+                          status: "Pending"
+                        }
+                      ];
+                } else if (query.includes('borrower_id')) {
+                    return [];
                 }
-              ]);
-            spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue(null);
+            });
     
             const res = await request(app).get("/requests/getPendingActions").set("authorization", token);
     
@@ -152,17 +185,23 @@ fdescribe("Request Routes", () => {
         });
 
         it("should retrieve no pending actions for a user only as a Borrower", async () => {
-            spyOn(requestService, 'getPendingActionsByLenderId').and.returnValue(null);
-            spyOn(requestService, 'getPendingActionsByBorrowerId').and.returnValue([
-                {
-                  id: 6,
-                  borrower_id: 4,
-                  lender_id: 1,
-                  book_listing_id: 1,
-                  borrow_duration: 7,
-                  status: "Pending"
+
+            spyOn(db, 'query').and.callFake((query, values) => {
+                if (query.includes('lender_id')) {
+                    return [];
+                } else if (query.includes('borrower_id')) {
+                    return [
+                        {
+                          id: 6,
+                          borrower_id: 4,
+                          lender_id: 1,
+                          book_listing_id: 1,
+                          borrow_duration: 7,
+                          status: "Pending"
+                        }
+                      ];
                 }
-              ]);
+            });
     
             const res = await request(app).get("/requests/getPendingActions").set("authorization", token);
     
