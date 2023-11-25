@@ -2,12 +2,11 @@ const db = require("../db");
 async function createNewListing(bookListingData) {
     try {
         const result = await db.query(
-            "INSERT INTO book_listing(owner_id, book_id, status, status_code, returns_on) VALUES($1, $2, $3, $4, NOW()) RETURNING *",
+            "INSERT INTO book_listing(owner_id, book_id, status, returns_on) VALUES($1, $2, $3, NOW()) RETURNING *",
             [
                 bookListingData.owner_id,
                 bookListingData.book_id,
                 bookListingData.status,
-                bookListingData.status_code,
             ],
         );
         if (result.rowCount === 1) {
