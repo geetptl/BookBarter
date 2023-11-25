@@ -137,8 +137,17 @@ async function getUserIdfromEmail(email) {
     console.log(user_id)
     return user_id;
 }
-  
+async function getUserFirstName(id) {
+
+    const result = await db.query('SELECT first_name FROM users WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+        // User not found
+        return null;
+    }
+    const user = result.rows[0];
+    return user;
+}
 
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName
 };

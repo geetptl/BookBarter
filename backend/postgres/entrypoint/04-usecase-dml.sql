@@ -8,16 +8,16 @@ VALUES
 
 
 -- BookListing
-INSERT INTO book_listing (owner_id, book_id, status, status_code)
+INSERT INTO book_listing (owner_id, book_id, status)
 VALUES 
-(1, 1, 'Available', 1),
-(1, 2, 'Available', 1),
-(2, 3, 'Available', 1),
-(2, 4, 'Available', 1),
-(3, 5, 'Available', 1),
-(3, 6, 'Available', 1),
-(4, 7, 'Available', 1),
-(4, 8, 'Available', 1);
+(1, 1, 'Available'),
+(1, 2, 'Available'),
+(2, 3, 'Available'),
+(2, 4, 'Available'),
+(3, 5, 'Available'),
+(3, 6, 'Available'),
+(4, 7, 'Available'),
+(4, 8, 'Available');
 
 
 -- Request

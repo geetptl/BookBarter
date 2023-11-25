@@ -51,6 +51,25 @@ router.get("/getBookbyUserid/:id", async (req, res) => {
         res.status(200).json({"userListings": []});
     }
 });
+router.put("/updateAvailableBooks", async (req, res) => {
+    const updateStatusA = await listingService.updateStatusAvailable(req.body);
+    console.log(updateStatusA);
+    if (updateStatusA) {
+        res.status(200).json({ "listingUpdated": "True" }); // Status code 200 for success
+    } else {
+        res.status(400).json({ "listingUpdated": "False" }); // Status code 400 for bad request
+    }
+});
+
+router.put("/updateNotAvailableBooks", async (req, res) => {
+    const updateStatusNA = await listingService.updateStatusNotAvailable(req.body);
+    console.log(updateStatusNA);
+    if (updateStatusNA) {
+        res.status(200).json({ "listingUpdated": "True" }); // Status code 200 for success
+    } else {
+        res.status(400).json({ "listingUpdated": "False" }); // Status code 400 for bad request
+    }
+});
 
 
 module.exports = router;
