@@ -105,7 +105,6 @@ function raiseRequest(userId, listingId, bookID) {
     .then((response) => response.json())
     .then(updateStatus =>{
         console.log('Update success:', updateStatus);
-        alert(`The book is now Not Available for exchange.`);
         // Handle success response (e.g., updating UI or displaying a success message)
     })
     .catch(console.error);
