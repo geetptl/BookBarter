@@ -1,5 +1,6 @@
 const express = require("express");
 const paymentService = require("../services/payment");
+const requireAuth = require("../middleware/requireAuth");
 const router = express.Router();
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -9,7 +10,7 @@ router.get('/test', async (req, res) => {
     res.status(200).send("Test working");
 });
 
-router.post('/card/add', async (req, res) => {
+router.post('/card/add', requireAuth, async (req, res) => {
     try {
         const {
             email,
@@ -40,11 +41,24 @@ router.post('/card/add', async (req, res) => {
                 default_payment_method: paymentMethodId,
             },
         });
+        console.log(email, customer.id, userId, paymentMethodId);
         const cardId = await paymentService.addCard(email, customer.id, userId, paymentMethodId);
 
+        // Retrieve the card details
+        const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+
+        // Format the response
+        const cardDetails = {
+            last4: paymentMethod.card.last4,
+            brand: paymentMethod.card.brand,
+            exp_month: paymentMethod.card.exp_month,
+            exp_year: paymentMethod.card.exp_year
+        };
+
         res.json({
+            message: 'Card added successfully',
+            cardDetails: cardDetails,
             customerId: customer.id,
-            /*cardId: cardId ,*/
             paymentMethodId: paymentMethodId
         });
     } catch (error) {
@@ -73,10 +87,14 @@ router.get("/getCards/:borrowerId", async (req, res) => {
             exp_year: pm.card.exp_year,
           }));
           console.log(formattedCards)
+          // Check if there are any payment methods
+          console.log("paymentMethods.data.length , paymentMethods.data[0].id: ", paymentMethods.data.length , paymentMethods.data[0].id)
           // User has a card, redirect to payment (or return success response to frontend to handle the redirection)
           res.status(200).json({
-              "hasCard": true,
-              "cards":formattedCards
+              hasCard: true,
+              cardDetails:formattedCards[0],
+              customerId:customerId,
+              paymentMethods: paymentMethods.data[0].id
               // Include any other data needed for payment processing
           });
       } else {
@@ -104,25 +122,38 @@ router.post('/pay', async (req, res) => {
         customerId,
         description,
         payment_method_id, 
+        requestId 
       } = req.body;
       
 
-    // MANSI, YE PART COMPLETE KAR DE
 
-      const result = paymentService.makePayment(
+      const result = await paymentService.makePayment(
         amount,
         currency,
         customerId,
         payment_method_id,
-        description,
+        description
         )
       
   
       // If the payment intent is successful, you can send back any information needed to the client
-      res.json({
-        status: 'Success',
-        paymentIntentId: result.id
-      });
+      if (result.status === 'Success') {
+        console.log(requestId, amount, result.paymentIntentId, 'Success')
+        const paymentRecord = await paymentService.addPaymentRecord(requestId, amount, result.paymentIntentId, 'Success');
+        console.log('Payment Record Added:', paymentRecord);
+
+        res.json({
+            status: 'Success',
+            paymentIntentId: result.paymentIntentId,
+            paymentRecord: paymentRecord // Optionally send back payment record details
+        });
+      } else {
+        console.error('Payment failed:', result.error);
+        res.status(500).json({
+          status: 'Failure',
+          error: result.error.message
+        });
+      }
     } catch (error) {
       console.error('Payment failed:', error);
       res.status(500).send('Internal Server Error');

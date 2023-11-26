@@ -34,7 +34,7 @@ VALUES
 
 
 -- Payment
-INSERT INTO payment (req_id, amount, txn_id, payment_status)
+INSERT INTO payment (req_id, amount, payment_intent_id, payment_status)
 VALUES 
 (1, 10.00, 'txn12345', 'Completed'),
 (2, 15.00, 'txn67890', 'Completed'),
