@@ -20,7 +20,38 @@ function updateUser() {
         "phone_number" : document.getElementById("phonenumber").value,
         "user_id" : document.getElementById("username").value,
     };
+    document.getElementById('errorMessages').innerHTML = '';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmailValid = emailRegex.test(userData.email);
+  const phoneRegex = /^\d{10}$/; 
+  const isPhoneValid = phoneRegex.test(userData.phone_number);
+  // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
+  const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+  const isUserIdValid = userIdRegex.test(userData.user_id);
+  let message = true;
+   
+  if(!isUserIdValid){
+    console.log("user invalid")
+    showError('User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']');
+    message = false;
+    throw new Error;
+
+  }
   
+  if(!isPhoneValid && message){
+    console.log("phone invalid");
+    showError('Phone number is not valid!');
+    message = false;
+    throw new Error;
+
+  }
+
+  if(!isEmailValid && message){
+    console.log("email invalid");
+    showError('Email ID is not valid!');
+    throw new Error;
+  }
+
     fetch('http://localhost:8000/user/update', {
       method: 'POST', 
       headers: {
@@ -35,7 +66,9 @@ function updateUser() {
        
       })  
       .catch((error) => {
-        console.error('Error creating user:', error);
+        console.error('Error updating user:', error);
+        document.getElementById('customPopup').style.display = 'block';
+        document.getElementById('errorMessage').innerText = error || 'An error occurred.';
       });
   }
   
@@ -58,11 +91,12 @@ function getUser(user_id) {
         document.getElementById("last_name").value=   result[0].last_name;
         document.getElementById("phonenumber").value= result[0].phone_number;
         document.getElementById("username").value= result[0].user_id;   
-
        // document.getElementById("password").value=   result[0].user_id;
       })  
       .catch((error) => {
         console.error('Error fetching user details:', error);
+        document.getElementById('customPopup').style.display = 'block';
+        document.getElementById('errorMessage').innerText = error || 'An error occurred.';
       });
   }
      
