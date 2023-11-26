@@ -27,6 +27,7 @@ CREATE TABLE book (
     isbn TEXT NOT NULL,
     language TEXT NOT NULL
 );
+CREATE INDEX book_idx_title ON book (title);
 
 -- Genre Table
 CREATE TABLE genre (
