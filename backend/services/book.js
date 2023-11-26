@@ -22,7 +22,7 @@ async function getById(bookId) {
     }
 
     const usersWithBook = await db.query(
-        "SELECT u.* FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available'",
+        "SELECT u.*, bl.id as listingId FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available'",
         [bookId],
     );
 

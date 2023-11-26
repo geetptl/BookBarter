@@ -1,3 +1,4 @@
+
 window.onload = function () {
     const urlParams = new URLSearchParams(window.location.search);
     const bookId = urlParams.get('id');
@@ -23,6 +24,7 @@ function displayBookDetails(bookDetails) {
     const bookAuthor = bookDetails.book.author;
     const bookImg = bookDetails.book.image_url;
     const bookGenre = bookDetails.book.genre;
+    const bookID = bookDetails.book.id;
     booklistingDiv.innerHTML = "";
     const bookInfo = document.createElement("div");
     bookInfo.innerHTML = `
@@ -56,12 +58,14 @@ function displayBookDetails(bookDetails) {
         booklistingDiv.appendChild(actionDiv);
         const requestButton = actionDiv.querySelector('.approve-request-btn');
         requestButton.addEventListener('click', function() {
-        raiseRequest(user.id, user.listing_id); // Pass the user ID and the book ID to the raiseRequest function
+        console.log(user.id, user.listingid, bookID )
+        raiseRequest(user.id, user.listingid, bookID); // Pass the user ID and the book ID to the raiseRequest function
+        
         });
     });
 }
 
-function raiseRequest(userId, listingId) {
+function raiseRequest(userId, listingId, bookID) {
     console.log(userId, listingId);
     const url = 'http://localhost:8000/requests/raiseBorrowRequest';
     const data = {
@@ -85,6 +89,29 @@ function raiseRequest(userId, listingId) {
     })
     .then(jsonResponse => {
         console.log('Request creation success:', jsonResponse);
+        
+
+        fetch(`http://localhost:8000/booklisting/updateNotAvailableBooks`, {
+        method: 'PUT',
+        // body: JSON.stringify({ userId: userId }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "book_id": bookID,
+            "owner_id": userId
+          })
+    })
+    .then((response) => response.json())
+    .then(updateStatus =>{
+        console.log('Update success:', updateStatus);
+        alert(`The book is now Not Available for exchange.`);
+        // Handle success response (e.g., updating UI or displaying a success message)
+    })
+    .catch(console.error);
+
+
+
         alert("Request is raised successfully!"); // Show an alert for successful request
     })
     .catch(error => {

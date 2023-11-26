@@ -116,7 +116,7 @@ async function updateStatusNotAvailable(bookListingData){
         const bookId = bookListingData.book_id;
         const userId = bookListingData.owner_id;
         const result = await db.query(
-            `UPDATE book_listing SET status = 'Not Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
+            `UPDATE book_listing SET status = 'Not_Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
         );
         if (result.rowCount === 1) {
             console.log("Update Successful");
