@@ -42,27 +42,40 @@ async function getCardDetailsByUserId(userId) {
 }
 
 
-async function makePayment(amount, currency) {
+async function makePayment(amount, currency, customerId, payment_method_id, description) {
+  try {
+  //Create a Payment Intent: this will handle the payment process
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount, // Amount is in cents (e.g., 10 dollars = 1000 cents)
+    currency, // 'usd', 'eur', etc.
+    customer: customerId, // This should be the Stripe Customer ID
+    payment_method: payment_method_id, // This should be the ID of the payment method to charge
+    confirm: true, // This will confirm the payment at the same time
+    description, // Optional: Description of the payment
+    return_url: 'https://example.com/',
+  });
 
-  // Create a Payment Intent: this will handle the payment process
-  // const paymentIntent = await stripe.paymentIntents.create({
-  //   amount, // Amount is in cents (e.g., 10 dollars = 1000 cents)
-  //   currency, // 'usd', 'eur', etc.
-  //   customer: customerId, // This should be the Stripe Customer ID
-  //   payment_method: payment_method_id, // This should be the ID of the payment method to charge
-  //   off_session: true, // Set this to true if the customer is not present during payment
-  //   confirm: true, // This will confirm the payment at the same time
-  //   description, // Optional: Description of the payment
-  // });
-
-  // const paymentIntent = await stripe.paymentIntents.create({
-  //   amount,
-  //   currency,
-  //   payment_method_types: ['card'],
-  //   metadata: { integration_check: 'accept_a_payment' },
-  // });
-  return "DummyPaymentIntent";
+  return {
+    status: 'Success',
+    paymentIntentId: paymentIntent.id
+  };
+} catch (error) {
+  console.error('Payment failed:', error);
+  throw new Error('Payment failed. Please try again.'); // You can provide a more detailed error message
+}
 }
 
+async function addPaymentRecord(req_id, amount, payment_intent_id, payment_status) {
+  const query = `INSERT INTO payment (req_id, amount, payment_intent_id, payment_status) VALUES ($1, $2, $3, $4) RETURNING *`;
+  const values = [req_id, amount, payment_intent_id, payment_status];
 
-module.exports = { addCard, makePayment, getCardDetailsByUserId};
+  try {
+      const result = await db.query(query, values);
+      return result.rows[0];
+  } catch (err) {
+      console.error('Error adding payment record:', err);
+      throw err;
+  }
+}
+
+module.exports = { addCard, makePayment, getCardDetailsByUserId, addPaymentRecord};
