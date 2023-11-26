@@ -1,3 +1,4 @@
+-- Create temp_books table
 CREATE TABLE temp_books (
     bookId TEXT,
     title TEXT,
@@ -26,6 +27,7 @@ CREATE TABLE temp_books (
     price TEXT
 );
 
+-- Create temp_books_2 table with an additional primary key
 CREATE TABLE temp_books_2 (
     id SERIAL PRIMARY KEY,
     bookId TEXT,
@@ -55,46 +57,63 @@ CREATE TABLE temp_books_2 (
     price TEXT
 );
 
--- This file comes from https://zenodo.org/records/4265096
+-- Import data from CSV file into temp_books
+-- Note: This file comes from https://zenodo.org/records/4265096
 \copy temp_books from 'docker-entrypoint-initdb.d/books_1.Best_Books_Ever.csv' CSV HEADER;
 
-insert into temp_books_2(bookId,title,series,author,rating,description,language,isbn,genres,characters,bookFormat,edition,pages,publisher,publishDate,firstPublishDate,awards,numRatings,ratingsByStars,likedPercent,setting,coverImg,bbeScore,bbeVotes,price)
-    select bookId,title,series,author,rating,description,language,isbn,genres,characters,bookFormat,edition,pages,publisher,publishDate,firstPublishDate,awards,numRatings,ratingsByStars,likedPercent,setting,coverImg,bbeScore,bbeVotes,price from temp_books;
+-- Insert data from temp_books to temp_books_2
+INSERT INTO temp_books_2(bookId, title, series, author, rating, description, language, isbn, genres, characters, bookFormat, edition, pages, publisher, publishDate, firstPublishDate, awards, numRatings, ratingsByStars, likedPercent, setting, coverImg, bbeScore, bbeVotes, price)
+SELECT bookId, title, series, author, rating, description, language, isbn, genres, characters, bookFormat, edition, pages, publisher, publishDate, firstPublishDate, awards, numRatings, ratingsByStars, likedPercent, setting, coverImg, bbeScore, bbeVotes, price 
+FROM temp_books;
 
-delete from temp_books_2 where title is null;
-delete from temp_books_2 where author is null;
-delete from temp_books_2 where coverImg is null;
-delete from temp_books_2 where description is null;
-delete from temp_books_2 where rating is null;
-delete from temp_books_2 where isbn is null;
-delete from temp_books_2 where genres is null;
-delete from temp_books_2 where language is null;
+-- Delete records with null or empty values in specified columns
+DELETE FROM temp_books_2 WHERE title IS NULL OR title = '';
+DELETE FROM temp_books_2 WHERE author IS NULL OR author = '';
+DELETE FROM temp_books_2 WHERE coverImg IS NULL OR coverImg = '';
+DELETE FROM temp_books_2 WHERE description IS NULL OR description = '';
+DELETE FROM temp_books_2 WHERE rating IS NULL OR rating = '';
+DELETE FROM temp_books_2 WHERE isbn IS NULL OR isbn = '';
+DELETE FROM temp_books_2 WHERE genres IS NULL OR genres = '';
+DELETE FROM temp_books_2 WHERE language IS NULL OR language = '';
 
-delete from temp_books_2 where title = '';
-delete from temp_books_2 where author = '';
-delete from temp_books_2 where coverImg = '';
-delete from temp_books_2 where description = '';
-delete from temp_books_2 where rating = '';
-delete from temp_books_2 where isbn = '';
-delete from temp_books_2 where genres = '';
-delete from temp_books_2 where language = '';
+-- Insert genres into genre table
+INSERT INTO genre(name) 
+SELECT DISTINCT TRIM(BOTH '''' FROM TRIM(REGEXP_SPLIT_TO_TABLE(TRIM(TRAILING ']' FROM TRIM(LEADING '[' FROM genres)), ','))) 
+FROM temp_books_2 
+WHERE genres IS NOT NULL AND genres != '';
 
-insert into genre(name) select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) from temp_books_2 group by 1;
+-- Remove empty genre names
+DELETE FROM genre WHERE name = '';
 
-delete from genre where name='';
+-- Add a copy reference ID to book table
+ALTER TABLE book ADD COLUMN copy_ref_id INT;
 
-alter table book add column copy_ref_id int;
+-- Insert data into book table from temp_books_2
+INSERT INTO book(title, author, rating, image_url, description, isbn, language, copy_ref_id) 
+SELECT title, author, rating::DECIMAL, coverImg, description, isbn, language, id 
+FROM temp_books_2;
 
-insert into book(title, author, rating, image_url, description, isbn, language, copy_ref_id) select title, author, rating::decimal, coverImg, description, isbn, language, id from temp_books_2;
+-- Create temporary genre mapping table
+CREATE TABLE temp_genre_mapping AS 
+SELECT TRIM(BOTH '''' FROM TRIM(REGEXP_SPLIT_TO_TABLE(TRIM(TRAILING ']' FROM TRIM(LEADING '[' FROM genres)), ','))) AS genre, 
+       b.id AS book_id, 
+       b.title 
+FROM temp_books_2 t 
+JOIN book b ON b.copy_ref_id = t.id;
 
-create table temp_genre_mapping as select trim(both '''' from trim(regexp_split_to_table(trim(trailing ']' from trim(leading '[' from genres)), ','))) genre, b.id book_id, b.title from temp_books_2 t join book b on b.copy_ref_id=t.id;
+-- Create index on temp_genre_mapping for genre
+CREATE INDEX temp_genre_mapping_genre ON temp_genre_mapping(genre);
 
-create index temp_genre_mapping_genre on temp_genre_mapping(genre);
+-- Remove the copy_ref_id column from book table
+ALTER TABLE book DROP COLUMN copy_ref_id;
 
-alter table book drop column copy_ref_id;
+-- Insert data into book_genre_mapping table
+INSERT INTO book_genre_mapping (book_id, genre_id) 
+SELECT book_id, g.id AS genre_id 
+FROM temp_genre_mapping t 
+JOIN genre g ON t.genre = g.name;
 
-insert into book_genre_mapping (book_id, genre_id) select book_id, g.id genre_id from temp_genre_mapping t join genre g on t.genre=g.name;
-
-drop table temp_books;
-drop table temp_books_2;
-drop table temp_genre_mapping;
+-- Drop temporary tables
+DROP TABLE temp_books;
+DROP TABLE temp_books_2;
+DROP TABLE temp_genre_mapping;
