@@ -26,7 +26,7 @@
         const requestId = getParameterByName('requestId');
 
         // Display the ID in the 'idContainer' div
-        const idContainer = document.getElementById('idContainer');
+        const idContainer = document. ('idContainer');
         if (requestId) {
             idContainer.textContent = `${requestId}`;
         } else {
@@ -58,9 +58,10 @@
 
     <div class="action-card" hidden="true" id="confirm-payment">
         <h2>Confirm your payment of $2.00</h2>
+        <input type="hidden" id="amount" value="1000" /> <!-- Amount in cents (1000 cents = $10) -->
         <button id="pay-button">Pay</button>
     </div>
-
+    
     <script src="../../scripts/payment/payment.js"></script>
 </body>
 </html>
