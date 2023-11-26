@@ -420,4 +420,48 @@ fdescribe("Request Routes", () => {
         });
     });
 
+    describe("GET /getBorrowerIdFromRequestId", () => {
+
+        it("should get borrower id from request id successfully", async () => {
+            const mockRequestPayload = {
+                requestId: 6,
+            };
+
+            // Mock the database query response
+            const mockQueryResponse = {
+                rowCount: 1, // Simulate a successful query execution
+                rows: [{borrower_id: 3}]
+            };
+
+            spyOn(db, 'query').and.returnValue(mockQueryResponse);
+            
+            const res = await request(app)
+                .get(`/requests/getBorrowerIdFromRequestId/${mockRequestPayload.requestId}`)
+                .set("authorization", token);
+
+            expect(res.status).toBe(200);
+        });
+
+
+        it("should check if request exists before getting borrower id", async () => {
+            const mockRequestPayload = {
+                requestId: 9999,
+            };
+
+            // Mock the database query response
+            const mockQueryResponse = {
+                rowCount: 0, // Simulate a successful query execution
+            };
+
+            spyOn(db, 'query').and.returnValue(mockQueryResponse);
+            
+            const res = await request(app)
+                .get(`/requests/getBorrowerIdFromRequestId/${mockRequestPayload.requestId}`)
+                .set("authorization", token);
+
+            expect(res.status).toBe(200);
+        });
+
+    });
+
 });

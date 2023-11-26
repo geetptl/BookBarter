@@ -1,57 +1,7 @@
 const db = require("../db");
 
-async function getLenderIdByListingId(listingId) {
-    try {
-        const query = `
-            SELECT owner_id
-            FROM book_listing
-            WHERE id = $1
-        `;
 
-        const values = [listingId];
 
-        const result = await db.query(query, values);
-
-        if (result.rowCount === 1) {
-            const lenderId = result.rows[0].owner_id;
-            console.log("Lender ID retrieved successfully:", lenderId);
-            return lenderId;
-        } else {
-            console.log("Listing not found.");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error retrieving lender ID:", error);
-        throw error; // Re-throw the error to handle it at a higher level if needed.
-    }
-}
-
-async function getBorrowerIdFromRequestId(requestId) {
-    try {
-        const query = `
-            SELECT borrower_id
-            FROM request
-            WHERE id = $1
-        `;
-
-        const values = [requestId];
-
-        const result = await db.query(query, values);
-
-        if (result.rowCount === 1) {
-            console.log(result.rows[0])
-            const BorrowerId = result.rows[0].borrower_id;
-            console.log("Borrower ID retrieved successfully:", BorrowerId);
-            return BorrowerId;
-        } else {
-            console.log("Listing not found.");
-            return null;
-        }
-    } catch (error) {
-        console.error("Error retrieving Borrower ID:", error);
-        throw error; // Re-throw the error to handle it at a higher level if needed.
-    }
-}
 async function raiseBorrowRequest(
     borrowerId,
     lenderId,
@@ -168,7 +118,6 @@ async function setStatusToExpired(requestId) {
     }
 }
 
-
 async function approveRequest(requestId) {
     try {
         const query = `
@@ -225,7 +174,58 @@ async function declinePayment(requestId) {
         throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
+async function getLenderIdByListingId(listingId) {
+    try {
+        const query = `
+            SELECT owner_id
+            FROM book_listing
+            WHERE id = $1
+        `;
 
+        const values = [listingId];
+
+        const result = await db.query(query, values);
+
+        if (result.rowCount === 1) {
+            const lenderId = result.rows[0].owner_id;
+            console.log("Lender ID retrieved successfully:", lenderId);
+            return lenderId;
+        } else {
+            console.log("Listing not found.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error retrieving lender ID:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+async function getBorrowerIdFromRequestId(requestId) {
+    try {
+        const query = `
+            SELECT borrower_id
+            FROM request
+            WHERE id = $1
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        if (result.rowCount === 1) {
+            console.log(result.rows[0])
+            const BorrowerId = result.rows[0].borrower_id;
+            console.log("Borrower ID retrieved successfully:", BorrowerId);
+            return BorrowerId;
+        } else {
+            console.log("Listing not found.");
+            return null;
+        }
+    } catch (error) {
+        console.error("Error retrieving Borrower ID:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
 module.exports = {
     getLenderIdByListingId,
     raiseBorrowRequest,
