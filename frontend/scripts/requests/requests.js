@@ -271,47 +271,7 @@ function handleReject(requestId) {
     .catch(console.error);
 }
 
-function handlePaymentApprove(requestId) {
 
-    window.location.href = `../../templates/payment/pay.html?requestId=${requestId}`;
-    // // Mansi
-    // fetch(`http://localhost:8000/requests/getBorrowerIdFromRequestId/${requestId}`, {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     }
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     // console.log(data)  // DESMOND,FIX ME 
-    //     if (data["status"] === "Success") {
-    //         fetch(`http://localhost:8000/payment/getCards/${data["borrowerId"]}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             // Check if user has a card
-    //             if (data.hasCard) {
-    //                 // Redirect to payment page
-    //                 // window.location.href = `http://localhost:8000/payment/pay`; // TODO: Update with actual payment page URL
-    //                 window.location.href = `../../templates/payment/addCard.html`
-    //             } else {
-    //                 // Redirect to add card page or display message
-    //                 alert(data.message);
-    //                 window.location.href = `../../templates/payment/addCard.html?userId=${data["borrowerId"]}`; // Update with actual add card page URL
-    //             }
-    //             }
-    //         )
-    //         .catch(console.error);
-    //     } else {
-    //         alert(data.message || "Error approving the request.");
-    //     }
-    // })
-    // .catch(console.error);
-}
 
 function handlePaymentDecline(requestId) {
     // Mansi

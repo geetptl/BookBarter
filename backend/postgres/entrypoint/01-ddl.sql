@@ -104,7 +104,7 @@ CREATE TABLE payment (
     last_updated_on timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     req_id INTEGER REFERENCES request(id),
     amount DECIMAL(10, 2),
-    txn_id TEXT UNIQUE,
+    payment_intent_id TEXT UNIQUE,
     payment_status TEXT
 );
 
