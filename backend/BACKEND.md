@@ -10,6 +10,9 @@ Before anything else, you'll need a `backend/.env` file that looks like followin
 POSTGRES_USER=bookbarter_user
 POSTGRES_PASSWORD=bookbarter_pass
 POSTGRES_DB=bookbarter_db
+
+JWT_KEY=seproject
+JWT_EXPIRESIN=1h
 ```
 
 Optionally, you can add `VERBOSE=1` to enable database query logging for debugging.
