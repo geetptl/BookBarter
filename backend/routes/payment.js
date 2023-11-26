@@ -67,7 +67,7 @@ router.post('/card/add', requireAuth, async (req, res) => {
     }
 });
 
-router.get("/getCards/:borrowerId", async (req, res) => {
+router.get("/getCards/:borrowerId", requireAuth, async (req, res) => {
   try {
       const borrowerId = req.params.borrowerId
       const customerId = await paymentService.getCardDetailsByUserId(borrowerId);
@@ -114,7 +114,7 @@ router.get("/getCards/:borrowerId", async (req, res) => {
 
 
 
-router.post('/pay', async (req, res) => {
+router.post('/pay',requireAuth, async (req, res) => {
     try {
       const {
         amount,
