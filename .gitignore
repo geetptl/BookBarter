@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 .DS_Store
+
+backend/postgres/entrypoint/99*.sql
