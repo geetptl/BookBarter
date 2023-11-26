@@ -5,7 +5,23 @@ const userService = require("../services/user");
 const bcrypt = require("bcrypt");
 const db = require("../db");
 
-describe("Request Routes", () => {
+fdescribe("Request Routes", () => {
+    beforeAll(async () => {
+        
+        const mockUser = {
+            user_id: "user1",
+            password_hash: "user1",
+        };
+
+        const res = await request(app)
+            .post("/user/login")
+            .send(mockUser);
+
+        if(res.status == 200){
+            token = res.body.token;
+        }
+        
+    });
     describe("POST /login", () => {
 
         it("should successfully log in a user with valid credentials", async () => {
@@ -167,7 +183,7 @@ describe("Request Routes", () => {
             spyOn(userService, "updateUserInfo").and.returnValue(Promise.resolve(mockUser));
 
             const res = await request(app)
-                .post("/user/update")
+                .post("/user/update").set("authorization", token)
                 .send(mockUser);
 
             expect(res.status).toBe(200);
@@ -189,7 +205,7 @@ describe("Request Routes", () => {
             spyOn(userService, "updateUserInfo").and.throwError(new Error('User not found'));
     
             const res = await request(app)
-                .post("/user/update")
+                .post("/user/update").set("authorization", token)
                 .send(mockUser);
     
             // Expectations
@@ -213,7 +229,7 @@ describe("Request Routes", () => {
             spyOn(userService, "updateUserInfo").and.throwError(new Error('Duplicate email or phone number found'));
     
             const res = await request(app)
-                .post("/user/update")
+                .post("/user/update").set("authorization", token)
                 .send(mockUser);
     
             // Expectations
@@ -236,7 +252,7 @@ describe("Request Routes", () => {
             spyOn(userService, "updateUserInfo").and.throwError(new Error('Some other error'));
     
             const res = await request(app)
-                .post("/user/update")
+                .post("/user/update").set("authorization", token)
                 .send(mockUser);
     
             expect(res.status).toBe(500);

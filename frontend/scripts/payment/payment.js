@@ -1,56 +1,58 @@
-window.onload = function () {
+
+function handlePaymentApprove(requestId) {
+
+    // Display the modal
+    const paymentModal = document.getElementById('paymentModal');
+    paymentModal.style.display = 'block';
+    document.getElementById('requestId').value = requestId;
+
+    // Now, start the card checking process
+    getUserCards(requestId);
     
-    getUserCards();
+  // window.location.href = `../../templates/payment/pay.html?requestId=${requestId}`;
+}
 
-};
+function getUserCards(requestId) {
 
-function getUserCards() {
-
-    const requestId = document.getElementById('idContainer').textContent;
-
-    // Mansi
     fetch(`http://localhost:8000/requests/getBorrowerIdFromRequestId/${requestId}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then(response => response.json())
     .then(data => {
-        // console.log(data)  // DESMOND,FIX ME 
         if (data["status"] === "Success") {
             fetch(`http://localhost:8000/payment/getCards/${data["borrowerId"]}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'authorization': `${token}`
                 }
             })
             .then(response => response.json())
             .then(dataCards => {
-                // Check if user has a card
+                const modalContent = document.getElementById('paymentModalContent'); // Make sure this ID matches your modal content div
                 if (dataCards.hasCard) {
-                    // Redirect to payment page
-                    // window.location.href = `http://localhost:8000/payment/pay`; // TODO: Update with actual payment page URL
-                    // window.location.href = `../../templates/payment/addCard.html`
                     const confirmPaymentElement = document.getElementById('confirm-payment');
-                    confirmPaymentElement.removeAttribute('hidden'); 
-                    const cardElement = document.getElementById("card-details");
-                    cardElement.textContent = JSON.stringify(dataCards["cards"][0]);
+                    confirmPaymentElement.removeAttribute('hidden');
+                    console.log("your cardDetails ",  dataCards.cardDetails )
+                    document.getElementById('customerId').value = dataCards.customerId;
+                    document.getElementById('paymentMethodId').value = dataCards.paymentMethods;
+                    document.getElementById('card-last4').textContent = `**** **** **** ${dataCards.cardDetails.last4}`;
+                    document.getElementById('card-expiry').textContent = `${dataCards.cardDetails.exp_month}/${dataCards.cardDetails.exp_year}`;
+               
                 } else {
-                    // Redirect to add card page or display message
-                    alert(dataCards.message);
-                    // window.location.href = `../../templates/payment/addCard.html?userId=${data["borrowerId"]}`; // Update with actual add card page URL
-                    // saveCard();
                     const addCardElement = document.getElementById('add-card');
-                    addCardElement.removeAttribute('hidden'); 
+                    addCardElement.removeAttribute('hidden');
                 }
-                const userIdElement = document.getElementById("user-id");
+                const userIdElement = document.getElementById("userId");
                 userIdElement.textContent = data["borrowerId"];
-                }
-            )
+            })
             .catch(console.error);
         } else {
-            alert(data.message || "Error approving the request.");
+            modalContent.innerHTML = `<p>${data.message || "Error approving the request."}</p>`; // Display error message in modal
         }
     })
     .catch(console.error);
@@ -64,107 +66,140 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.addEventListener('change', ({error}) => {
         const displayError = document.getElementById('error-message');
-        if (error) {
-            displayError.textContent = error.message;
-        } else {
-            displayError.textContent = '';
-        }
+        displayError.textContent = error ? error.message : '';
     });
-
     const submitButton = document.getElementById('submit-button');
     submitButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        handleCardSubmission(stripe, elements);
+    });
 
-        const email = document.getElementById('email').value;
-        const userId = document.getElementById('user-id').textContent;
-        const cardElement = elements.getElement('card');
+    const payButton = document.getElementById('pay-now-button');
+    payButton.addEventListener('click', handlePayment);
+
+    // Close button functionality
+    const closeButton = document.querySelector('.close');
+    const paymentModal = document.getElementById('paymentModal');
+
+    closeButton.addEventListener('click', () => {
+        paymentModal.style.display = 'none';
+    });
+})
+
+async function handleCardSubmission(stripe, elements) {
+    const email = document.getElementById('email').value;
+    const userId = document.getElementById('userId').textContent;
+    const cardElement = elements.getElement('card');
+    
+    try {
         const {paymentMethod, error} = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
-            billing_details: {
-                email: email,
-            },
+            billing_details: { email: email }
         });
 
         if (error) {
-            const errorElement = document.getElementById('error-message');
-            errorElement.textContent = error.message;
+            document.getElementById('error-message').textContent = error.message;
         } else {
-            fetch('http://localhost:8000/payment/card/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    paymentMethodId: paymentMethod.id,
-                    userId: userId
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                alert('Card saved successfully!');
-            })
-            .catch(error => {
-                console.error(error);
-                alert('Error saving the card. Please try again.');
-            });
+            await saveCardDetails(email, paymentMethod.id, userId);
         }
-    });
+    } catch (error) {
+        console.error('Error in card submission (createPaymentMethod):', error);
+        alert('Error processing card details. Please try again.');
+    }
+}
 
+async function saveCardDetails(email, paymentMethodId, userId) {
+    try {
+        const response = await fetch('http://localhost:8000/payment/card/add', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json' ,
+                'authorization': `${token}`
+            },
+            body: JSON.stringify({ email, paymentMethodId, userId })
+        });
 
-    const payButton = document.getElementById('pay-button');
-    payButton.addEventListener('click', async (event) => {
-        event.preventDefault();
+        const data = await response.json();
+        console.log("this the card that you saved: ", data);
+        //alert('Card saved successfully!');
+        // Update the modal content after successful card saving
+        const addCardElement = document.getElementById('add-card');
+        addCardElement.setAttribute('hidden', true); // Hide add card section
 
-        const userId = document.getElementById('user-id').textContent;
+        const confirmPaymentElement = document.getElementById('confirm-payment');
+        confirmPaymentElement.removeAttribute('hidden'); // Show confirm payment section
 
-        const card = JSON.parse(document.getElementById("card-details").textContent);
+        // Optionally, update card info in the confirm-payment element
+        // Assuming data.cards contains the card details
+        if (data.cardDetails ) {
+            console.log("your cardDetails ",  data.cardDetails )
+            const cardDetails = data.cardDetails; // Assuming first card is the one to show
+            document.getElementById('card-last4').textContent = `**** **** **** ${cardDetails.last4}`;
+            document.getElementById('card-expiry').textContent = `${cardDetails.exp_month}/${cardDetails.exp_year}`;
 
-        fetch('http://localhost:8000/payment/card/pay', {
+            document.getElementById('customerId').value = data.customerId;
+            document.getElementById('paymentMethodId').value = data.paymentMethodId;
+                    
+        }
+    } catch (error) {
+        console.error('Error saving the card:', error);
+        alert('Error saving the card. Please try again.');
+    }
+}
+
+async function handlePayment(event) {
+    event.preventDefault();
+
+    const customerId = document.getElementById('customerId').value;
+    const paymentMethodId = document.getElementById('paymentMethodId').value;
+    const amount = parseInt(document.getElementById('amount').value * 100); 
+    const currency = 'usd'; // Assuming currency is USD
+    const description = "Book purchase";
+
+    try {
+        const requestId = document.getElementById('requestId').value;
+
+        const response = await fetch('http://localhost:8000/payment/pay', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'authorization': `${token}`
             },
             body: JSON.stringify({
-                userId: userId,
-                amount: '2',
-                currency: 'USD',
-                description: "Book purchase",
+                amount: amount,
+                currency: currency,
+                customerId: customerId,
+                payment_method_id: paymentMethodId,
+                description: description,
+                requestId: requestId
             }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data["status"] == "Success")
-            console.log(data);
-
-            // MANSI, API CALL TO LOG THE PAYMENT SUCCESS
-            // NEED TO DISCUSS HOW THE ACTUAL PAYMENT HAPPENS
-            alert('Payment Success!');
-        })
-        .catch(error => {
-            console.error(error);
-            alert('Error saving the card. Please try again.');
         });
-    
-    });
 
+        const data = await response.json();
 
-    // const actionsDiv = document.getElementById("add-card");
+        if (data.status === 'Success') {
+            // Hide the payment confirmation elements
+            const confirmPaymentElement = document.getElementById('confirm-payment');
+            confirmPaymentElement.setAttribute('hidden', true);
 
-    // // Use event delegation to capture click events on the actionsDiv
-    // actionsDiv.addEventListener("click", event => {
-    //     handleSaveCard();
-    // });
-});
+            // Update modal with success message and show the "Okay" button
+            const modalMessages = document.getElementById('modal-messages');
+            modalMessages.innerHTML = '<p>Your Payment for request_details has been received successfully.</p>';
 
-
-function handleSaveCard() {
-    
-    
+            const okButton = document.getElementById('ok-button');
+            okButton.style.display = 'block';
+            okButton.addEventListener('click', () => {
+                const paymentModal = document.getElementById('paymentModal');
+                paymentModal.style.display = 'none';
+            });
+        } else {
+            throw new Error(data.error.message || 'Payment failed');
+        }
+    } catch (error) {
+        console.error('Payment failed:', error);
+        const modalMessages = document.getElementById('modal-messages');
+        modalMessages.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
 }
 
-function removeCard() {
-    // TODO:
-}

@@ -1,12 +1,11 @@
-
+let token = null;
 window.onload = function () {
-  user_id = getTokenFromSession();
-  getUser(user_id);
+  token = sessionStorage.getItem('token');
+  getUser();
 };
 
 function getTokenFromSession() {  
   var user_id = sessionStorage.getItem('user_id');
-  console.log(user_id);
   return user_id;
 }
 
@@ -53,9 +52,10 @@ function updateUser() {
   }
 
     fetch('http://localhost:8000/user/update', {
-      method: 'POST', 
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'authorization': `${token}`
       },
       body: JSON.stringify(userData),  
     })
@@ -72,16 +72,14 @@ function updateUser() {
       });
   }
   
-function getUser(user_id) {
-  const userData ={
-    "user_id":user_id,
-  }
+function getUser() {
     fetch('http://localhost:8000/user/getUpdateDetails', {
       method: 'POST', 
       headers: {
         'Content-Type': 'application/json',
+        'authorization': `${token}`
       }, 
-      body: JSON.stringify(userData),     
+      body: JSON.stringify(),
     })
       .then((response) => response.json())  
       .then((result) => {
