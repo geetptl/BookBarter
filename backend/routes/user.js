@@ -99,23 +99,25 @@ router.post("/create", async (req, res) => {
 });
 
 
-router.post("/getUpdateDetails", async (req, res) => {
+router.post("/getUpdateDetails", requireAuth, async (req, res) => {
     try {
-        console.log("hello");
         const query = `SELECT * FROM USERS WHERE user_id=$1`;
-        const user_id = req.body.user_id;
+        const user_id = req.user_session.user.user_id;
         const values = [user_id];       
         const result = await db.query(query, values);
-        res.json(result.rows);  
+        res.status(200).json(result.rows);  
     } catch (error) {
-        console.error("Error retrieving books:", error);
+        console.error("Error retrieving user:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-router.post('/update', async (req, res) => {       
+router.post('/update', requireAuth, async (req, res) => {
+    var userId = req.user_session.user.id
+    if(!userId) {
+        res.status(404).json({ "error": "Unauthorized User" });
+    }
     const user_id = req.body.user_id;
-    console.log(user_id);  
     const email = req.body.email;
     console.log(email);
     const phone_number = req.body.phone_number;
