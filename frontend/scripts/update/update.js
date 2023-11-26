@@ -18,6 +18,7 @@ function updateUser() {
         "last_name" :document.getElementById("last_name").value,
         "phone_number" : document.getElementById("phonenumber").value,
         "user_id" : document.getElementById("username").value,
+        "original_user_id":user_id,
     };
     document.getElementById('errorMessages').innerHTML = '';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

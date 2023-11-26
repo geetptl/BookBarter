@@ -48,7 +48,7 @@ async function create(
         }
     }
 }
-async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
+async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth,original_user_id) {
     try {
         // Check if the new email or phone number already exists in the database for other users.
         const checkDuplicateQuery = `
@@ -101,7 +101,6 @@ async function login(user_id, password) {
         return null;
     }
     const user = result.rows[0];
-
     // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
 

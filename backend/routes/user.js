@@ -180,18 +180,19 @@ router.post('/update', requireAuth, async (req, res) => {
 });
 
 
-router.post('/login', async (req, res) => {
+
+router.post('/login', requireAuth,async (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password_hash;
+    var userId = req.user_session.user.id
   
     try {
-      const loggedInUser = await userService.login(user_id, password);
+      const loggedInUser = await userService.login(userId, password);
       console.log(loggedInUser)
       if(loggedInUser=="incorrect"){
         res.status(400).json({ "User Login": "Incorrect" });
       }
-      else if (loggedInUser) {
-        
+      else if (loggedInUser) {  
         const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
           expiresIn: process.env.JWT_EXPIRESIN
         });
@@ -204,14 +205,20 @@ router.post('/login', async (req, res) => {
         const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
         res.setHeader('Set-Cookie', cookieString);
         // Send the response here after setting the cookie.
+        if(loggedInUser.admin==1){
+            res.status(200).json({ "Admin Login": "True", "token": token})
+        }
+        //pass to front end and show admin button
+        else{  
         res.status(200).json({ "User Login": "True", "token": token});
-      } else {
+      }} else {
         res.status(400).json({ "User Login": "False" });
       }
     } catch (error) {
       res.status(500).json({ "error": "Server error" });
     }
   });
+  
 
 
 router.get('/getUsername/:userId', async (req, res) => {
@@ -245,6 +252,29 @@ router.get('/getFirstname/:userId', async (req, res) => {
 
     } catch(error) {
         res.status(500).json({ "error": "Server error" });
+    }
+});
+
+
+router.get("/getUserDetailsforAdmin", async (req, res) => {
+    try {
+        const query = `SELECT * FROM USERS`;      
+        const result = await db.query(query);
+        res.json(result.rows);  
+    } catch (error) {
+        console.error("Error retrieving users:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.get("/getRequestDetailsforAdmin", async (req, res) => {
+    try {
+        const query = `SELECT * FROM REQUEST`;      
+        const result = await db.query(query);
+        res.json(result.rows);  
+    } catch (error) {
+        console.error("Error retrieving requests:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
