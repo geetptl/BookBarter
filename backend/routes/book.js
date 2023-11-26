@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get("/get/:bookId", async (req, res) => {
     const bookData = await bookService.getById(req.params.bookId);
-
+    console.log(bookData);
     if (bookData) {
         res.json(bookData);
     } else {

@@ -12,6 +12,9 @@ POSTGRES_PASSWORD=bookbarter_pass
 POSTGRES_DB=bookbarter_db
 ```
 
+Optionally, you can add `VERBOSE=1` to enable database query logging for debugging.
+Commenting this variable with a `#` or setting it to zero will stop the logging.
+
 ### Docker compose up
 
 This deploys a multi-container application, made of a `postgres` database and an `adminer` database moniter.
