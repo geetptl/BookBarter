@@ -9,7 +9,7 @@ router.get(["/", "/node", "/nodejs"], async (req, res) => {
 
 router.get("/postgres", async (req, res) => {
     try {
-        const result = await db.query("SELECT id, full_name FROM contributors");
+        const result = await db.query("SELECT 1+1;");
         if (result) {
             res.send("postgres is connected");
         } else {

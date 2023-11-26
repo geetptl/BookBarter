@@ -25,8 +25,13 @@ function validateLogin() {
         .then((response) => response.json())
         .then((result) => {
             console.log('User logged in:', result);
-            if(result["User Login"]=='False'){
+            if(result["User Login"]=='Incorrect'){
                 document.getElementById('customPopup').style.display = 'block';
+                document.getElementById('errorMessages').textContent = "Username/Password combination incorrect!";
+            }
+            else if(result["User Login"]=='False'){
+                document.getElementById('customPopup').style.display = 'block';
+                document.getElementById('errorMessages').textContent = "User doesn't exist!";
                 document.getElementById('username').value = "";
                 document.getElementById('password').value = "";
             }

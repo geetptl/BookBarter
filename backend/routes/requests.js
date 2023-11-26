@@ -113,6 +113,14 @@ router.put("/setStatusToExpired", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
+        // Input Data Validation
+        if (!requestId || typeof requestId !== 'string') {
+            return res.status(400).json({
+                "status": "Invalid input",
+                "message": "Request ID must be a non-empty string."
+            });
+        }
+
         // Call the approveRequest service to approve the request
         const result = await requestService.setStatusToExpired(requestId);
 
@@ -159,6 +167,14 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
+        // Input Data Validation
+        if (!requestId || typeof requestId !== 'string') {
+            return res.status(400).json({
+                "status": "Invalid input",
+                "message": "Request ID must be a non-empty string."
+            });
+        }
+
         // Call the approveRequest service to approve the request
         const result = await requestService.approveRequest(requestId);
 
@@ -185,6 +201,14 @@ router.put("/rejectRequest", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
+        // Input Data Validation
+        if (!requestId || typeof requestId !== 'string') {
+            return res.status(400).json({
+                "status": "Invalid input",
+                "message": "Request ID must be a non-empty string."
+            });
+        }
+
         // Call the rejectRequest service to reject the request
         const result = await requestService.rejectRequest(requestId);
 
@@ -210,6 +234,14 @@ router.put("/declinePayment", requireAuth, async (req, res) => {
     try {
         const requestId = req.body.requestId;
 
+        // Input Data Validation
+        if (!requestId || typeof requestId !== 'string') {
+            return res.status(400).json({
+                "status": "Invalid input",
+                "message": "Request ID must be a non-empty string."
+            });
+        }
+
         // Call the rejectRequest service to reject the request
         const result = await requestService.declinePayment(requestId);
 
@@ -234,8 +266,17 @@ router.put("/declinePayment", requireAuth, async (req, res) => {
 router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, res) => {
 
     try {
+
         // Create a list of pending actions for a user both as a borrower and a lender.
-        const requestId = req.params.requestId;
+        const requestId = parseInt(req.params.requestId, 10);
+
+        if (isNaN(parsedRequestId)) {
+            return res.status(400).json({
+                status: 'Bad Request',
+                message: 'Invalid requestId format. requestId must be an integer.'
+            });
+        }
+
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
         const borrowerId =
             await requestService.getBorrowerIdFromRequestId(requestId);

@@ -71,8 +71,6 @@ async function getPendingActionsByBorrowerId(borrowerId) {
 
         const result = await db.query(query, values);
 
-        //console.log(result.rows)
-
         if (result.rowCount > 0) {
             return result.rows;
         } else {
@@ -94,7 +92,7 @@ async function invalidateOldRequests() {
 
         const result = await db.query(query);
 
-        return result.rowCount >= 0;
+        return result.rowCount >= 1;
     } catch (error) {
         console.error("Error approving request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.

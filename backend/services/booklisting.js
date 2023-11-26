@@ -2,12 +2,11 @@ const db = require("../db");
 async function createNewListing(bookListingData) {
     try {
         const result = await db.query(
-            "INSERT INTO book_listing(owner_id, book_id, status, status_code, returns_on) VALUES($1, $2, $3, $4, NOW()) RETURNING *",
+            "INSERT INTO book_listing(owner_id, book_id, status, returns_on) VALUES($1, $2, $3, NOW()) RETURNING *",
             [
                 bookListingData.owner_id,
                 bookListingData.book_id,
                 bookListingData.status,
-                bookListingData.status_code,
             ],
         );
         if (result.rowCount === 1) {
@@ -90,9 +89,54 @@ async function getBooksbyUserid(userid){
 
 }
 
+async function updateStatusAvailable(bookListingData){
+    try {
+        const bookId = bookListingData.book_id;
+        const userId = bookListingData.owner_id;
+        console.log(bookId, userId)
+        const result = await db.query(
+            `UPDATE book_listing SET status = 'Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
+        );
+        if (result.rowCount === 1) {
+            console.log("Update Successful");
+            return true;
+        } else {
+            console.log("Failed to update");
+            return false;
+        }
+    }
+    catch(error){
+        console.error("Error updating listing:", error);
+        throw error;
+    }
+}
+
+async function updateStatusNotAvailable(bookListingData){
+    try {
+        const bookId = bookListingData.book_id;
+        const userId = bookListingData.owner_id;
+        const result = await db.query(
+            `UPDATE book_listing SET status = 'Not_Available' WHERE owner_id = ${userId} AND book_id = ${bookId};`
+        );
+        if (result.rowCount === 1) {
+            console.log("Update Successful");
+            return true;
+        } else {
+            console.log("Failed to update");
+            return false;
+        }
+    }
+    catch(error){
+        console.error("Error updating listing:", error);
+        throw error;
+    }
+}
+
 module.exports = {
     createNewListing,
     getBookName,
     getBookListing,
-    getBooksbyUserid
+    getBooksbyUserid,
+    updateStatusNotAvailable,
+    updateStatusAvailable
 };
