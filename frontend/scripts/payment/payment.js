@@ -1,16 +1,17 @@
 
 function handlePaymentApprove(requestId) {
+    // Reset the modal to its default state
+    resetPaymentModal();
+
+    // Set the requestId in a hidden input for later use
+    document.getElementById('requestId').value = requestId;
 
     // Display the modal
     const paymentModal = document.getElementById('paymentModal');
     paymentModal.style.display = 'block';
-    document.getElementById('requestId').value = requestId;
 
     // Now, start the card checking process
-    getUserCards(requestId);
-    
-  // window.location.href = `../../templates/payment/pay.html?requestId=${requestId}`;
-}
+    getUserCards(requestId);}
 
 function getUserCards(requestId) {
 
@@ -203,3 +204,21 @@ async function handlePayment(event) {
     }
 }
 
+function resetPaymentModal() {
+    // Hide the success message and "Okay" button
+    const modalMessages = document.getElementById('modal-messages');
+    modalMessages.innerHTML = '';
+    const okButton = document.getElementById('ok-button');
+    okButton.style.display = 'none';
+
+    // Reset and show the payment confirmation section
+    const confirmPaymentElement = document.getElementById('confirm-payment');
+    confirmPaymentElement.removeAttribute('hidden');
+
+    // Reset other elements as needed (e.g., error messages, card details)
+    document.getElementById('payment-errors').textContent = '';
+    // Reset card details, amount, etc.
+    document.getElementById('card-last4').textContent = '';
+    document.getElementById('card-expiry').textContent = '';
+    document.getElementById('amount').value = '10.00'; // Reset to default or specific value
+}
