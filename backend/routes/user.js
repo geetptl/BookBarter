@@ -204,7 +204,6 @@ router.post('/login', async (req, res) => {
         const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
         res.setHeader('Set-Cookie', cookieString);
         // Send the response here after setting the cookie.
-        console.log(token);
         res.status(200).json({ "User Login": "True", "token": token});
       } else {
         res.status(400).json({ "User Login": "False" });
