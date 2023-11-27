@@ -148,6 +148,26 @@ async function getUserFirstName(id) {
     return user;
 }
 
+async function getUser(id) {
+
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+        // User not found
+        return null;
+    }
+    const user = result.rows[0];
+    return user;
+}
+
+async function deleteUserById(id) {
+    try {
+        const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
+        console.log("Successfully Deleted user ", id);
+    } catch(error) {
+        console.log("Error while performing delete operation on ", id)
+    }
+}
+
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUser, deleteUserById
 };
