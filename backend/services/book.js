@@ -6,7 +6,7 @@ async function getGenres(bookId) {
         [bookId],
     );
     let genres = new Set();
-    genreResult.rows.forEach((elem) => {
+    genreResult.forEach((elem) => {
         genres.add(elem.genre);
     });
     return Array.from(genres);
@@ -17,7 +17,7 @@ async function getById(bookId) {
     const bookResult = await db.query("SELECT * FROM book WHERE id=$1", [
         bookId,
     ]);
-    if (bookResult.rows.length == 0) {
+    if (!bookResult) {
         return null;
     }
 
@@ -26,12 +26,12 @@ async function getById(bookId) {
         [bookId],
     );
 
-    let bookRes = bookResult.rows[0];
+    let bookRes = bookResult[0];
     bookRes.genres = await getGenres(bookId);
 
     return {
         book: bookRes,
-        users: usersWithBook.rows,
+        users: usersWithBook,
     };
 }
 
