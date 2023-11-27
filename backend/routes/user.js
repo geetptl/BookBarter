@@ -133,15 +133,15 @@ router.post('/update', requireAuth, async (req, res) => {
         const isEmailValid = emailRegex.test(email);
         const phoneRegex = /^\d{10}$/; 
         const isPhoneValid = phoneRegex.test(phone_number);
-        // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
-        const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+        // User ID validation for alphanumeric characters, !, ., _ and length between 4-20 characters
+        const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;  
         const isUserIdValid = userIdRegex.test(user_id);
 
         if(!isUserIdValid){
             console.log("user invalid");
             res.status(400).json({
                 "User Updated": "False",
-                error: "User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
+                error: "User ID is not valid! Please enter a valid username, 4-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
             });
             return;
             }
@@ -178,21 +178,20 @@ router.post('/update', requireAuth, async (req, res) => {
         }
     }  
 });
+  
 
-
-
-router.post('/login', requireAuth,async (req, res) => {
+router.post('/login', async (req, res) => {
     const user_id = req.body.user_id;
     const password = req.body.password_hash;
-    var userId = req.user_session.user.id
   
     try {
-      const loggedInUser = await userService.login(userId, password);
+      const loggedInUser = await userService.login(user_id, password);
       console.log(loggedInUser)
       if(loggedInUser=="incorrect"){
         res.status(400).json({ "User Login": "Incorrect" });
       }
-      else if (loggedInUser) {  
+      else if (loggedInUser) {
+        
         const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
           expiresIn: process.env.JWT_EXPIRESIN
         });
@@ -205,20 +204,14 @@ router.post('/login', requireAuth,async (req, res) => {
         const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
         res.setHeader('Set-Cookie', cookieString);
         // Send the response here after setting the cookie.
-        if(loggedInUser.admin==1){
-            res.status(200).json({ "Admin Login": "True", "token": token})
-        }
-        //pass to front end and show admin button
-        else{  
         res.status(200).json({ "User Login": "True", "token": token});
-      }} else {
+      } else {
         res.status(400).json({ "User Login": "False" });
       }
     } catch (error) {
       res.status(500).json({ "error": "Server error" });
     }
   });
-  
 
 
 router.get('/getUsername/:userId', async (req, res) => {
@@ -258,24 +251,22 @@ router.get('/getFirstname/:userId', async (req, res) => {
 
 router.get("/getUserDetailsforAdmin", async (req, res) => {
     try {
-        const query = `SELECT * FROM USERS`;      
-        const result = await db.query(query);
-        res.json(result.rows);  
-    } catch (error) {
+        const getUserInfo = await userService.getUserInfo();
+        res.status(200).json(getUserInfo.rows);
+    } catch (error) { 
         console.error("Error retrieving users:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
-
+  
 router.get("/getRequestDetailsforAdmin", async (req, res) => {
     try {
-        const query = `SELECT * FROM REQUEST`;      
-        const result = await db.query(query);
-        res.json(result.rows);  
-    } catch (error) {
+        const getRequestInfo = await userService.getRequestInfo();
+        res.status(200).json(getRequestInfo); 
+    } catch (error) {   
         console.error("Error retrieving requests:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-module.exports = router;
+module.exports = router;  

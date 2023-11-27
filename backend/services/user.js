@@ -124,6 +124,26 @@ async function getUsername(id) {
     return user;
 }
 
+async function getUserInfo(){
+    const query = `SELECT id,created_on,last_updated_on,user_id,email,phone_number,first_name,last_name,latitude,longitude,is_auth,is_admin from users`;      
+    const result = await db.query(query);
+    if (result.rows.length === 0) {
+        //  No users found
+        return null;
+    }
+    return result;
+}
+
+async function getRequestInfo(){
+    const query = `SELECT * FROM REQUEST`;      
+    const result = await db.query(query);
+    if (result.rows.length === 0) {
+        //  No users found
+        return null;
+    }
+    return result;  
+}
+  
 async function getUserIdfromEmail(email) {
 
     const result = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -148,5 +168,5 @@ async function getUserFirstName(id) {
 }
 
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo  
 };

@@ -33,13 +33,13 @@ function showPopup1() {
   const phoneRegex = /^\d{10}$/; 
   const isPhoneValid = phoneRegex.test(userData.phone_number);
   // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
-  const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+  const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;
   const isUserIdValid = userIdRegex.test(userData.user_id);
   let message = true;
    
   if(!isUserIdValid){
     console.log("user invalid")
-    showError('User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']');
+    showError('User ID is not valid! Please enter a valid username, 4-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']');
     message = false;
     throw new Error;
 
