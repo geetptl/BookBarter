@@ -248,16 +248,9 @@ router.get('/getFirstname/:userId', async (req, res) => {
     }
 });
 
-router.post("/delete", requireAuth, async(req, res) => {
+router.delete("/deleteUser", requireAuth, async(req, res) => {
     var userId = req.user_session.user.id
-    if(!userId) {
-        res.status(404).json({ "error": "Unauthorized User" });
-    }
     try {
-        const result = userService.getUser(userId);
-        if(result == null) {
-            res.status(404).json({"error": "User does not exist!!"});
-        }
         userService.deleteUserById(userId);
         res.status(200).json({"User Deleted": "Successfully"});
     } catch (error) {
