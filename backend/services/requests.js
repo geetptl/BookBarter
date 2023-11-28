@@ -12,14 +12,14 @@ async function raiseBorrowRequest(
         // Use placeholders to prevent SQL injection
         const query = `
             INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
-            VALUES ($1, $2, $3, NOW() + INTERVAL '2 days', $4, 'Pending')
+            VALUES (?, ?, ?, datetime('now', '+2 days'), ?, 'Pending')
         `;
 
         const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
         // console.log(query);
-        if (result.rowCount === 1) {
+        if (result.length === 1) {
             console.log("Request created successfully.");
             return true;
         } else {
@@ -37,17 +37,17 @@ async function getPendingActionsByLenderId(lenderId) {
         const query = `
             SELECT *
             FROM request
-            WHERE lender_id = $1
+            WHERE lender_id = ?
             AND status <> 'Expired'
-            AND time_to_live >= NOW() - INTERVAL '2 days'; 
+            AND datetime(time_to_live) >= datetime('now', '-2 days');
         `;
 
         const values = [lenderId];
 
         const result = await db.query(query, values);
-
-        if (result.rowCount > 0) {
-            return result.rows;
+        
+        if (result.length > 0) {
+            return result;
         } else {
             return null; // No requests found for the lender
         }
@@ -57,22 +57,23 @@ async function getPendingActionsByLenderId(lenderId) {
     }
 }
 
+
 async function getPendingActionsByBorrowerId(borrowerId) {
     try {
         const query = `
             SELECT *
             FROM request
-            WHERE borrower_id = $1
+            WHERE borrower_id =?
             AND status <> 'Expired'
-            AND time_to_live >= NOW() - INTERVAL '2 days';
+            AND datetime(time_to_live) >= datetime('now', '-2 days');
         `;
 
         const values = [borrowerId];
 
         const result = await db.query(query, values);
 
-        if (result.rowCount > 0) {
-            return result.rows;
+        if (result.length > 0) {
+            return result;
         } else {
             return null; // No requests found for the borrower
         }
@@ -87,12 +88,12 @@ async function invalidateOldRequests() {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE time_to_live < NOW() - INTERVAL '2 days';
+            WHERE datetime(time_to_live) >= datetime('now', '-2 days');
         `;
 
         const result = await db.query(query);
 
-        return result.rowCount >= 1;
+        return result.length >= 1;
     } catch (error) {
         console.error("Error approving request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
@@ -104,14 +105,14 @@ async function closeRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [requestId];
 
         const result = await db.query(query, values);
 
-        return result.rowCount === 1;
+        return result.length === 1;
     } catch (error) {
         console.error("Error closing request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
@@ -123,14 +124,14 @@ async function approveRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Accepted'
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [requestId];
 
         const result = await db.query(query, values);
 
-        return result.rowCount === 1;
+        return result.length === 1;
     } catch (error) {
         console.error("Error approving request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
@@ -142,14 +143,14 @@ async function rejectRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Rejected'
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [requestId];
 
         const result = await db.query(query, values);
 
-        return result.rowCount === 1;
+        return result.length === 1;
     } catch (error) {
         console.error("Error rejecting request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
@@ -161,14 +162,14 @@ async function declinePayment(requestId) {
         const query = `
             UPDATE request
             SET status = 'PaymentDeclined'
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [requestId];
 
         const result = await db.query(query, values);
 
-        return result.rowCount === 1;
+        return result.length === 1;
     } catch (error) {
         console.error("Error declining payment request:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
@@ -179,15 +180,15 @@ async function getLenderIdByListingId(listingId) {
         const query = `
             SELECT owner_id
             FROM book_listing
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [listingId];
 
         const result = await db.query(query, values);
 
-        if (result.rowCount === 1) {
-            const lenderId = result.rows[0].owner_id;
+        if (result.length === 1) {
+            const lenderId = result[0].owner_id;
             console.log("Lender ID retrieved successfully:", lenderId);
             return lenderId;
         } else {
@@ -205,16 +206,16 @@ async function getBorrowerIdFromRequestId(requestId) {
         const query = `
             SELECT borrower_id
             FROM request
-            WHERE id = $1
+            WHERE id = ?;
         `;
 
         const values = [requestId];
 
         const result = await db.query(query, values);
 
-        if (result.rowCount === 1) {
-            console.log(result.rows[0])
-            const BorrowerId = result.rows[0].borrower_id;
+        if (result.length === 1) {
+            console.log(result[0])
+            const BorrowerId = result[0].borrower_id;
             console.log("Borrower ID retrieved successfully:", BorrowerId);
             return BorrowerId;
         } else {
