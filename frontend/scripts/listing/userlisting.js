@@ -3,9 +3,6 @@ let token = null
 window.onload = function () {
     token = sessionStorage.getItem('token');
     console.log(sessionStorage);
-    //const tempUserId = document.getElementById('idContainer');
-    
-    //const userId = tempUserId.textContent;
 
     userId = 2;
 

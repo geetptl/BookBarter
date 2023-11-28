@@ -44,7 +44,7 @@ function displayBookDetails(bookDetails) {
     </div>
     `
     booklistingDiv.appendChild(bookInfo);
-    
+    console.log(bookDetails.users);
     bookDetails.users.forEach((user) => {
         //usersListHTML += `<li>${user.first_name} ${user.last_name} - ${user.email}</li>`;
         const actionDiv = document.createElement("div");
@@ -62,22 +62,20 @@ function displayBookDetails(bookDetails) {
         booklistingDiv.appendChild(actionDiv);
         const requestButton = actionDiv.querySelector('.approve-request-btn');
         requestButton.addEventListener('click', function() {
-        console.log(user.id, user.listingid, bookID )
-        raiseRequest(user.id, user.listingid, bookID); // Pass the user ID and the book ID to the raiseRequest function
+        raiseRequest(user.id, user.listingId, bookID); // Pass the user ID and the book ID to the raiseRequest function
         
         });
     });
 }
 
-function raiseRequest(userId, listingId, bookID) {
-    console.log(userId, listingId);
+function raiseRequest(userId, listingId, bookId) {
     const url = 'http://localhost:8000/requests/raiseBorrowRequest';
     const data = {
         borrowerId: userId, 
         borrowDuration: "5",
         listingId: listingId
     };
-
+    
     fetch(url, {
         method: 'POST',
         headers: {
@@ -105,14 +103,13 @@ function raiseRequest(userId, listingId, bookID) {
             'authorization': `${token}`
         },
         body: JSON.stringify({
-            "book_id": bookID,
+            "book_id": bookId,
             "owner_id": userId
           })
     })
     .then((response) => response.json())
     .then(updateStatus =>{
         console.log('Update success:', updateStatus);
-        // Handle success response (e.g., updating UI or displaying a success message)
     })
     .catch(console.error);
 
