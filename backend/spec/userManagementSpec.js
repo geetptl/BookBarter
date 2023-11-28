@@ -5,7 +5,7 @@ const userService = require("../services/user");
 const bcrypt = require("bcrypt");
 const db = require("../db");
 
-fdescribe("Request Routes", () => {
+describe("Request Routes", () => {
     beforeAll(async () => {
         
         const mockUser = {
