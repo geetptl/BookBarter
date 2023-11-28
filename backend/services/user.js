@@ -167,6 +167,16 @@ async function getUserFirstName(id) {
     return user;
 }
 
+async function deleteUserById(id) {
+    try {
+        const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
+        console.log("Successfully Deleted user ", id);
+        return result;
+    } catch(error) {
+        console.log("Error while performing delete operation on ", id)
+    }
+}
+
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo  
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo, deleteUserById
 };
