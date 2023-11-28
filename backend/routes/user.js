@@ -36,7 +36,7 @@ router.post("/create", async (req, res) => {
         const phoneRegex = /^\d{10}$/; 
         const isPhoneValid = phoneRegex.test(phone_number);
         // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
-        const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+        const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;
         const isUserIdValid = userIdRegex.test(user_id);
         
         if(!isUserIdValid){
@@ -77,8 +77,6 @@ router.post("/create", async (req, res) => {
             longitude,
             is_auth,
         );
-        console.log("newUser");
-        console.log(newUser);
         if (newUser) {
             res.status(200).json({ "User Created": "True" });
         }
