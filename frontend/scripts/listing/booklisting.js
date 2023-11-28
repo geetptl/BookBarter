@@ -1,12 +1,16 @@
+let token = null;
 
 window.onload = function () {
+    token = sessionStorage.getItem('token');
+    console.log(token);
     const urlParams = new URLSearchParams(window.location.search);
     const bookId = urlParams.get('id');
     if (bookId) {
         fetch(`http://localhost:8000/book/get/${bookId}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then((response) => response.json())
@@ -78,6 +82,8 @@ function raiseRequest(userId, listingId, bookID) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'authorization': `${token}`
+            
         },
         body: JSON.stringify(data)
     })
@@ -95,7 +101,8 @@ function raiseRequest(userId, listingId, bookID) {
         method: 'PUT',
         // body: JSON.stringify({ userId: userId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify({
             "book_id": bookID,

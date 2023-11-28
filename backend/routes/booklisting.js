@@ -1,10 +1,12 @@
 const listingService = require("../services/booklisting");
 const Router = require("express-promise-router");
 const express = require("express");
+const requireAuth = require("../middleware/requireAuth");
+
 const router = express.Router();
 
 //Registered User adding their listings
-router.post("/createListing", async (req, res) => {
+router.post("/createListing", requireAuth, async (req, res) => {
     const newListing = await listingService.createNewListing(req.body);
     if (newListing) {
         res.status(200).json({ "listingCreated": "True" }); // Status code 200 for success
@@ -38,7 +40,7 @@ router.get("/getBookListing/:id", async (req, res) => {
     }
 });
 
-router.get("/getBookbyUserid/:id", async (req, res) => {
+router.get("/getBookbyUserid/:id", requireAuth, async (req, res) => {
     const getBooksbyUserid = await listingService.getBooksbyUserid(req.params.id);
     console.log(getBooksbyUserid);
     if (getBooksbyUserid) {
@@ -51,7 +53,7 @@ router.get("/getBookbyUserid/:id", async (req, res) => {
         res.status(200).json({"userListings": []});
     }
 });
-router.put("/updateAvailableBooks", async (req, res) => {
+router.put("/updateAvailableBooks", requireAuth, async (req, res) => {
     const updateStatusA = await listingService.updateStatusAvailable(req.body);
     console.log(updateStatusA);
     if (updateStatusA) {
@@ -61,7 +63,7 @@ router.put("/updateAvailableBooks", async (req, res) => {
     }
 });
 
-router.put("/updateNotAvailableBooks", async (req, res) => {
+router.put("/updateNotAvailableBooks", requireAuth, async (req, res) => {
     const updateStatusNA = await listingService.updateStatusNotAvailable(req.body);
     console.log(updateStatusNA);
     if (updateStatusNA) {

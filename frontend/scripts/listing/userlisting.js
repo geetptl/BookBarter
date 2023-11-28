@@ -1,6 +1,8 @@
 
-
+let token = null
 window.onload = function () {
+    token = sessionStorage.getItem('token');
+    console.log(sessionStorage);
     //const tempUserId = document.getElementById('idContainer');
     
     //const userId = tempUserId.textContent;
@@ -12,7 +14,8 @@ window.onload = function () {
         method: 'GET',
         // body: JSON.stringify({ userId: userId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then((response) => response.json())
@@ -29,7 +32,8 @@ window.onload = function () {
         method: 'GET',
         // body: JSON.stringify({ userId: userId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         }
     })
     .then((response) => response.json())
@@ -77,7 +81,8 @@ function submitListing(event) {
         method: 'PUT',
         // body: JSON.stringify({ userId: userId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify({
             "book_id": bookId,
@@ -97,7 +102,8 @@ function submitListing(event) {
         method: 'PUT',
         // body: JSON.stringify({ userId: userId }),
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify({
             "book_id": bookId,
