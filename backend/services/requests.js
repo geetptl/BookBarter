@@ -99,7 +99,7 @@ async function invalidateOldRequests() {
     }
 }
 
-async function setStatusToExpired(requestId) {
+async function closeRequest(requestId) {
     try {
         const query = `
             UPDATE request
@@ -234,7 +234,7 @@ module.exports = {
     invalidateOldRequests,
     approveRequest,
     rejectRequest,
-    setStatusToExpired,
+    closeRequest,
     getBorrowerIdFromRequestId,
     declinePayment
 };

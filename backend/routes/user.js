@@ -133,15 +133,15 @@ router.post('/update', requireAuth, async (req, res) => {
         const isEmailValid = emailRegex.test(email);
         const phoneRegex = /^\d{10}$/; 
         const isPhoneValid = phoneRegex.test(phone_number);
-        // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
-        const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+        // User ID validation for alphanumeric characters, !, ., _ and length between 4-20 characters
+        const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;  
         const isUserIdValid = userIdRegex.test(user_id);
 
         if(!isUserIdValid){
             console.log("user invalid");
             res.status(400).json({
                 "User Updated": "False",
-                error: "User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
+                error: "User ID is not valid! Please enter a valid username, 4-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
             });
             return;
             }
@@ -178,7 +178,7 @@ router.post('/update', requireAuth, async (req, res) => {
         }
     }  
 });
-
+  
 
 router.post('/login', async (req, res) => {
     const user_id = req.body.user_id;
@@ -245,6 +245,26 @@ router.get('/getFirstname/:userId', async (req, res) => {
 
     } catch(error) {
         res.status(500).json({ "error": "Server error" });
+    }
+});
+
+router.get("/getUserDetailsforAdmin", async (req, res) => {
+    try {
+        const getUserInfo = await userService.getUserInfo();
+        res.status(200).json(getUserInfo.rows);
+    } catch (error) { 
+        console.error("Error retrieving users:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+  
+router.get("/getRequestDetailsforAdmin", async (req, res) => {
+    try {
+        const getRequestInfo = await userService.getRequestInfo();
+        res.status(200).json(getRequestInfo); 
+    } catch (error) {   
+        console.error("Error retrieving requests:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
