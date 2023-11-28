@@ -185,33 +185,30 @@ router.post('/login', async (req, res) => {
     const password = req.body.password_hash;
   
     try {
-      const loggedInUser = await userService.login(user_id, password);
-      console.log(loggedInUser)
-      if(loggedInUser=="incorrect"){
-        res.status(400).json({ "User Login": "Incorrect" });
-      }
-      else if (loggedInUser) {
-        
-        const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
-          expiresIn: process.env.JWT_EXPIRESIN
-        });
- 
-        const options = {
-          httpOnly: true,
-          secure: false,  
-          path:'/'
-        };        
-        const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
-        res.setHeader('Set-Cookie', cookieString);
-        // Send the response here after setting the cookie.
-        res.status(200).json({ "User Login": "True", "token": token});
-      } else {
-        res.status(400).json({ "User Login": "False" });
-      }
+        const loggedInUser = await userService.login(user_id, password);
+        console.log(loggedInUser)
+        if (loggedInUser) {
+
+            const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
+                expiresIn: process.env.JWT_EXPIRESIN
+            });
+
+            const options = {
+                httpOnly: true,
+                secure: false,
+                path: '/'
+            };
+            const cookieString = `token=${token}; HttpOnly; Secure=${options.secure}; Path=${options.path}`;
+            res.setHeader('Set-Cookie', cookieString);
+            // Send the response here after setting the cookie.
+            res.status(200).json({ "User Login": "True", "token": token });
+        } else {
+            res.status(400).json({ "User Login": "False" });
+        }
     } catch (error) {
       res.status(500).json({ "error": "Server error" });
     }
-  });
+});
 
 
 router.get('/getUsername/:userId', async (req, res) => {
