@@ -168,13 +168,23 @@ async function getUserFirstName(id) {
 
 async function deleteUserById(id) {
     try {
-        const result = await db.query('DELETE FROM users WHERE id = $1', [id]);
-        console.log("Successfully Deleted user ", id);
+        const result = await new Promise((resolve, reject) => {
+            db.run('DELETE FROM users WHERE id = ?', [id], function (error) {
+                if (error) {
+                    reject(error);
+                } else {
+                    console.log("Successfully Deleted user ", id);
+                    resolve({ changes: this.changes });
+                }
+            });
+        });
         return result;
     } catch(error) {
-        console.log("Error while performing delete operation on ", id)
+        console.log("Error while performing delete operation on ", id, error);
+        throw error; 
     }
 }
+
 
 module.exports = {
     validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo, deleteUserById
