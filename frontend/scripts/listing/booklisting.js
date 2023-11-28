@@ -1,5 +1,6 @@
-
+let token = null;
 window.onload = function () {
+    token = sessionStorage.getItem('token');
     const urlParams = new URLSearchParams(window.location.search);
     const bookId = urlParams.get('id');
     if (bookId) {
@@ -78,6 +79,7 @@ function raiseRequest(userId, listingId, bookID) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify(data)
     })

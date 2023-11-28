@@ -7,34 +7,14 @@
 Before anything else, you'll need a `backend/.env` file that looks like following:
 
 ```
-POSTGRES_USER=bookbarter_user
-POSTGRES_PASSWORD=bookbarter_pass
-POSTGRES_DB=bookbarter_db
-
+SQLITE_DB_PATH=.db
+SQLITE_DB_INIT_FILES=scripts/01-ddl.sql,scripts/02a-book.sql,scripts/02b-genre.sql,scripts/02c-book_genre_mapping.sql
 JWT_KEY=seproject
 JWT_EXPIRESIN=1h
 ```
 
 Optionally, you can add `VERBOSE=1` to enable database query logging for debugging.
 Commenting this variable with a `#` or setting it to zero will stop the logging.
-
-### Docker compose up
-
-This deploys a multi-container application, made of a `postgres` database and an `adminer` database moniter.
-
-```bash
-docker compose up -d
-```
-
-You can now use `adminer` running at [`localhost:8001`](http://localhost:8001) to interact with the database.
-
-### Docker compose down
-
-```bash
-docker compose down --rmi local -v
-```
-
-This takes down all the containers, and removes the attached volumes, networks etc. for a complete cleanup.
 
 ## Contributing Guide
 
