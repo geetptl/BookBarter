@@ -18,13 +18,21 @@ function fetchPendingActions() {
 
 function invalidateOldRequests() {
     fetch(`http://localhost:8000/requests/invalidateOldRequests`, {
-        method: 'PUT',
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'authorization': `${token}`
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 204) {
+            // No content in the response, nothing to parse
+        //     console.log("Request was successful, but no content in response.");
+        } else {
+            // return response.json(); // Parse the JSON response for other status codes
+            console.log("Request was unsuccessful.");
+        }
+    })
     .catch(console.error);
 }
 
@@ -207,28 +215,26 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function handleRequestClose(requestId) {
-    fetch(`http://localhost:8000/requests/setStatusToExpired`, {
-        method: 'PUT',
+    fetch(`http://localhost:8000/requests/closeRequest`, {
+        method: 'DELETE',
         body: JSON.stringify({ requestId: requestId }),
         headers: {
             'Content-Type': 'application/json',
             'authorization': `${token}`
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data["status"] == "Success") {
+    .then(response => {
+        if (response.status === 204) {
             alert("Request closed successfully.");
             window.location.reload(); // Refresh the page to reflect the changes
         } else {
-            alert(data.message || "Error approving the request.");
+            alert(response.message || "Error approving the request.");
         }
     })
     .catch(console.error);
 }
 
 function handleApprove(requestId) {
-    console.log("here!!")
     fetch(`http://localhost:8000/requests/approveRequest`, {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),
@@ -274,7 +280,6 @@ function handleReject(requestId) {
 
 
 function handlePaymentDecline(requestId) {
-    // Mansi
     fetch(`http://localhost:8000/requests/declinePayment`, {
         method: 'PUT',
         body: JSON.stringify({ requestId: requestId }),

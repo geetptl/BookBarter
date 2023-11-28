@@ -56,9 +56,10 @@ fdescribe("Request Routes", () => {
             
             const res = await request(app)
                 .post("/requests/raiseBorrowRequest")
-                .send(mockRequestPayload);
+                .send(mockRequestPayload)
+                .set("authorization", token);
 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(201);
         });
 
         it("should fail when the listing does not exist", async () => {
@@ -80,7 +81,8 @@ fdescribe("Request Routes", () => {
 
             const res = await request(app)
                 .post("/requests/raiseBorrowRequest")
-                .send(mockRequestPayload);
+                .send(mockRequestPayload)
+                .set("authorization", token);
 
             expect(res.status).toBe(404);
         });
@@ -94,7 +96,8 @@ fdescribe("Request Routes", () => {
 
             const res = await request(app)
                 .post("/requests/raiseBorrowRequest")
-                .send(mockRequestPayload);
+                .send(mockRequestPayload)
+                .set("authorization", token);
 
             expect(res.status).toBe(400); // Assuming your route sends a 400 for bad input. Adjust accordingly.
         });
@@ -346,7 +349,7 @@ fdescribe("Request Routes", () => {
     });
 
 
-    describe('PUT /invalidateOldRequests', () => {
+    describe('DELETE /invalidateOldRequests', () => {
         it('should invalidate old requests and return true when requests are found', async () => {
             
             // Mock the database query response
@@ -356,9 +359,9 @@ fdescribe("Request Routes", () => {
 
             spyOn(db, 'query').and.returnValue(mockQueryResponse);
 
-            const res = await request(app).put("/requests/invalidateOldRequests").set("authorization", token);
+            const res = await request(app).delete("/requests/invalidateOldRequests").set("authorization", token);
             
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(204);
         });
 
         it('should invalidate old requests and return true even when no requests are found', async () => {
@@ -370,13 +373,13 @@ fdescribe("Request Routes", () => {
 
             spyOn(db, 'query').and.returnValue(mockQueryResponse);
 
-            const res = await request(app).put("/requests/invalidateOldRequests").set("authorization", token);
+            const res = await request(app).delete("/requests/invalidateOldRequests").set("authorization", token);
             
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(204);
         });
     });
 
-    describe('PUT /setStatusToExpired', () => {
+    describe('DELETE /closeRequest', () => {
         it('should close rejected/payment declined request and return true if success', async () => {
             
             const mockRequestPayload = {
@@ -391,11 +394,11 @@ fdescribe("Request Routes", () => {
             spyOn(db, 'query').and.returnValue(mockQueryResponse);
             
             const res = await request(app)
-                .put("/requests/setStatusToExpired")
+                .delete("/requests/closeRequest")
                 .set("authorization", token)
                 .send(mockRequestPayload);
 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(204);
         });
 
         it('should return false and raise 404 if requestId doesnt exist', async () => {
@@ -412,7 +415,7 @@ fdescribe("Request Routes", () => {
             spyOn(db, 'query').and.returnValue(mockQueryResponse);
             
             const res = await request(app)
-                .put("/requests/setStatusToExpired")
+                .delete("/requests/setStatusToExpired")
                 .set("authorization", token)
                 .send(mockRequestPayload);
 
