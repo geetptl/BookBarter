@@ -131,7 +131,7 @@ dist
 
 .DS_Store
 
-backend/postgres/entrypoint/99*.sql
+backend/scripts/99*.sql
 
 # sqlite
 sqlite3.exe
