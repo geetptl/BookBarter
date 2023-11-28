@@ -11,10 +11,10 @@ function handlePaymentApprove(requestId) {
     paymentModal.style.display = 'block';
 
     // Now, start the card checking process
-    getUserCards(requestId);}
+    getUserCards(requestId);
+}
 
 function getUserCards(requestId) {
-
     fetch(`http://localhost:8000/requests/getBorrowerIdFromRequestId/${requestId}`, {
         method: 'GET',
         headers: {
@@ -34,30 +34,42 @@ function getUserCards(requestId) {
             })
             .then(response => response.json())
             .then(dataCards => {
-                const modalContent = document.getElementById('paymentModalContent'); // Make sure this ID matches your modal content div
+                console.log("dataCards", dataCards)
                 if (dataCards.hasCard) {
+                    // User has a card on file, show confirm payment section
                     const confirmPaymentElement = document.getElementById('confirm-payment');
                     confirmPaymentElement.removeAttribute('hidden');
-                    console.log("your cardDetails ",  dataCards.cardDetails )
-                    document.getElementById('customerId').value = dataCards.customerId;
-                    document.getElementById('paymentMethodId').value = dataCards.paymentMethods;
+
+                    // Hide add card section
+                    const addCardElement = document.getElementById('add-card');
+                    addCardElement.setAttribute('hidden', true);
+
+                    // Populate card details
                     document.getElementById('card-last4').textContent = `**** **** **** ${dataCards.cardDetails.last4}`;
                     document.getElementById('card-expiry').textContent = `${dataCards.cardDetails.exp_month}/${dataCards.cardDetails.exp_year}`;
-               
+                    document.getElementById('customerId').value = dataCards.customerId;
+                    document.getElementById('paymentMethodId').value = dataCards.paymentMethodId;
                 } else {
+                    // User does not have a card on file, show add card section
                     const addCardElement = document.getElementById('add-card');
                     addCardElement.removeAttribute('hidden');
+
+                    // Hide confirm payment section
+                    const confirmPaymentElement = document.getElementById('confirm-payment');
+                    confirmPaymentElement.setAttribute('hidden', true);
                 }
-                const userIdElement = document.getElementById("userId");
-                userIdElement.textContent = data["borrowerId"];
+                document.getElementById("userId").textContent = data["borrowerId"];
             })
             .catch(console.error);
         } else {
-            modalContent.innerHTML = `<p>${data.message || "Error approving the request."}</p>`; // Display error message in modal
+            // Handle error
+            const modalContent = document.getElementById('paymentModalContent');
+            modalContent.innerHTML = `<p>${data.message || "Error fetching borrower details."}</p>`;
         }
     })
     .catch(console.error);
 }
+    
 
 document.addEventListener("DOMContentLoaded", () => {
     const stripe = Stripe('pk_test_51O7q8CJvFHmzlX92OVAQU6H0GFuN5tiUGEdOy4bNFa4hWbTWEPFA4YFMQl1Pye6FkFkl0npuYAUyPZFmMzgzau6o00uSYykKHk');
@@ -141,7 +153,6 @@ async function saveCardDetails(email, paymentMethodId, userId) {
 
             document.getElementById('customerId').value = data.customerId;
             document.getElementById('paymentMethodId').value = data.paymentMethodId;
-                    
         }
     } catch (error) {
         console.error('Error saving the card:', error);
