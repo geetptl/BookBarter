@@ -270,7 +270,7 @@ router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, re
         // Create a list of pending actions for a user both as a borrower and a lender.
         const requestId = parseInt(req.params.requestId, 10);
 
-        if (isNaN(parsedRequestId)) {
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 status: 'Bad Request',
                 message: 'Invalid requestId format. requestId must be an integer.'
