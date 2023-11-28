@@ -20,7 +20,7 @@ async function create(
 ) {
     try {
         const result = await db.query(
-            "INSERT INTO users(user_id, password_hash, email, phone_number, first_name, last_name, latitude, longitude, is_auth) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+            "INSERT INTO users(user_id, password_hash, email, phone_number, first_name, last_name, latitude, longitude, is_auth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *",
             [
                 user_id,
                 password_hash,
@@ -33,7 +33,7 @@ async function create(
                 false,
             ],
         );
-        return result.rows[0];
+        return result;
     } catch (error) {
         if (
             error.message.includes(
@@ -48,7 +48,7 @@ async function create(
         }
     }
 }
-async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
+async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth,original_user_id) {
     try {
         // Check if the new email or phone number already exists in the database for other users.
         const checkDuplicateQuery = `
@@ -93,15 +93,13 @@ async function updateUserInfo(user_id, email, phone_number, first_name, last_nam
 
 
 async function login(user_id, password) {
-    const result = await db.query("SELECT * FROM users WHERE user_id = $1", [
-        user_id,
-    ]);
-    if (result.rows.length === 0) {
+    const result = await db.query("SELECT * FROM users WHERE user_id = ?", [user_id]);
+
+    if (result.length === 0) {
         // User not found
         return null;
     }
-    const user = result.rows[0];
-
+    const user = result[0];
     // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
@@ -125,6 +123,26 @@ async function getUsername(id) {
     return user;
 }
 
+async function getUserInfo(){
+    const query = `SELECT id,created_on,last_updated_on,user_id,email,phone_number,first_name,last_name,latitude,longitude,is_auth,is_admin from users`;      
+    const result = await db.query(query);
+    if (result.rows.length === 0) {
+        //  No users found
+        return null;
+    }
+    return result;
+}
+
+async function getRequestInfo(){
+    const query = `SELECT * FROM REQUEST`;      
+    const result = await db.query(query);
+    if (result.rows.length === 0) {
+        //  No users found
+        return null;
+    }
+    return result;  
+}
+  
 async function getUserIdfromEmail(email) {
 
     const result = await db.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -159,5 +177,5 @@ async function deleteUserById(id) {
 }
 
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, deleteUserById
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo, deleteUserById
 };
