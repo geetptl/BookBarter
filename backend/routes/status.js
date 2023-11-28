@@ -7,13 +7,13 @@ router.get(["/", "/node", "/nodejs"], async (req, res) => {
     res.send("node.js server is running");
 });
 
-router.get("/postgres", async (req, res) => {
+router.get("/sqlite", async (req, res) => {
     try {
         const result = await db.query("SELECT 1+1;");
         if (result) {
-            res.send("postgres is connected");
+            res.send("sqlite is connected");
         } else {
-            res.send("postgres is not connected");
+            res.send("sqlite is not connected");
         }
     } catch (error) {
         console.log(error);

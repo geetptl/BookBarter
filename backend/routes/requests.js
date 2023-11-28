@@ -9,7 +9,7 @@ router.get("/test", async (req, res) => {
 });
 
 // Borrower requests an exchange
-router.post("/raiseBorrowRequest", async (req, res) => {
+router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
     try {
         const borrowerId = req.body.borrowerId;
         const borrowDuration = req.body.borrowDuration;
@@ -40,7 +40,7 @@ router.post("/raiseBorrowRequest", async (req, res) => {
                 );
 
                 if (result) {
-                    res.status(200).json({
+                    res.status(201).json({
                         "status": "Success"
                     }); // Status code 200 for success
                 } else {
@@ -109,12 +109,12 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
     }
 });
 
-router.put("/setStatusToExpired", requireAuth, async (req, res) => {
+router.delete("/closeRequest", requireAuth, async (req, res) => {
     try {
-        const requestId = req.body.requestId;
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = parseInt(req.body.requestId, 10);
 
-        // Input Data Validation
-        if (!requestId || typeof requestId !== 'string') {
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 "status": "Invalid input",
                 "message": "Request ID must be a non-empty string."
@@ -122,10 +122,10 @@ router.put("/setStatusToExpired", requireAuth, async (req, res) => {
         }
 
         // Call the approveRequest service to approve the request
-        const result = await requestService.setStatusToExpired(requestId);
+        const result = await requestService.closeRequest(requestId);
 
         if (result) {
-            res.status(200).json({
+            res.status(204).json({
                 "status": "Success"
             });
         } else {
@@ -141,16 +141,16 @@ router.put("/setStatusToExpired", requireAuth, async (req, res) => {
     }
 });
 
-router.put("/invalidateOldRequests", requireAuth, async (req, res) => {
+router.delete("/invalidateOldRequests", requireAuth, async (req, res) => {
     try {
         const requests = await requestService.invalidateOldRequests();
 
         if (requests) {
-            res.status(200).json({
+            res.status(204).json({
                 "status": "All requests successfully invalidated",
             });
         } else {
-            res.status(200).json({
+            res.status(204).json({
                 "status": "No old requests found",
             });
         }
@@ -165,10 +165,10 @@ router.put("/invalidateOldRequests", requireAuth, async (req, res) => {
 // Define a route to approve a request
 router.put("/approveRequest", requireAuth, async (req, res) => {
     try {
-        const requestId = req.body.requestId;
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = parseInt(req.body.requestId, 10);
 
-        // Input Data Validation
-        if (!requestId || typeof requestId !== 'string') {
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 "status": "Invalid input",
                 "message": "Request ID must be a non-empty string."
@@ -199,10 +199,10 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
 // Define a route to reject a request
 router.put("/rejectRequest", requireAuth, async (req, res) => {
     try {
-        const requestId = req.body.requestId;
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = parseInt(req.body.requestId, 10);
 
-        // Input Data Validation
-        if (!requestId || typeof requestId !== 'string') {
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 "status": "Invalid input",
                 "message": "Request ID must be a non-empty string."
@@ -232,10 +232,11 @@ router.put("/rejectRequest", requireAuth, async (req, res) => {
 // Define a route to reject a request
 router.put("/declinePayment", requireAuth, async (req, res) => {
     try {
-        const requestId = req.body.requestId;
 
-        // Input Data Validation
-        if (!requestId || typeof requestId !== 'string') {
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = parseInt(req.body.requestId, 10);
+
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 "status": "Invalid input",
                 "message": "Request ID must be a non-empty string."
@@ -270,7 +271,7 @@ router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, re
         // Create a list of pending actions for a user both as a borrower and a lender.
         const requestId = parseInt(req.params.requestId, 10);
 
-        if (isNaN(parsedRequestId)) {
+        if (isNaN(requestId)) {
             return res.status(400).json({
                 status: 'Bad Request',
                 message: 'Invalid requestId format. requestId must be an integer.'
