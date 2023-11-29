@@ -78,7 +78,7 @@ router.post("/create", async (req, res) => {
             is_auth,
         );
         if (newUser) {
-            res.status(200).json({ "User Created": "True" });
+            res.status(201).json({ "User Created": "True" });
         }
     } catch (error) {
         if (
@@ -110,7 +110,7 @@ router.post("/getUpdateDetails", requireAuth, async (req, res) => {
     }
 });
 
-router.post('/update', requireAuth, async (req, res) => {
+router.put('/update', requireAuth, async (req, res) => {
     var userId = req.user_session.user.id
     if(!userId) {
         res.status(404).json({ "error": "Unauthorized User" });
@@ -267,7 +267,7 @@ router.delete("/deleteUser", requireAuth, async(req, res) => {
     var userId = req.user_session.user.id
     try {
         userService.deleteUserById(userId);
-        res.status(200).json({"User Deleted": "Successfully"});
+        res.status(204).json({"User Deleted": "Successfully"});
     } catch (error) {
         res.status(500).json({"error": "Error while processing the request"});
     }
