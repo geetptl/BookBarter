@@ -17,7 +17,7 @@ async function create(
     latitude,
     longitude,
     is_auth,
-) {
+) { 
     try {
         const result = await db.query(
             "INSERT INTO users(user_id, password_hash, email, phone_number, first_name, last_name, latitude, longitude, is_auth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING *",
@@ -48,7 +48,7 @@ async function create(
         }
     }
 }
-async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth,original_user_id) {
+async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
     try {
         // Check if the new email or phone number already exists in the database for other users.
         const checkDuplicateQuery = `
@@ -94,21 +94,22 @@ async function updateUserInfo(user_id, email, phone_number, first_name, last_nam
 
 async function login(user_id, password) {
     const result = await db.query("SELECT * FROM users WHERE user_id = ?", [user_id]);
-
+    console.log(user_id);
     if (result.length === 0) {
         // User not found
         return null;
-    }
+    }  
     const user = result[0];
+    console.log(user)
     // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
-
-    if (passwordMatch) {
+    console.log(passwordMatch);  
+    if (passwordMatch) { 
         // Passwords match, user is authenticated
         return user;
-    } else {
+    } else {  
         // Passwords don't match
-        return null;
+        return "incorrect";
     }
 }
 
@@ -126,18 +127,20 @@ async function getUsername(id) {
 async function getUserInfo(){
     const query = `SELECT id,created_on,last_updated_on,user_id,email,phone_number,first_name,last_name,latitude,longitude,is_auth,is_admin from users`;      
     const result = await db.query(query);
-    if (result.rows.length === 0) {
-        //  No users found
+    console.log(result);
+    if (result) {
+        return result;
+    } else {
         return null;
     }
-    return result;
 }
 
 async function getRequestInfo(){
     const query = `SELECT * FROM REQUEST`;      
     const result = await db.query(query);
-    if (result.rows.length === 0) {
-        //  No users found
+    if (result.rows && result.rows.length > 0) {
+        return result.rows;
+    } else {
         return null;
     }
     return result;  
@@ -172,9 +175,9 @@ async function deleteUserById(id) {
             db.run('DELETE FROM users WHERE id = ?', [id], function (error) {
                 if (error) {
                     reject(error);
-                } else {
-                    console.log("Successfully Deleted user ", id);
-                    resolve({ changes: this.changes });
+} else {
+        console.log("Successfully Deleted user ", id);
+resolve({ changes: this.changes });
                 }
             });
         });
@@ -183,9 +186,19 @@ async function deleteUserById(id) {
         console.log("Error while performing delete operation on ", id, error);
         throw error; 
     }
+    }
+
+    async function getAdmin(id){
+        console.log(id);
+    const result = await db.query('SELECT IS_ADMIN FROM USERS WHERE ID = $1;', [id]);
+    console.log(result);
+    if (result && result[0].is_admin==1) {
+        return result[0].is_admin === 1; 
+    } else {
+        return false; 
+    }
 }
 
-
 module.exports = {
-    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo, deleteUserById
+    validateUserId, create, login, updateUserInfo,getUserIdfromEmail, getUsername, getUserFirstName, getUserInfo, getRequestInfo, deleteUserById,getAdmin
 };

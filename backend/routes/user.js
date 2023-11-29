@@ -35,15 +35,15 @@ router.post("/create", async (req, res) => {
         const isEmailValid = emailRegex.test(email);
         const phoneRegex = /^\d{10}$/; 
         const isPhoneValid = phoneRegex.test(phone_number);
-        // User ID validation for alphanumeric characters, !, ., _ and length between 8-20 characters
-        const userIdRegex = /^[a-zA-Z0-9!._]{8,20}$/;
+        // User ID validation for alphanumeric characters, !, ., _ and length between 4-20 characters
+        const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;
         const isUserIdValid = userIdRegex.test(user_id);
         
         if(!isUserIdValid){
         console.log("user invalid");
         res.status(400).json({
-            "User Created": "False",
-            error: "User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
+            "User Created": "False",  
+            error: "User ID is not valid! Please enter a valid username, 4-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
         });
         return;
         }
@@ -175,7 +175,7 @@ router.post('/update', requireAuth, async (req, res) => {
             res.status(400).json({ "error": "Duplicate email or phone number found" });
         } else {
             res.status(500).json({ "error": "Server error" });
-        }
+        }  
     }  
 });
   
@@ -187,7 +187,10 @@ router.post('/login', async (req, res) => {
     try {
         const loggedInUser = await userService.login(user_id, password);
         console.log(loggedInUser)
-        if (loggedInUser) {
+        if (loggedInUser=="incorrect") {
+        res.status(400).json({ "User Login": "Incorrect" });
+        }
+        else if(loggedInUser) { 
 
             const token = jwt.sign({ user: loggedInUser }, process.env.JWT_KEY, {
                 expiresIn: process.env.JWT_EXPIRESIN
@@ -245,25 +248,54 @@ router.get('/getFirstname/:userId', async (req, res) => {
     }
 });
 
-router.get("/getUserDetailsforAdmin", async (req, res) => {
+router.get("/getUserDetailsforAdmin", requireAuth,async (req, res) => {
     try {
+        var userId = req.user_session.user.id
+        if(userId) {
+            console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)  
+        {  
+        console.log("User is not admin");
+        res.status(404).json({ "error": "Unauthorized User" });
+        }
+        else{
         const getUserInfo = await userService.getUserInfo();
-        res.status(200).json(getUserInfo.rows);
+        res.status(200).json(getUserInfo);
+        }}
+        else{
+            res.status(404).json({ "error": "Unauthorized User" });
+
+        }  
     } catch (error) { 
         console.error("Error retrieving users:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
   
-router.get("/getRequestDetailsforAdmin", async (req, res) => {
+router.get("/getRequestDetailsforAdmin", requireAuth,async (req, res) => {
     try {
+        var userId = req.user_session.user.id
+        if(userId) {
+        console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)
+        {console.log("User is not admin");
+        res.status(404).json({ "error": "Unauthorized User" });
+        }
+        else{
         const getRequestInfo = await userService.getRequestInfo();
-        res.status(200).json(getRequestInfo); 
+        res.status(200).json(getRequestInfo);
+        }}
+        else{
+            res.status(404).json({ "error": "Unauthorized User" });
+        }
     } catch (error) {   
         console.error("Error retrieving requests:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-});
+});  
+
 
 router.delete("/deleteUser", requireAuth, async(req, res) => {
     var userId = req.user_session.user.id

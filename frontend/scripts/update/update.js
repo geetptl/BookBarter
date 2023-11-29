@@ -4,12 +4,18 @@ window.onload = function () {
   getUser();
 };
 
+function showError(message) {
+  document.getElementById('customPopup').style.display = 'block';
+  document.getElementById('errorMessages').textContent = message;
+}
+
 function getTokenFromSession() {  
   var user_id = sessionStorage.getItem('user_id');
   return user_id;
 }
 
 function updateUser() {
+  try{
     console.log(document.getElementById("phonenumber"));
     console.log(document.getElementById("username"));
     const userData =    {
@@ -64,13 +70,16 @@ function updateUser() {
         console.log('User updated:', result);
         window.location.href = '../search/search.html';
        
-      })  
+      })   
       .catch((error) => {
         console.error('Error updating user:', error);
         document.getElementById('customPopup').style.display = 'block';
         document.getElementById('errorMessage').innerText = error || 'An error occurred.';
       });
   }
+  catch(error){
+    console.error('An error occurred:', error.message);
+   }}
   
 function getUser() {
     fetch('http://localhost:8000/user/getUpdateDetails', {
