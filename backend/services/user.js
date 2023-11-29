@@ -59,7 +59,7 @@ async function updateUserInfo(user_id, email, phone_number, first_name, last_nam
 
         const duplicateCheckResult = await db.query(checkDuplicateQuery, [email, phone_number, user_id]);
 
-        if (duplicateCheckResult.rows.length > 0) {
+        if (duplicateCheckResult.length > 0) {
             throw new Error('Duplicate email or phone number found');
         }
 
@@ -81,11 +81,11 @@ async function updateUserInfo(user_id, email, phone_number, first_name, last_nam
 
         const result = await db.query(updateQuery, [email, phone_number, first_name, last_name, latitude, longitude, is_auth, user_id]);
         console.log("Result is"+result.email);
-        if (result.rows.length === 0) {
+        if (result.length === 0) {
             throw new Error('User not found');
         }
 
-        return result.rows[0];
+        return result[0];
     } catch (error) {
         throw error;
     }
@@ -115,12 +115,12 @@ async function login(user_id, password) {
 
 async function getUsername(id) {
 
-    const result = await db.query('SELECT user_id FROM users WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
+    const result = await db.query('SELECT user_id FROM users WHERE id = ?', [id]);
+    if (result.length === 0) {
         // User not found
         return null;
     }
-    const user = result.rows[0];
+    const user = result[0];
     return user;
 }
 
