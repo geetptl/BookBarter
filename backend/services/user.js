@@ -169,7 +169,7 @@ async function getUserFirstName(id) {
 async function deleteUserById(id) {
     try {
         const result = await new Promise((resolve, reject) => {
-            db.run('DELETE FROM users WHERE id = ?', [id], function (error) {
+            db.query('DELETE FROM users WHERE id = ?', [id], function (error) {
                 if (error) {
                     reject(error);
                 } else {
