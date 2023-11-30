@@ -154,3 +154,38 @@ function updatePagination() {
     document.getElementById("previous-page").parentNode.classList.toggle("disabled", currentPage === 1);
     document.getElementById("next-page").parentNode.classList.toggle("disabled", currentPage === lastPage);
 }
+
+function showConfirmationPopup(message, callback) {
+    const isConfirmed = window.confirm(message);
+    callback(isConfirmed);
+}
+
+
+function deleteProfile() {
+    showConfirmationPopup("Are you sure you want to delete the profile?", (isConfirmed) => {
+        if (isConfirmed) {
+            var token = sessionStorage.getItem('token');
+            console.log(token);
+            fetch('http://localhost:8000/user/deleteUser', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `${token}`
+                },
+                body: JSON.stringify(),
+            })
+            .then((response) => response.json())
+            .then(result => {
+                alert('Profile deleted successfully');
+                logout();
+            })
+            .catch((error) => {
+                alert('An error occurred while deleting the profile.');
+            });
+        } else {
+            console.log('Profile deletion canceled by the user.');
+        }
+    });
+}
+
+
