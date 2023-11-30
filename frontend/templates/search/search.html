@@ -19,17 +19,17 @@
                 <button type="button" class="btn btn-primary" onclick="window.location.href='../login/login.html'">LogIn</button>
                 <button type="button" class="btn btn-primary" onclick="window.location.href='../requests/requests.html'">PendingActions</button>
                 <button type="button" class="btn btn-primary" id="logoutButton" onclick="logout()">Logout</button>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="icon-container">  
-                            <img src="https://static.thenounproject.com/png/236432-200.png" alt="Profile Icon">
-                        </div>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="../update/update.html">Update Profile</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="deleteProfile()">Delete Profile</a></li>
-                    </ul>
-                </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="icon-container">  
+                                <img src="https://static.thenounproject.com/png/236432-200.png" alt="Profile Icon">
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="../update/update.html">Update Profile</a></li>
+                            <li><a class="dropdown-item" onclick="deleteProfile()">Delete Profile</a></li>
+                        </ul>
+                    </div>
             </form>
         </div>  
     </nav>

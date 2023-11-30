@@ -264,7 +264,7 @@ router.get("/getRequestDetailsforAdmin", async (req, res) => {
 });
 
 router.delete("/deleteUser", requireAuth, async(req, res) => {
-    var userId = req.user_session.user.id
+    var userId = req.user_session.user.id;
     try {
         userService.deleteUserById(userId);
         res.status(200).json({"User Deleted": "Successfully"});
