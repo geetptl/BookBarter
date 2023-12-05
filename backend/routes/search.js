@@ -25,12 +25,13 @@ router.get("/all", async (req, res) => {
     try {
         const page = req.query.page || 1;
         const limit = req.query.limit || 18;
-        const result = await searchService.filterBooks(null, page, limit)
+        const result = await searchService.filterBooks(null, page, limit);
         if (result) {
             res.json(result);
         } else {
             res.json([]);
-        }    } catch (error) {
+        }
+    } catch (error) {
         console.error("Error retrieving books:", error);
         res.status(500).json({ error: "Internal server error" });
     }

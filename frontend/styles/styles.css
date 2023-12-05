@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 body {
-    font-family: 'Montserrat', serif;
+    font-family: "Montserrat", serif;
 }
 
 button {
@@ -10,18 +10,18 @@ button {
 }
 
 .btn {
-    background-color: #3B6562 !important;
-    border: #3B6562 !important;
+    background-color: #3b6562 !important;
+    border: #3b6562 !important;
     color: white !important;
 }
 
 .btn:hover {
-    background-color: #5F8A75 !important;
-    border: #5F8A75 !important;
+    background-color: #5f8a75 !important;
+    border: #5f8a75 !important;
 }
 
 .bg-light {
-    background-color: #E8E6E0 !important;
+    background-color: #e8e6e0 !important;
 }
 
 .navbar-title {
@@ -40,11 +40,11 @@ button {
 }
 
 .pagination {
-    --bs-pagination-active-bg: #3B6562; 
-    --bs-pagination-active-border-color: #3B6562;
-    --bs-pagination-color: #3B6562;
-    --bs-pagination-focus-color: #3B6562;
-    --bs-pagination-hover-color: #3B6562;
+    --bs-pagination-active-bg: #3b6562;
+    --bs-pagination-active-border-color: #3b6562;
+    --bs-pagination-color: #3b6562;
+    --bs-pagination-focus-color: #3b6562;
+    --bs-pagination-hover-color: #3b6562;
 }
 
 .actions-container {
@@ -60,9 +60,49 @@ button {
     border-radius: 4px;
 }
 
-
 .action-card-left {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.password-input {
+    position: relative;
+}
+
+.password-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.password-input .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.password-input .toggle-password .eye-icon,
+.password-input .toggle-password .eye-slash-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.password-input .toggle-password .eye-slash-icon {
+    display: none;
+}
+
+.password-input .toggle-password.active .eye-icon {
+    display: none;
+}
+
+.password-input .toggle-password.active .eye-slash-icon {
+    display: block;
 }

@@ -21,11 +21,10 @@ router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
             listingId == undefined
         ) {
             res.status(400).json({
-                "status": "Fail",
+                status: "Fail",
                 "Failure Reason": "Invalid Parameters",
             }); // Status code 400 for bad request
-        } 
-        else {
+        } else {
             // Retrieve lender_id using the getLenderIdByListingId function
             const lenderId =
                 await requestService.getLenderIdByListingId(listingId);
@@ -63,18 +62,16 @@ router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
     }
 });
 
-
 router.get("/getPendingActions", requireAuth, async (req, res) => {
     try {
         // Create a list of pending actions for a user both as a borrower and a lender.
         var pendingActions = [];
-
-        var userId = req.user_session.user.id
+        var userId = req.user_session.user.id;
 
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
         const requestsByLender = await requestService.getPendingActionsByLenderId(userId);
 
-        if(requestsByLender){
+        if (requestsByLender) {
             for (const action of requestsByLender) {
                 action.userType = "Lender";
                 pendingActions.push(action);
@@ -83,15 +80,14 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
 
         // Call the getPendingActionsByBorrowerId service to fetch requests for the borrower
         const requestsByBorrower = await requestService.getPendingActionsByBorrowerId(userId);
-        
-        if(requestsByBorrower){
+
+        if (requestsByBorrower) {
             for (const action of requestsByBorrower) {
                 action.userType = "Borrower";
                 pendingActions.push(action);
             }
         }
         
-
         if (pendingActions) {
             res.status(200).json({
                 "Actions": pendingActions.sort((a, b) => a.id - b.id)
@@ -195,7 +191,6 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
     }
 });
 
-
 // Define a route to reject a request
 router.put("/rejectRequest", requireAuth, async (req, res) => {
     try {
@@ -232,7 +227,6 @@ router.put("/rejectRequest", requireAuth, async (req, res) => {
 // Define a route to reject a request
 router.put("/declinePayment", requireAuth, async (req, res) => {
     try {
-
         // Create a list of pending actions for a user both as a borrower and a lender.
         const requestId = parseInt(req.body.requestId, 10);
 
@@ -265,41 +259,38 @@ router.put("/declinePayment", requireAuth, async (req, res) => {
 
 
 router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, res) => {
-
     try {
+            // Create a list of pending actions for a user both as a borrower and a lender.
+            const requestId = parseInt(req.params.requestId, 10);
 
-        // Create a list of pending actions for a user both as a borrower and a lender.
-        const requestId = parseInt(req.params.requestId, 10);
+            if (isNaN(requestId)) {
+                return res.status(400).json({
+                    status: "Bad Request",
+                    message: "Invalid requestId format. requestId must be an integer.",
+                });
+            }
 
-        if (isNaN(requestId)) {
-            return res.status(400).json({
-                status: 'Bad Request',
-                message: 'Invalid requestId format. requestId must be an integer.'
+            // Call the getPendingActionsByLenderId service to fetch requests for the lender
+            const borrowerId = await requestService.getBorrowerIdFromRequestId(requestId);
+
+            if (borrowerId) {
+                console.log("borrowerId",borrowerId)
+                res.status(200).json({
+                    status: "Success",
+                    borrowerId: borrowerId,
+                });
+            } else {
+                res.status(200).json({
+                    status: "Not Found",
+                });
+            }
+        } catch (error) {
+            console.error("Error handling request:", error);
+            res.status(500).json({
+                status: "Error",
             });
         }
-
-        // Call the getPendingActionsByLenderId service to fetch requests for the lender
-        const borrowerId =
-            await requestService.getBorrowerIdFromRequestId(requestId);
-
-        if (borrowerId) {
-            console.log("borrowerId",borrowerId)
-            res.status(200).json({
-                "status": "Success",
-                "borrowerId":borrowerId
-            });
-        } 
-        else {
-            res.status(200).json({
-                "status": "Not Found"
-            });
-        }
-    } catch (error) {
-        console.error("Error handling request:", error);
-        res.status(500).json({
-            "status": "Error"
-        });
-    }
-});
+    },
+);
 
 module.exports = router;
