@@ -1,55 +1,53 @@
 function showPopup() {
-    document.getElementById('customPopup').style.display = 'block';
+    document.getElementById("customPopup").style.display = "block";
 }
 
 function closePopup() {
-    document.getElementById('customPopup').style.display = 'none';
+    document.getElementById("customPopup").style.display = "none";
 }
 
 function validateLogin() {
-    var username = document.getElementById('username').value;
-    var password = document.getElementById('password').value;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
 
     const userData = {
-        "user_id":username,
-        "password_hash" : password
+        user_id: username,
+        password_hash: password,
     };
     console.log(userData);
-    fetch('http://localhost:8000/user/login', {
-        method: 'POST',
+    fetch("http://localhost:8000/user/login", {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
     })
         .then((response) => response.json())
         .then((result) => {
-            console.log('User logged in:', result);
-            if(result["User Login"]=='Incorrect'){
-                document.getElementById('customPopup').style.display = 'block';
-                document.getElementById('errorMessages').textContent = "Username/Password combination incorrect!";
-            }
-            else if(result["User Login"]=='False'){
-                document.getElementById('customPopup').style.display = 'block';
-                document.getElementById('errorMessages').textContent = "User doesn't exist!";
-                document.getElementById('username').value = "";
-                document.getElementById('password').value = "";
-            }
-            else {
-                sessionStorage.setItem('token', result.token);
-                sessionStorage.setItem('user_id', document.getElementById('username').value);
+            console.log("User logged in:", result);
+            if (result["User Login"] == "Incorrect") {
+                document.getElementById("customPopup").style.display = "block";
+                document.getElementById("errorMessages").textContent =
+                    "Username/Password combination incorrect!";
+            } else if (result["User Login"] == "False") {
+                document.getElementById("customPopup").style.display = "block";
+                document.getElementById("errorMessages").textContent =
+                    "User doesn't exist!";
+                document.getElementById("username").value = "";
+                document.getElementById("password").value = "";
+            } else {
+                sessionStorage.setItem("token", result.token);
+                sessionStorage.setItem(
+                    "user_id",
+                    document.getElementById("username").value
+                );
 
-                window.location.href = '../search/search.html';
+                window.location.href = "../search/search.html";
             }
         })
         .catch((error) => {
-            console.error('Error loggin in:', error);
+            console.error("Error loggin in:", error);
         });
-    /*
-        if (username === 'admin' && password === '1234') {
-        } else {
-            alert('Invalid username or password.');
-        }*/
 }
 
 function togglePasswordVisibility() {

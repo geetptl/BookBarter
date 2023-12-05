@@ -7,6 +7,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     phone_number TEXT UNIQUE,
+    address TEXT,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     latitude REAL,
