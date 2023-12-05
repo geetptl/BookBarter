@@ -178,12 +178,12 @@ function deleteProfile() {
                     'Content-Type': 'application/json',
                     'authorization': `${token}`
                 },
-                body: JSON.stringify(),
             })
-            .then((response) => response.json())
-            .then(result => {
-                alert('Profile deleted successfully');
-                logout();
+            .then((response) => {
+                if (response.status === 204) {
+                    alert('Profile deleted successfully');
+                    logout();
+                } 
             })
             .catch((error) => {
                 alert('An error occurred while deleting the profile.');
