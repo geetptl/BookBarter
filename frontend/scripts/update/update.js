@@ -9,6 +9,15 @@ function getTokenFromSession() {
     return sessionStorage.getItem("user_id");
 }
 
+function closePopup() {
+    document.getElementById("customPopup").style.display = "none";
+}
+
+function showError(message) {
+    document.getElementById("customPopup").style.display = "block";
+    document.getElementById("errorMessage").textContent = message;
+}
+
 function initializeAutocomplete() {
     const addressInput = document.getElementById("address");
     if (addressInput) {
@@ -65,12 +74,15 @@ function updateUser() {
     
     if (!userIdRegex.test(userData.user_id)) {
         showError("Invalid username. Username should be 4-20 characters long.");
+        return;
     }
     if (!phoneRegex.test(userData.phone_number)) {
         showError("Invalid phone number.");
+        return;
     }
     if (!emailRegex.test(userData.email)) {
         showError("Invalid email address.");
+        return;
     }
 
     fetch('http://localhost:8000/user/update', {
