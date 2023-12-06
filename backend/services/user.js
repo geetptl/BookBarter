@@ -76,6 +76,7 @@ async function updateUserInfo(
     latitude,
     longitude,
     is_auth,
+    password_hash,
     original_user_id,
 ) {
     try {
@@ -108,6 +109,7 @@ async function updateUserInfo(
             latitude = COALESCE($6, latitude),
             longitude = COALESCE($7, longitude),
             is_auth = COALESCE($8, is_auth),
+            password_hash = COALESCE($10, password_hash),
             last_updated_on = current_timestamp
         WHERE user_id = $9
         RETURNING *
@@ -122,6 +124,7 @@ async function updateUserInfo(
             latitude,
             longitude,
             is_auth,
+            password_hash,
             user_id,
         ]);
         console.log("Result is" + result.email);
