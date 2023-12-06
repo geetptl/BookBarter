@@ -135,17 +135,45 @@ async function makePaymentWithRecord(amount, currency, customerId, paymentMethod
       return_url: 'https://example.com/'
     });
 
-    // Add a payment record to the database
-    const paymentRecord = await addPaymentRecord(requestId, amount, paymentIntent.id, 'Success');
+    if(await setApprovePaymentStatus(requestId)){
 
-    return {
-      status: 'Success',
-      paymentIntentId: paymentIntent.id,
-      paymentRecord: paymentRecord
-    };
+      // Add a payment record to the database
+      const paymentRecord = await addPaymentRecord(requestId, amount, paymentIntent.id, 'Success');
+
+      return {
+        status: 'Success',
+        paymentIntentId: paymentIntent.id,
+        paymentRecord: paymentRecord
+      };
+
+    }
+    else {
+      console.error('Update request status failed:', error);
+      throw new Error("Unable to set Payment approved status. Please try again.")
+    }
+
   } catch (error) {
     console.error('Payment failed:', error);
     throw new Error('Payment failed. Please try again.'); // Or handle the error as needed
+  }
+}
+
+async function setApprovePaymentStatus(requestId) {
+  try {
+      const query = `
+          UPDATE request
+          SET status = 'PaymentApproved'
+          WHERE id = ?;
+      `;
+
+      const values = [requestId];
+
+      const result = await db.query(query, values);
+
+      return result.length === 1;
+  } catch (error) {
+      console.error("Error rejecting request:", error);
+      throw error; // Re-throw the error to handle it at a higher level if needed.
   }
 }
 
