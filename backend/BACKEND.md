@@ -11,6 +11,7 @@ SQLITE_DB_PATH=.db
 SQLITE_DB_INIT_FILES=scripts/01-ddl.sql,scripts/02a-book.sql,scripts/02b-genre.sql,scripts/02c-book_genre_mapping.sql
 JWT_KEY=seproject
 JWT_EXPIRESIN=1h
+GOOGLE_MAPS_API_KEY=AIzaSyBYwdUEdkF574H969pPecpkd8J3qO3ZP94
 ```
 
 Optionally, you can add `VERBOSE=1` to enable database query logging for debugging.

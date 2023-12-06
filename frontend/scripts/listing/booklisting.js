@@ -1,27 +1,25 @@
 let token = null;
 
 window.onload = function () {
-    token = sessionStorage.getItem('token');
+    token = sessionStorage.getItem("token");
     console.log(token);
     const urlParams = new URLSearchParams(window.location.search);
-    const bookId = urlParams.get('id');
+    const bookId = urlParams.get("id");
     if (bookId) {
         fetch(`http://localhost:8000/book/get/${bookId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
-    })
-    .then((response) => response.json())
-    .then(bookDetails => displayBookDetails(bookDetails))
-    .catch(console.error);
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `${token}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((bookDetails) => displayBookDetails(bookDetails))
+            .catch(console.error);
+    } else {
+        console.error("Book ID not found");
     }
-    else{
-        console.error('Book ID not found')
-    }  
 };
-
 
 function displayBookDetails(bookDetails) {
     const booklistingDiv = document.getElementById("book-details");
@@ -42,7 +40,7 @@ function displayBookDetails(bookDetails) {
             
         </span>
     </div>
-    `
+    `;
     booklistingDiv.appendChild(bookInfo);
     console.log(bookDetails.users);
     bookDetails.users.forEach((user) => {
@@ -51,7 +49,7 @@ function displayBookDetails(bookDetails) {
         actionDiv.className = "action-card";
         //const userName = await getUserNameFromIdAPI(act.borrower_id);
         //const bookName = await getBookNameFromListingIdAPI(act.book_listing_id);
-            
+
         actionDiv.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h4>User ${user.user_id} has book Available</h4>
@@ -60,67 +58,62 @@ function displayBookDetails(bookDetails) {
         `;
 
         booklistingDiv.appendChild(actionDiv);
-        const requestButton = actionDiv.querySelector('.approve-request-btn');
-        requestButton.addEventListener('click', function() {
-        raiseRequest(user.id, user.listingId, bookID); // Pass the user ID and the book ID to the raiseRequest function
-        
+        const requestButton = actionDiv.querySelector(".approve-request-btn");
+        requestButton.addEventListener("click", function () {
+            raiseRequest(user.id, user.listingId, bookID); // Pass the user ID and the book ID to the raiseRequest function
         });
     });
 }
 
 function raiseRequest(userId, listingId, bookId) {
-    const url = 'http://localhost:8000/requests/raiseBorrowRequest';
+    const url = "http://localhost:8000/requests/raiseBorrowRequest";
     const data = {
-        borrowerId: userId, 
+        borrowerId: userId,
         borrowDuration: "5",
-        listingId: listingId
+        listingId: listingId,
     };
-    
+
     fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-            
+            "Content-Type": "application/json",
+            authorization: `${token}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(jsonResponse => {
-        console.log('Request creation success:', jsonResponse);
-        
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((jsonResponse) => {
+            console.log("Request creation success:", jsonResponse);
 
-        fetch(`http://localhost:8000/booklisting/updateNotAvailableBooks`, {
-        method: 'PUT',
-        // body: JSON.stringify({ userId: userId }),
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        },
-        body: JSON.stringify({
-            "book_id": bookId,
-            "owner_id": userId
-          })
-    })
-    .then((response) => response.json())
-    .then(updateStatus =>{
-        console.log('Update success:', updateStatus);
-    })
-    .catch(console.error);
+            fetch(`http://localhost:8000/booklisting/updateNotAvailableBooks`, {
+                method: "PUT",
+                // body: JSON.stringify({ userId: userId }),
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: `${token}`,
+                },
+                body: JSON.stringify({
+                    book_id: bookId,
+                    owner_id: userId,
+                }),
+            })
+                .then((response) => response.json())
+                .then((updateStatus) => {
+                    console.log("Update success:", updateStatus);
+                })
+                .catch(console.error);
 
-
-
-        alert("Request is raised successfully!"); // Show an alert for successful request
-    })
-    .catch(error => {
-        console.error('Request creation failed:', error);
-        alert("There was an error raising the request."); // Show an alert for a failed request
-    });
+            alert("Request is raised successfully!"); // Show an alert for successful request
+        })
+        .catch((error) => {
+            console.error("Request creation failed:", error);
+            alert("There was an error raising the request."); // Show an alert for a failed request
+        });
 }
 
 function requestBook(userId) {

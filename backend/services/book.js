@@ -13,7 +13,6 @@ async function getGenres(bookId) {
 }
 
 async function getById(bookId) {
-    
     const bookResult = await db.query("SELECT * FROM book WHERE id=$1", [
         bookId,
     ]);

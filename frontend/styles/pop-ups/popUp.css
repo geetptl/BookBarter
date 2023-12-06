@@ -1,45 +1,44 @@
 .modal {
     padding: 1em;
-   max-width: 50ch;
+    max-width: 50ch;
     border: 0;
-    box-shadow: 0 0 1em rgb(0 0 0 / .3);
- 
-   & > * {
-     margin: 0 0 0.5rem 0;
-   }
- }
- 
- .modal::backdrop {
-   background: rgb(0 0 0 / 0.4);
- }
- 
- /* extra styling */
- 
- body {
-   min-height: 100vh;
-   margin: 2rem;
-   font-family: system-ui;
-   font-size: 1.25rem;
-   line-height: 1.5;
-   color: var(--gray-8);
+    box-shadow: 0 0 1em rgb(0 0 0 / 0.3);
 
- }
- 
- .button {
-   border: 0;
-   cursor: pointer;
-   background: var(--gray-8);
-   color: var(--gray-2);
-   font-weight: 700;
-   padding: var(--size-2) var(--size-4);
- }
- 
- .button:hover,
- .button:focus {
-   background: var(--cyan-9);
- }
- 
- form {
-   display: grid;
-   gap: 1em;
- }
+    & > * {
+        margin: 0 0 0.5rem 0;
+    }
+}
+
+.modal::backdrop {
+    background: rgb(0 0 0 / 0.4);
+}
+
+/* extra styling */
+
+body {
+    min-height: 100vh;
+    margin: 2rem;
+    font-family: system-ui;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--gray-8);
+}
+
+.button {
+    border: 0;
+    cursor: pointer;
+    background: var(--gray-8);
+    color: var(--gray-2);
+    font-weight: 700;
+    padding: var(--size-2) var(--size-4);
+}
+
+.button:hover,
+.button:focus {
+    background: var(--cyan-9);
+}
+
+form {
+    display: grid;
+    gap: 1em;
+}
