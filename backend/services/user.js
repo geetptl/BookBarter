@@ -122,7 +122,7 @@ async function updateUserInfo(
             address = COALESCE($3, address),
             first_name = COALESCE($4, first_name),
             last_name = COALESCE($5, last_name),
-            latitude = COALESCE($6, latitude),
+            latitude = COALESCE($6, latitude),;
             longitude = COALESCE($7, longitude),
             is_auth = COALESCE($8, is_auth),
             password_hash = COALESCE($10, password_hash),

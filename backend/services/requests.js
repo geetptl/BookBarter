@@ -86,7 +86,7 @@ async function invalidateOldRequests() {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE datetime(time_to_live) >= datetime('now', '-2 days');
+            WHERE datetime(time_to_live) <= datetime('now', '-2 days');
         `;
 
         const result = await db.query(query);
