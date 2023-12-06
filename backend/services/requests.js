@@ -136,6 +136,25 @@ async function approveRequest(requestId) {
     }
 }
 
+async function handleShipBook(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'Shipped'
+            WHERE id = ?;
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.length === 1;
+    } catch (error) {
+        console.error("Error approving request:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
 async function rejectRequest(requestId) {
     try {
         const query = `
@@ -236,4 +255,5 @@ module.exports = {
     closeRequest,
     getBorrowerIdFromRequestId,
     declinePayment,
+    handleShipBook
 };
