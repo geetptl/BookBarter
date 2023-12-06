@@ -55,7 +55,7 @@ async function create(
     } catch (error) {
         if (
             error.message.includes(
-                "duplicate key value violates unique constraint",
+                "UNIQUE constraint failed",
             )
         ) {
             throw new Error(
