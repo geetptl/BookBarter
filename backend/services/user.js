@@ -22,6 +22,22 @@ async function validateAddress(address) {
     }
 }
 
+async function validateAddress(address) {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+
+    const response = await fetch(url);
+    const result = await response.json();
+
+    if (result.status === "OK") {
+        const location = result.results[0].geometry.location;
+        const latitude = location.lat;
+        const longitude = location.lng;
+        return { latitude, longitude };
+    } else {
+        return false;
+    }
+}
+
 // needs error handling for duplicate keys
 async function create(
     user_id,
@@ -76,6 +92,7 @@ async function updateUserInfo(
     latitude,
     longitude,
     is_auth,
+    password_hash,
     original_user_id,
 ) {
     try {
@@ -108,6 +125,7 @@ async function updateUserInfo(
             latitude = COALESCE($6, latitude),
             longitude = COALESCE($7, longitude),
             is_auth = COALESCE($8, is_auth),
+            password_hash = COALESCE($10, password_hash),
             last_updated_on = current_timestamp
         WHERE user_id = $9
         RETURNING *
@@ -122,6 +140,7 @@ async function updateUserInfo(
             latitude,
             longitude,
             is_auth,
+            password_hash,
             user_id,
         ]);
         console.log("Result is" + result.email);

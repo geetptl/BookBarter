@@ -16,7 +16,7 @@ function fetchPendingActions() {
 
 function invalidateOldRequests() {
     fetch(`http://localhost:8000/requests/invalidateOldRequests`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
             authorization: `${token}`,

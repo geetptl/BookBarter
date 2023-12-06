@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const db = require("../db");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -134,7 +135,10 @@ router.put("/update", requireAuth, async (req, res) => {
     let latitude = req.body.latitude || 0;
     let longitude = req.body.longitude || 0;
     const is_auth = req.body.is_auth;
-
+    const password = req.body.password;
+    console.log("NEW PASSWORD",password);
+    console.log(userId);
+    const hashedPassword = await bcrypt.hash(password, 10);
     try {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isEmailValid = emailRegex.test(email);
@@ -193,6 +197,7 @@ router.put("/update", requireAuth, async (req, res) => {
             latitude,
             longitude,
             is_auth,
+            hashedPassword,
         );
         res.status(200).json(updatedUser);
         console.log("The updated user is" + updatedUser);

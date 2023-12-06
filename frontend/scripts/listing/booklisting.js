@@ -1,8 +1,7 @@
 let token = null;
 
 window.onload = function () {
-    token = sessionStorage.getItem("token");
-    console.log(token);
+    token = sessionStorage.getItem('token');
     const urlParams = new URLSearchParams(window.location.search);
     const bookId = urlParams.get("id");
     if (bookId) {
@@ -76,8 +75,8 @@ function raiseRequest(userId, listingId, bookId) {
     fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            authorization: `${token}`,
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify(data),
     })

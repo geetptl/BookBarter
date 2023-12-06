@@ -10,12 +10,13 @@ async function raiseBorrowRequest(
         // Use placeholders to prevent SQL injection
         const query = `
             INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
-            VALUES (?, ?, ?, datetime('now', '+2 days'), ?, 'Pending')
+            VALUES (?, ?, ?, datetime('now', '+2 days'), ?, 'Pending');
         `;
 
         const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
+        console.log("result",result)
         // console.log(query);
         if (result.length === 1) {
             console.log("Request created successfully.");

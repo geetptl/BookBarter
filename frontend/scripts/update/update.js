@@ -65,6 +65,7 @@ function updateUser() {
         "phone_number": document.getElementById("phonenumber").value,
         "address": document.getElementById("address").value,
         "user_id": document.getElementById("username").value,
+        "password": document.getElementById("password").value,
     };
     document.getElementById('errorMessage').innerHTML = '';
     
@@ -104,6 +105,19 @@ function updateUser() {
           document.getElementById('customPopup').style.display = 'block';
           document.getElementById('errorMessage').innerText = error || 'An error occurred.';
         });
+}
+
+function togglePasswordVisibility() {
+    var passwordInput = document.getElementById("password");
+    var toggleButton = document.querySelector(".toggle-password");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleButton.classList.add("active");
+    } else {
+        passwordInput.type = "password";
+        toggleButton.classList.remove("active");
+    }
 }
 
 google.maps.event.addDomListener(window, "load", initializeAutocomplete);
