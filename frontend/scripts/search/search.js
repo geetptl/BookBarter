@@ -3,7 +3,7 @@ let lastPage = 7371;
 let limit = 18;
 
 window.onload = function () {
-    fetchAllBooks(currentPage);
+    handleInitialSearchQuery();
     updatePagination();
 };
 
@@ -48,18 +48,25 @@ document.querySelector("#next-page").addEventListener("click", function (event) 
         this.blur();
 });
 
-document.querySelector(".btn").addEventListener("click", function (event) {
+document.querySelector(".search-bar").addEventListener("submit", function (event) {
+    // Prevent the default form submission
     event.preventDefault();
     const query = document.querySelector('input[type="text"]').value;
     if (query.trim() === "") {
-        fetchAllBooks(currentPage);
-        updatePagination();
+        // Redirect to search.html without any query parameters
+        window.location.href = '../../templates/search/search.html';
     } else {
+        // Conduct a search with the provided query
         fetchFilteredBooks(query, currentPage);
-        updatePagination();
     }
-    this.blur();
 });
+
+function getSearchParams(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+
 
 document.querySelector('input[name="query"]').addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
@@ -68,23 +75,35 @@ document.querySelector('input[name="query"]').addEventListener("keydown", functi
         }
 });
 
+
 function fetchBooks(page) {
-    const query = document.querySelector('input[type="text"]').value;
-    if (query.trim() === "") {
-        fetchAllBooks(page);
-        updatePagination();
+    // Only fetch all books when called directly, not through the form submission
+    fetchAllBooks(page);
+    updatePagination();
+}
+
+// Call this function when the page loads to handle the initial query if present
+function handleInitialSearchQuery() {
+    const query = getSearchParams('query');
+    if (query) {
+        fetchFilteredBooks(query, currentPage);
     } else {
-        fetchFilteredBooks(query, page);
-        updatePagination();
+        fetchAllBooks(currentPage);
     }
-    this.blur();
 }
 
 function fetchAllBooks(page) {
-    fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
-        .then((response) => response.json())
-        .then(displayBooks)
-        .catch(console.error);
+    // Check if a search query was provided in the URL
+    const query = getSearchParams('query');
+    if (query) {
+        fetchFilteredBooks(query, page);
+    } else {
+        // Original fetch URL
+        fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
+            .then((response) => response.json())
+            .then(displayBooks)
+            .catch(console.error);
+    }
 }
 
 function fetchFilteredBooks(keyword, page) {
@@ -178,12 +197,12 @@ function deleteProfile() {
                     'Content-Type': 'application/json',
                     'authorization': `${token}`
                 },
-                body: JSON.stringify(),
             })
-            .then((response) => response.json())
-            .then(result => {
-                alert('Profile deleted successfully');
-                logout();
+            .then((response) => {
+                if (response.status === 204) {
+                    alert('Profile deleted successfully');
+                    logout();
+                } 
             })
             .catch((error) => {
                 alert('An error occurred while deleting the profile.');
