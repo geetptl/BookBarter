@@ -234,6 +234,8 @@ async function handlePayment(event) {
             okButton.addEventListener("click", () => {
                 const paymentModal = document.getElementById("paymentModal");
                 paymentModal.style.display = "none";
+                //refresh page
+                location.reload();
             });
         } else {
             throw new Error(data.error.message || "Payment failed");
