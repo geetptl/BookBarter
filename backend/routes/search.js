@@ -1,10 +1,10 @@
 const searchService = require("../services/search");
-const db = require("../db");
+const requireAuth = require("../middleware/requireAuth");
 const Router = require("express-promise-router");
 
 const router = new Router();
 
-router.get("/query", async (req, res) => {
+router.get("/query", requireAuth(false), async (req, res) => {
     try {
         const keywords = req.query.keywords;
         const page = req.query.page || 1;
