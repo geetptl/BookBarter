@@ -163,16 +163,16 @@ async function setApprovePaymentStatus(requestId) {
       const query = `
           UPDATE request
           SET status = 'PaymentApproved'
-          WHERE id = ?;
+          WHERE id = ?
+          RETURNING *;
       `;
 
       const values = [requestId];
 
       const result = await db.query(query, values);
-
       return result.length === 1;
   } catch (error) {
-      console.error("Error rejecting request:", error);
+      console.error("Error in setApprovePaymentStatus request:", error);
       throw error; // Re-throw the error to handle it at a higher level if needed.
   }
 }

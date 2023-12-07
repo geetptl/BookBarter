@@ -10,13 +10,12 @@ async function raiseBorrowRequest(
         // Use placeholders to prevent SQL injection
         const query = `
             INSERT INTO request (borrower_id, lender_id, book_listing_id, time_to_live, borrow_duration, status)
-            VALUES (?, ?, ?, datetime('now', '+2 days'), ?, 'Pending');
+            VALUES (?, ?, ?, datetime('now', '+2 days'), ?, 'Pending')
         `;
 
         const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
-        console.log("result",result)
         // console.log(query);
         if (result.length === 1) {
             console.log("Request created successfully.");
@@ -86,7 +85,8 @@ async function invalidateOldRequests() {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE datetime(time_to_live) <= datetime('now', '-2 days');
+            WHERE datetime(time_to_live) <= datetime('now', '-2 days')
+            RETURNING *;
         `;
 
         const result = await db.query(query);
@@ -103,7 +103,8 @@ async function closeRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -122,45 +123,8 @@ async function approveRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Accepted'
-            WHERE id = ?;
-        `;
-
-        const values = [requestId];
-
-        const result = await db.query(query, values);
-
-        return result.length === 1;
-    } catch (error) {
-        console.error("Error approving request:", error);
-        throw error; // Re-throw the error to handle it at a higher level if needed.
-    }
-}
-
-async function handleShipmentReceive(requestId) {
-    try {
-        const query = `
-            UPDATE request
-            SET status = 'ShipmentReceived'
-            WHERE id = ?;
-        `;
-
-        const values = [requestId];
-
-        const result = await db.query(query, values);
-
-        return result.length === 1;
-    } catch (error) {
-        console.error("Error setting status:", error);
-        throw error; // Re-throw the error to handle it at a higher level if needed.
-    }
-}
-
-async function handleShipBook(requestId) {
-    try {
-        const query = `
-            UPDATE request
-            SET status = 'Shipped'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -179,7 +143,8 @@ async function rejectRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Rejected'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -198,7 +163,8 @@ async function declinePayment(requestId) {
         const query = `
             UPDATE request
             SET status = 'PaymentDeclined'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
