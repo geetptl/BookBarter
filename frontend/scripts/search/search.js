@@ -29,23 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.querySelector("#previous-page").addEventListener("click", function (event) {
-        event.preventDefault();
-        if (currentPage > 1) {
-            currentPage--;
-            fetchBooks(currentPage);
-            updatePagination();
-        }
-        this.blur();
+    event.preventDefault();
+    if (currentPage > 1) {
+        currentPage--;
+        fetchCelebrityBooks(currentPage);
+        updatePagination();
+    }
+    this.blur();
 });
 
 document.querySelector("#next-page").addEventListener("click", function (event) {
-        event.preventDefault();
-        if (currentPage < lastPage) {
-            currentPage++;
-            fetchBooks(currentPage);
-            updatePagination();
-        }
-        this.blur();
+    event.preventDefault();
+    if (currentPage < lastPage) {
+        currentPage++;
+        fetchCelebrityBooks(currentPage);
+        updatePagination();
+    }
+    this.blur();
 });
 
 document.querySelector(".search-bar").addEventListener("submit", function (event) {
@@ -66,17 +66,14 @@ function getSearchParams(param) {
     return urlParams.get(param);
 }
 
-
-
 document.querySelector('input[name="query"]').addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            document.querySelector(".btn").click();
-        }
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.querySelector(".btn").click();
+    }
 });
 
-
-function fetchBooks(page) {
+function fetchCelebrityBooks(page) {
     // Only fetch all books when called directly, not through the form submission
     fetchAllBooks(page);
     updatePagination();
@@ -171,7 +168,7 @@ function updatePagination() {
         li.addEventListener("click", function (event) {
             event.preventDefault();
             currentPage = i;
-            fetchBooks(currentPage);
+            fetchCelebrityBooks(currentPage);
             updatePagination();
         });
         pagination[0].insertBefore(li, document.getElementById("next-page").parentNode);
