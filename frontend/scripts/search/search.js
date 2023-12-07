@@ -29,23 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.querySelector("#previous-page").addEventListener("click", function (event) {
-        event.preventDefault();
-        if (currentPage > 1) {
-            currentPage--;
-            fetchBooks(currentPage);
-            updatePagination();
-        }
-        this.blur();
+    event.preventDefault();
+    if (currentPage > 1) {
+        currentPage--;
+        fetchBooks(currentPage);
+        updatePagination();
+    }
+    this.blur();
 });
 
 document.querySelector("#next-page").addEventListener("click", function (event) {
-        event.preventDefault();
-        if (currentPage < lastPage) {
-            currentPage++;
-            fetchBooks(currentPage);
-            updatePagination();
-        }
-        this.blur();
+    event.preventDefault();
+    if (currentPage < lastPage) {
+        currentPage++;
+        fetchBooks(currentPage);
+        updatePagination();
+    }
+    this.blur();
 });
 
 document.querySelector(".search-bar").addEventListener("submit", function (event) {
@@ -66,15 +66,12 @@ function getSearchParams(param) {
     return urlParams.get(param);
 }
 
-
-
 document.querySelector('input[name="query"]').addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            document.querySelector(".btn").click();
-        }
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.querySelector(".btn").click();
+    }
 });
-
 
 function fetchBooks(page) {
     // Only fetch all books when called directly, not through the form submission
@@ -107,9 +104,7 @@ function fetchAllBooks(page) {
 }
 
 function fetchFilteredBooks(keyword, page) {
-    fetch(
-        `http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`
-    )
+    fetch(`http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
         .then(displayBooks)
         .catch(console.error);
