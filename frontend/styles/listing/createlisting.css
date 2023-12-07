@@ -1,0 +1,73 @@
+/* Custom styles for Book Barter */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.card-title {
+    color: #333;
+}
+
+.custom-dropdown {
+    margin-bottom: 15px;
+}
+
+.row.equal-height {
+    
+    flex-wrap: wrap;
+    align-items: stretch; 
+}
+
+/* Styles for user details */
+#user-details .card, #create-listing .card {
+    background-color: #e9ecef;
+    margin-bottom: 10px;
+    flex-direction: column; 
+}
+
+#user-details .card-body, #create-listing .card-body {
+    flex: 1; 
+    flex-direction: column;
+    justify-content: center; 
+}
+
+#user-details .card-body > *, #create-listing .card-body > * {
+    margin-top: 0; /* Remove top margin from first child */
+}
+
+/* Error message popup */
+#customPopup {
+    display: none; /* Hide by default, show on error */
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffc107;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#errorMessages {
+    color: #721c24;
+}
