@@ -108,7 +108,7 @@ async function updatePendingActions(newActions) {
                                 <span>Borrower: ${userName}</span>
                             </span>
                             <div class="action-cards-controls">
-                                <button data-id="${action.id}" class="btn ship-book-btn">Shipped</button>
+                                <button data-id="${action.id}" class="btn ship-book-btn">Ship Now</button>
                             </div>
                         </div>
                     `;

@@ -10,7 +10,8 @@ router.get("/test", async (req, res) => {
 // Borrower requests an exchange
 router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
     try {
-        const borrowerId = req.body.borrowerId;
+        const borrowerId = req.user_session.user.id;
+        // const borrowerId = req.body.borrowerId;
         const borrowDuration = req.body.borrowDuration;
         const listingId = req.body.listingId;
 
@@ -27,7 +28,8 @@ router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
             // Retrieve lender_id using the getLenderIdByListingId function
             const lenderId =
                 await requestService.getLenderIdByListingId(listingId);
-            console.log(lenderId);
+            console.log("lenderId", lenderId);
+            console.log("borrowerId", borrowerId);
             if (lenderId !== null) {
                 // Now, you have the lender_id, you can proceed to create the request
                 const result = await requestService.raiseBorrowRequest(
