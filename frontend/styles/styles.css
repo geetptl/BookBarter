@@ -106,3 +106,48 @@ button {
 .password-input .toggle-password.active .eye-slash-icon {
     display: block;
 }
+
+/* Carousel Lender Card Styling */
+.lender-card {
+    flex: 0 0 calc(20% - 1rem); /* Adjust size to fit 5 cards in a row */
+    margin: 0.5rem; /* Uniform spacing around cards */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-radius: 0.5rem; /* Rounded corners for the card */
+    background-color: #ffffff; /* White background for the card */
+    border: 1px solid #dee2e6; /* Light border for the card */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transform and shadow on hover */
+  }
+  
+  .lender-card:hover {
+    transform: translateY(-5px); /* Slight upward lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+  }
+  
+  /* Ensuring the carousel fits within the boundaries */
+  #statsCarousel .carousel-inner {
+    max-width: 100%; /* Limiting the width to the parent container */
+    margin: auto; /* Centering the carousel */
+  }
+  
+  /* Carousel Controls Styling */
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 4%; /* Control size */
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: #007bff; /* Bootstrap primary color for visibility */
+    border-radius: 50%; /* Circular shape */
+    padding: 10px; /* Size of the clickable area */
+  }
+  
+  /* Ensuring the title 'Top 5 Lenders' is centered and styled */
+  #statsCarousel h3 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem; /* Title font size */
+    color: #333; /* Title text color */
+    width: 100%;
+    text-align: center;
+  }
+  
