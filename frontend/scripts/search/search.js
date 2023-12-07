@@ -32,7 +32,7 @@ document.querySelector("#previous-page").addEventListener("click", function (eve
     event.preventDefault();
     if (currentPage > 1) {
         currentPage--;
-        fetchCelebrityBooks(currentPage);
+        fetchBooks(currentPage);
         updatePagination();
     }
     this.blur();
@@ -42,7 +42,7 @@ document.querySelector("#next-page").addEventListener("click", function (event) 
     event.preventDefault();
     if (currentPage < lastPage) {
         currentPage++;
-        fetchCelebrityBooks(currentPage);
+        fetchBooks(currentPage);
         updatePagination();
     }
     this.blur();
@@ -73,7 +73,7 @@ document.querySelector('input[name="query"]').addEventListener("keydown", functi
     }
 });
 
-function fetchCelebrityBooks(page) {
+function fetchBooks(page) {
     // Only fetch all books when called directly, not through the form submission
     fetchAllBooks(page);
     updatePagination();
@@ -168,7 +168,7 @@ function updatePagination() {
         li.addEventListener("click", function (event) {
             event.preventDefault();
             currentPage = i;
-            fetchCelebrityBooks(currentPage);
+            fetchBooks(currentPage);
             updatePagination();
         });
         pagination[0].insertBefore(li, document.getElementById("next-page").parentNode);
