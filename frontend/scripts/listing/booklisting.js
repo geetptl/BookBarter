@@ -2,6 +2,10 @@ let token = null;
 
 window.onload = function () {
     token = sessionStorage.getItem("token");
+    user = sessionStorage.getItem("user_id")
+    //const valUser = sessionStorage.getItem("id");
+    let uid;
+    console.log(user);
     console.log(token);
     const urlParams = new URLSearchParams(window.location.search);
     const bookId = urlParams.get("id");
@@ -10,7 +14,6 @@ window.onload = function () {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                authorization: `${token}`,
             },
         })
             .then((response) => response.json())
@@ -19,6 +22,8 @@ window.onload = function () {
     } else {
         console.error("Book ID not found");
     }
+
+
 };
 
 function displayBookDetails(bookDetails) {
@@ -66,6 +71,7 @@ function displayBookDetails(bookDetails) {
 }
 
 function raiseRequest(userId, listingId, bookId) {
+    console.log(userId,listingId,bookId)
     const url = "http://localhost:8000/requests/raiseBorrowRequest";
     const data = {
         borrowerId: userId,
@@ -76,13 +82,14 @@ function raiseRequest(userId, listingId, bookId) {
     fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            authorization: `${token}`,
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify(data),
     })
         .then((response) => {
             if (!response.ok) {
+
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();
@@ -90,7 +97,7 @@ function raiseRequest(userId, listingId, bookId) {
         .then((jsonResponse) => {
             console.log("Request creation success:", jsonResponse);
 
-            fetch(`http://localhost:8000/booklisting/updateNotAvailableBooks`, {
+            fetch(`http://localhost:8000/booklisting/updateBookStatus`, {
                 method: "PUT",
                 // body: JSON.stringify({ userId: userId }),
                 headers: {
@@ -98,8 +105,10 @@ function raiseRequest(userId, listingId, bookId) {
                     authorization: `${token}`,
                 },
                 body: JSON.stringify({
+                    
                     book_id: bookId,
                     owner_id: userId,
+                    status: "Not_Available",
                 }),
             })
                 .then((response) => response.json())
@@ -111,6 +120,7 @@ function raiseRequest(userId, listingId, bookId) {
             alert("Request is raised successfully!"); // Show an alert for successful request
         })
         .catch((error) => {
+
             console.error("Request creation failed:", error);
             alert("There was an error raising the request."); // Show an alert for a failed request
         });

@@ -85,7 +85,8 @@ async function invalidateOldRequests() {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE datetime(time_to_live) >= datetime('now', '-2 days');
+            WHERE datetime(time_to_live) <= datetime('now', '-2 days')
+            RETURNING *;
         `;
 
         const result = await db.query(query);
@@ -102,7 +103,8 @@ async function closeRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Expired'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -121,7 +123,8 @@ async function approveRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Accepted'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -130,7 +133,47 @@ async function approveRequest(requestId) {
 
         return result.length === 1;
     } catch (error) {
-        console.error("Error approving request:", error);
+        console.error("Error setting status:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+async function handleShipBook(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'Shipped'
+            WHERE id = ?
+            RETURNING *;
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.length === 1;
+    } catch (error) {
+        console.error("Error setting status:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
+async function handleShipmentReceive(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'ShipmentReceived'
+            WHERE id = ?
+            RETURNING *;
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.length === 1;
+    } catch (error) {
+        console.error("Error setting status:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
@@ -140,7 +183,8 @@ async function rejectRequest(requestId) {
         const query = `
             UPDATE request
             SET status = 'Rejected'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -159,7 +203,8 @@ async function declinePayment(requestId) {
         const query = `
             UPDATE request
             SET status = 'PaymentDeclined'
-            WHERE id = ?;
+            WHERE id = ?
+            RETURNING *;
         `;
 
         const values = [requestId];
@@ -235,4 +280,6 @@ module.exports = {
     closeRequest,
     getBorrowerIdFromRequestId,
     declinePayment,
+    handleShipBook,
+    handleShipmentReceive,
 };

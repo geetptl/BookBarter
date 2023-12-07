@@ -50,9 +50,9 @@ async function addCardToDB(email, customerId, userId, paymentMethodId) {
 
     try {
         const result = await db.query(query, values);
-        if (result.rows.length > 0) {
-            console.log("Card was saved successfully with ID:", result.rows[0].id,);
-            return result.rows[0].id; // Return the ID of the newly added card
+        if (result.length > 0) {
+            console.log("Card was saved successfully with ID:", result[0].id);
+            return result[0].id; // Return the ID of the newly added card
         } else {
             console.log("Failed to insert into cards.");
             return null; // Indicate failure
@@ -78,12 +78,13 @@ function formatCardDetails(paymentMethod) {
 }
 async function getCardDetailsByUserId(userId) {
     try {
-        const queryString = "SELECT stripe_customer_id FROM cards WHERE payer_id = $1";
+        const queryString =
+            "SELECT stripe_customer_id FROM cards WHERE payer_id = $1";
         const params = [userId];
         const result = await db.query(queryString, params);
-        if (result.rows.length > 0) {
-            console.log(result.rows[0]);
-            return result.rows[0].stripe_customer_id; // returns the first card found for simplicity
+        if (result.length > 0) {
+            console.log(result[0]);
+            return result[0].stripe_customer_id; // returns the first card found for simplicity
         } else {
             return null; // no card found
         }
@@ -152,22 +153,48 @@ async function makePaymentWithRecord(
             return_url: "https://example.com/",
         });
 
-        // Add a payment record to the database
-        const paymentRecord = await addPaymentRecord(
-            requestId,
-            amount,
-            paymentIntent.id,
-            "Success",
-        );
+        if (await setApprovePaymentStatus(requestId)) {
+            // Add a payment record to the database
+            const paymentRecord = await addPaymentRecord(
+                requestId,
+                amount,
+                paymentIntent.id,
+                "Success",
+            );
 
-        return {
-            status: "Success",
-            paymentIntentId: paymentIntent.id,
-            paymentRecord: paymentRecord,
-        };
+            return {
+                status: "Success",
+                paymentIntentId: paymentIntent.id,
+                paymentRecord: paymentRecord,
+            };
+        } else {
+            console.error("Update request status failed:", error);
+            throw new Error(
+                "Unable to set Payment approved status. Please try again.",
+            );
+        }
     } catch (error) {
         console.error("Payment failed:", error);
         throw new Error("Payment failed. Please try again."); // Or handle the error as needed
+    }
+}
+
+async function setApprovePaymentStatus(requestId) {
+    try {
+        const query = `
+          UPDATE request
+          SET status = 'PaymentApproved'
+          WHERE id = ?
+          RETURNING *;
+      `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+        return result.length === 1;
+    } catch (error) {
+        console.error("Error in setApprovePaymentStatus request:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
 
@@ -182,7 +209,7 @@ async function addPaymentRecord(
 
     try {
         const result = await db.query(query, values);
-        return result.rows[0];
+        return result[0];
     } catch (err) {
         console.error("Error adding payment record:", err);
         throw err;

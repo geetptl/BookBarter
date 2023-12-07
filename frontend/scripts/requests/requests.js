@@ -16,7 +16,7 @@ function fetchPendingActions() {
 
 function invalidateOldRequests() {
     fetch(`http://localhost:8000/requests/invalidateOldRequests`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
             authorization: `${token}`,
@@ -92,6 +92,29 @@ async function updatePendingActions(newActions) {
 
                     actionsDiv.appendChild(actionDiv);
                 }
+                if (action.status === "PaymentApproved") {
+                    const userName = await getUserNameFromIdAPI(
+                        action.borrower_id
+                    );
+                    const bookName = await getBookNameFromListingIdAPI(
+                        action.book_listing_id
+                    );
+                    // const actionDiv = document.createElement("div");
+                    // actionDiv.className = "action-card";
+                    actionDiv.innerHTML = `
+                        <div class="action-card-left">
+                            <span>
+                                <h3>Payment received. Ship item.: "<i class="book-name">${bookName}</i>"</h3>
+                                <span>Borrower: ${userName}</span>
+                            </span>
+                            <div class="action-cards-controls">
+                                <button data-id="${action.id}" class="btn ship-book-btn">Ship Now</button>
+                            </div>
+                        </div>
+                    `;
+
+                    actionsDiv.appendChild(actionDiv);
+                }
             }
 
             if (action["userType"] === "Borrower") {
@@ -115,7 +138,7 @@ async function updatePendingActions(newActions) {
                         </div>
                     `;
                 }
-                if (action.status === "Rejected") {
+                else if (action.status === "Rejected") {
                     actionDiv.innerHTML = `
                         <div class="action-card-left">
                             <span>
@@ -128,7 +151,7 @@ async function updatePendingActions(newActions) {
                         </div>
                     `;
                 }
-                if (action.status === "Pending") {
+                else if (action.status === "Pending") {
                     actionDiv.innerHTML = `
                         <div class="action-card-left">
                             <span>
@@ -138,7 +161,7 @@ async function updatePendingActions(newActions) {
                         </div>
                     `;
                 }
-                if (action.status === "PaymentDeclined") {
+                else if (action.status === "PaymentDeclined") {
                     actionDiv.innerHTML = `
                         <div class="action-card-left">
                             <span>
@@ -150,6 +173,22 @@ async function updatePendingActions(newActions) {
                             </div>
                         </div>
                     `;
+                }
+                else if (action.status === "PaymentApproved") {
+                    actionDiv.innerHTML = `
+                        <div class="action-card-left">
+                            <span>
+                                <h3>Did you receive "<i class="book-name">${bookName}</i>"?</h3>
+                                <span class="lender-id">Lender: ${userName}</span>
+                            </span>
+                            <div class="action-cards-controls">
+                                <button data-id="${action.id}" class="btn rec-shipment-btn">Received Shipment</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                else{
+                    continue;
                 }
                 actionsDiv.appendChild(actionDiv);
             }
@@ -220,9 +259,55 @@ document.addEventListener("DOMContentLoaded", () => {
             handlePaymentDecline(target.getAttribute("data-id"));
         } else if (target.classList.contains("req-close-btn")) {
             handleRequestClose(target.getAttribute("data-id"));
+        } else if (target.classList.contains("ship-book-btn")) {
+            handleShipBook(target.getAttribute("data-id"));
+        } else if (target.classList.contains("rec-shipment-btn")) {
+            handleShipmentReceive(target.getAttribute("data-id"));
         }
     });
 });
+
+function handleShipmentReceive(requestId) {
+    fetch(`http://localhost:8000/requests/handleShipmentReceive`, {
+        method: "PUT",
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Shipment received.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Server Error.");
+            }
+        })
+        .catch(console.error);
+}
+
+function handleShipBook(requestId) {
+    fetch(`http://localhost:8000/requests/handleShipBook`, {
+        method: "PUT",
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Book shipped successfully.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Server Error");
+            }
+        })
+        .catch(console.error);
+}
 
 function handleRequestClose(requestId) {
     fetch(`http://localhost:8000/requests/closeRequest`, {
