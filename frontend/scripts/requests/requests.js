@@ -1,43 +1,41 @@
-
 let currentActions = {}; // Object to track the current state of actions
 let token = null;
 
 function fetchPendingActions() {
-    
     fetch(`http://localhost:8000/requests/getPendingActions`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => response.json())
-    .then(data => updatePendingActions(data.Actions))
-    .catch(console.error);
+        .then((response) => response.json())
+        .then((data) => updatePendingActions(data.Actions))
+        .catch(console.error);
 }
 
 function invalidateOldRequests() {
     fetch(`http://localhost:8000/requests/invalidateOldRequests`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => {
-        if (response.status === 204) {
-            // No content in the response, nothing to parse
-        //     console.log("Request was successful, but no content in response.");
-        } else {
-            // return response.json(); // Parse the JSON response for other status codes
-            console.log("Request was unsuccessful.");
-        }
-    })
-    .catch(console.error);
+        .then((response) => {
+            if (response.status === 204) {
+                // No content in the response, nothing to parse
+                //     console.log("Request was successful, but no content in response.");
+            } else {
+                // return response.json(); // Parse the JSON response for other status codes
+                console.log("Request was unsuccessful.");
+            }
+        })
+        .catch(console.error);
 }
 
 window.onload = function () {
-    token = sessionStorage.getItem('token');
+    token = sessionStorage.getItem("token");
     fetchPendingActions();
     setInterval(invalidateOldRequests, 10000); // Poll every 10 seconds
     setInterval(fetchPendingActions, 10000); // Poll every 10 seconds
@@ -51,7 +49,10 @@ async function updatePendingActions(newActions) {
         const actionId = action.id;
 
         // Check if the action has changed since the last update
-        if (!currentActions[actionId] || JSON.stringify(currentActions[actionId]) !== JSON.stringify(action)) {
+        if (
+            !currentActions[actionId] ||
+            JSON.stringify(currentActions[actionId]) !== JSON.stringify(action)
+        ) {
             currentActions[actionId] = action; // Update the current state
 
             let actionDiv = document.getElementById(`action-${actionId}`);
@@ -68,8 +69,12 @@ async function updatePendingActions(newActions) {
 
             if (action["userType"] === "Lender") {
                 if (action.status === "Pending") {
-                    const userName = await getUserNameFromIdAPI(action.borrower_id);
-                    const bookName = await getBookNameFromListingIdAPI(action.book_listing_id);
+                    const userName = await getUserNameFromIdAPI(
+                        action.borrower_id
+                    );
+                    const bookName = await getBookNameFromListingIdAPI(
+                        action.book_listing_id
+                    );
                     // const actionDiv = document.createElement("div");
                     // actionDiv.className = "action-card";
                     actionDiv.innerHTML = `
@@ -84,14 +89,16 @@ async function updatePendingActions(newActions) {
                             </div>
                         </div>
                     `;
-                    
+
                     actionsDiv.appendChild(actionDiv);
                 }
             }
-    
+
             if (action["userType"] === "Borrower") {
                 const userName = await getUserNameFromIdAPI(action.lender_id);
-                const bookName = await getBookNameFromListingIdAPI(action.book_listing_id);
+                const bookName = await getBookNameFromListingIdAPI(
+                    action.book_listing_id
+                );
                 // const actionDiv = document.createElement("div");
                 // actionDiv.className = "action-card";
                 if (action.status === "Accepted") {
@@ -151,7 +158,7 @@ async function updatePendingActions(newActions) {
 
     // Optional: Remove actions that no longer exist
     for (const id in currentActions) {
-        if (!newActions.find(action => action.id === parseInt(id))) {
+        if (!newActions.find((action) => action.id === parseInt(id))) {
             const actionDiv = document.getElementById(`action-${id}`);
             if (actionDiv) {
                 actionsDiv.removeChild(actionDiv);
@@ -168,7 +175,9 @@ async function getUserNameFromIdAPI(userId) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
-            throw new Error(`API request failed with status: ${response.status}`);
+            throw new Error(
+                `API request failed with status: ${response.status}`
+            );
         }
         const data = await response.json();
         return data["User ID"].user_id;
@@ -183,7 +192,9 @@ async function getBookNameFromListingIdAPI(listingId) {
     try {
         const response = await fetch(apiUrl);
         if (!response.ok) {
-            throw new Error(`API request failed with status: ${response.status}`);
+            throw new Error(
+                `API request failed with status: ${response.status}`
+            );
         }
         const data = await response.json();
         return data[0].title;
@@ -193,12 +204,11 @@ async function getBookNameFromListingIdAPI(listingId) {
     }
 }
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const actionsDiv = document.getElementById("pending-actions");
 
     // Use event delegation to capture click events on the actionsDiv
-    actionsDiv.addEventListener("click", event => {
+    actionsDiv.addEventListener("click", (event) => {
         const target = event.target;
         if (target.classList.contains("approve-request-btn")) {
             handleApprove(target.getAttribute("data-id"));
@@ -216,87 +226,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function handleRequestClose(requestId) {
     fetch(`http://localhost:8000/requests/closeRequest`, {
-        method: 'DELETE',
+        method: "DELETE",
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => {
-        if (response.status === 204) {
-            alert("Request closed successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
-        } else {
-            alert(response.message || "Error approving the request.");
-        }
-    })
-    .catch(console.error);
+        .then((response) => {
+            if (response.status === 204) {
+                alert("Request closed successfully.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(response.message || "Error approving the request.");
+            }
+        })
+        .catch(console.error);
 }
 
 function handleApprove(requestId) {
     fetch(`http://localhost:8000/requests/approveRequest`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data["status"] == "Success") {
-            alert("Request approved successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
-        } else {
-            alert(data.message || "Error approving the request.");
-        }
-    })
-    .catch(console.error);
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Request approved successfully.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Error approving the request.");
+            }
+        })
+        .catch(console.error);
 }
-    
 
 function handleReject(requestId) {
     fetch(`http://localhost:8000/requests/rejectRequest`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data["status"] == "Success") {
-            alert("Request rejected successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
-        } else {
-            alert(data.message || "Error rejecting the request.");
-        }
-    })
-    .catch(console.error);
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Request rejected successfully.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Error rejecting the request.");
+            }
+        })
+        .catch(console.error);
 }
-
-
 
 function handlePaymentDecline(requestId) {
     fetch(`http://localhost:8000/requests/declinePayment`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ requestId: requestId }),
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `${token}`
-        }
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data["status"] == "Success") {
-            alert("Payment request declined successfully.");
-            window.location.reload(); // Refresh the page to reflect the changes
-        } else {
-            alert(data.message || "Error declining the payment request.");
-        }
-    })
-    .catch(console.error);
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Payment request declined successfully.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Error declining the payment request.");
+            }
+        })
+        .catch(console.error);
 }
-

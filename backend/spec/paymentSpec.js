@@ -2,30 +2,25 @@ const request = require("supertest");
 const app = require("../index");
 const paymentService = require("../services/payment");
 const db = require("../db");
-const Stripe = require('stripe');
+const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 describe("Payment Routes", () => {
-
     let token = null;
 
     beforeAll(async () => {
-            
         const mockUser = {
             user_id: "user1",
             password_hash: "user1",
         };
 
-        const res = await request(app)
-            .post("/user/login")
-            .send(mockUser);
+        const res = await request(app).post("/user/login").send(mockUser);
 
-        if(res.status == 200){
+        if (res.status == 200) {
             token = res.body.token;
         }
-        
     });
-    
+
     describe("GET /payment/test", () => {
         it("should return a successful test message", async () => {
             const res = await request(app).get("/payment/test");
@@ -36,19 +31,19 @@ describe("Payment Routes", () => {
 
     describe("POST /payment/card/add", () => {
         let paymentMethodId;
-    
+
         beforeAll(async () => {
             // Create a payment method using Stripe's test card
             const paymentMethod = await stripe.paymentMethods.create({
-                type: 'card',
+                type: "card",
                 card: {
-                    number: '4242424242424242', // Stripe's test card number
+                    number: "4242424242424242", // Stripe's test card number
                     exp_month: 12,
                     exp_year: new Date().getFullYear() + 1, // Next year
-                    cvc: '123',
+                    cvc: "123",
                 },
             });
-    
+
             paymentMethodId = paymentMethod.id;
         });
 
@@ -57,7 +52,7 @@ describe("Payment Routes", () => {
             const cardData = {
                 email: "user2@email.com",
                 paymentMethodId: paymentMethodId,
-                userId: "user2"
+                userId: "user2",
             };
 
             // Mock Stripe and other service calls here

@@ -1,7 +1,5 @@
 const db = require("../db");
 
-
-
 async function raiseBorrowRequest(
     borrowerId,
     lenderId,
@@ -45,7 +43,7 @@ async function getPendingActionsByLenderId(lenderId) {
         const values = [lenderId];
 
         const result = await db.query(query, values);
-        
+
         if (result.length > 0) {
             return result;
         } else {
@@ -56,7 +54,6 @@ async function getPendingActionsByLenderId(lenderId) {
         throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
-
 
 async function getPendingActionsByBorrowerId(borrowerId) {
     try {
@@ -214,7 +211,7 @@ async function getBorrowerIdFromRequestId(requestId) {
         const result = await db.query(query, values);
 
         if (result.length === 1) {
-            console.log(result[0])
+            console.log(result[0]);
             const BorrowerId = result[0].borrower_id;
             console.log("Borrower ID retrieved successfully:", BorrowerId);
             return BorrowerId;
@@ -237,5 +234,5 @@ module.exports = {
     rejectRequest,
     closeRequest,
     getBorrowerIdFromRequestId,
-    declinePayment
+    declinePayment,
 };
