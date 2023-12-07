@@ -23,16 +23,12 @@ function validateLogin() {
         body: JSON.stringify(userData),
     })
         .then((response) => response.json())
-        .then((result) => {
+        .then((result) => { 
             console.log("User logged in:", result);
-            if (result["User Login"] == "Incorrect") {
+            if (result["User Login"] == "False") {
                 document.getElementById("customPopup").style.display = "block";
                 document.getElementById("errorMessages").textContent =
                     "Username/Password combination incorrect!";
-            } else if (result["User Login"] == "False") {
-                document.getElementById("customPopup").style.display = "block";
-                document.getElementById("errorMessages").textContent =
-                    "User doesn't exist!";
                 document.getElementById("username").value = "";
                 document.getElementById("password").value = "";
             } else {
@@ -42,7 +38,29 @@ function validateLogin() {
                     document.getElementById("username").value
                 );
 
-                window.location.href = "../search/search.html";
+                fetch("http://localhost:8000/user/getAdmin", {
+                    method: "GET",
+                    headers: {
+                    "Content-Type": "application/json",
+                    'authorization': `${result.token}`,
+                    },
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json(); 
+                    })
+                    .then((result) => {
+                        if (result.message=="User is admin") {
+                            window.location.href = "../admin/admin.html";
+                        } else {
+                            window.location.href = "../search/search.html";
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error in fetching admin details:", error);
+                    });
             }
         })
         .catch((error) => {

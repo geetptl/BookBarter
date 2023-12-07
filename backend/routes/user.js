@@ -260,6 +260,7 @@ router.get("/getUsername/:userId", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
 router.get("/getUserDetails/:userID", requireAuth, async (req,res) => {
     const userID = req.params.userID;
     console.log(userID)
@@ -292,7 +293,7 @@ router.get("/getFirstname/:userId", async (req, res) => {
     }
 });
 
-router.get("/getUserDetailsforAdmin", requireAuth,async (req, res) => {
+router.get("/getUserDetailsforAdmin",requireAuth,async (req, res) => {
     try {
         var userId = req.user_session.user.id
         if(userId) {
@@ -318,7 +319,7 @@ router.get("/getUserDetailsforAdmin", requireAuth,async (req, res) => {
     }
 });
 
-router.get("/getRequestDetailsforAdmin", requireAuth,async (req, res) => {
+router.get("/getRequestDetailsforAdmin",requireAuth,async (req, res) => {
     try {
         var userId = req.user_session.user.id
         if(userId) {
@@ -341,10 +342,30 @@ router.get("/getRequestDetailsforAdmin", requireAuth,async (req, res) => {
     }
 });
 
+router.get("/getAdmin",requireAuth,async (req, res) => {
+    try {
+        console.log("hello");
+        console.log(req);
+        var userId = req.user_session.user.id 
+        if(userId) {
+        console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)
+        {res.status(200).json({"message":"User is not admin"});
+        }
+        else{
+            res.status(200).json({"message":"User is admin"});
+        }
+    }} catch (error) {   
+        console.error("Error retrieving requests:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 router.delete("/deleteUser", requireAuth, async (req, res) => {
     var userId = req.user_session.user.id;
-    try {
+    try { 
         userService.deleteUserById(userId);
         res.status(204).json({ "User Deleted": "Successfully" });
     } catch (error) {

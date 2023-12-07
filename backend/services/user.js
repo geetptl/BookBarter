@@ -66,6 +66,7 @@ async function create(
         }
     }
 }
+
 async function updateUserInfo(
     user_id,
     email,
@@ -79,10 +80,6 @@ async function updateUserInfo(
     password_hash,
     original_user_id,
 ) {
-<<<<<<< Updated upstream
-async function updateUserInfo(user_id, email, phone_number, first_name, last_name, latitude, longitude, is_auth) {
-=======
->>>>>>> Stashed changes
     try {
         // Check if the new email or phone number already exists in the database for other users.
         const checkDuplicateQuery = `
@@ -157,9 +154,6 @@ async function login(user_id, password) {
     if (passwordMatch) { 
         // Passwords match, user is authenticated
         return user;
-    } else {  
-        // Passwords don't match
-        return "incorrect";
     }
 }
 
@@ -251,8 +245,9 @@ resolve({ changes: this.changes });
     async function getAdmin(id){
         console.log(id);
     const result = await db.query('SELECT IS_ADMIN FROM USERS WHERE ID = $1;', [id]);
-    console.log(result);
+    //console.log(result);
     if (result && result[0].is_admin==1) {
+        console.log(result);
         return result[0].is_admin === 1; 
     } else {
         return false; 
@@ -271,9 +266,5 @@ module.exports = {
     getUserFirstName,
     getUserInfo,
     getRequestInfo,
-<<<<<<< Updated upstream
     deleteUserById,getAdmin,
-=======
-    deleteUserById,
->>>>>>> Stashed changes
 };
