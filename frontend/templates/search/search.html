@@ -13,9 +13,9 @@
                 <a class="navbar-brand">Book Barter</a>
             </div>
 
-            <form class="d-flex search-bar" role="search">
+            <form class="d-flex search-bar" role="search" action="../../templates/search/search.html">
                 <input class="form-control me-3" type="text" placeholder="Search" aria-label="Search" name="query">
-                <button type="button" class="btn btn-primary" id="searchButton">Search</button>
+                <button type="submit" class="btn btn-primary" id="searchButton">Search</button>
                 <button type="button" class="btn btn-primary" id="loginButton" onclick="window.location.href='../login/login.html'">LogIn</button>
                 <button type="button" class="btn btn-primary" id="pendingActionsButton" onclick="window.location.href='../requests/requests.html'">PendingActions</button>
                 <button type="button" class="btn btn-primary" id="logoutButton" onclick="logout()">Logout</button>

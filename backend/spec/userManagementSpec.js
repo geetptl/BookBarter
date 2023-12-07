@@ -95,7 +95,7 @@ describe("Request Routes", () => {
 
             const res = await request(app).post("/user/create").send(mockUser);
 
-            expect(res.status).toBe(200);
+            expect(res.status).toBe(201);
             expect(res.body).toEqual({ "User Created": "True" });
         });
 

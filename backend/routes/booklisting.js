@@ -2,6 +2,7 @@ const listingService = require("../services/booklisting");
 const Router = require("express-promise-router");
 const express = require("express");
 const requireAuth = require("../middleware/requireAuth");
+const db = require("../db");
 
 const router = express.Router();
 
@@ -50,8 +51,8 @@ router.get("/getBookbyUserid/:id", requireAuth, async (req, res) => {
         res.status(200).json({ userListings: [] });
     }
 });
-router.put("/updateAvailableBooks", requireAuth, async (req, res) => {
-    const updateStatusA = await listingService.updateStatusAvailable(req.body);
+router.put("/updateBookStatus", requireAuth, async (req, res) => {
+    const updateStatusA = await listingService.updateStatus(req.body);
     console.log(updateStatusA);
     if (updateStatusA) {
         res.status(200).json({ listingUpdated: "True" }); // Status code 200 for success
@@ -60,16 +61,6 @@ router.put("/updateAvailableBooks", requireAuth, async (req, res) => {
     }
 });
 
-router.put("/updateNotAvailableBooks", requireAuth, async (req, res) => {
-    const updateStatusNA = await listingService.updateStatusNotAvailable(
-        req.body,
-    );
-    console.log(updateStatusNA);
-    if (updateStatusNA) {
-        res.status(200).json({ listingUpdated: "True" }); // Status code 200 for success
-    } else {
-        res.status(400).json({ listingUpdated: "False" }); // Status code 400 for bad request
-    }
-});
+
 
 module.exports = router;
