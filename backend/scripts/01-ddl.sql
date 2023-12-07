@@ -80,16 +80,22 @@ CREATE TABLE request (
     status TEXT
 );
 
--- ExchangeHistory Table
-CREATE TABLE exchange_history (
-    id INTEGER PRIMARY KEY,
-    created_on TEXT DEFAULT CURRENT_TIMESTAMP,
-    last_updated_on TEXT DEFAULT CURRENT_TIMESTAMP,
-    lender_id INTEGER REFERENCES users(id),
-    borrower_id INTEGER REFERENCES users(id),
-    book_id INTEGER REFERENCES book(id),
-    request_id INTEGER REFERENCES request(id)
-); 
+-- ExchangeHistory View
+CREATE VIEW exchange_history AS
+SELECT
+    r.id AS request_id,
+    r.created AS request_created,
+    r.last_modified AS request_last_modified,
+    r.borrower_id,
+    r.lender_id,
+    r.status AS request_status
+FROM
+    request r
+INNER JOIN
+    payment p ON r.id = p.req_id
+WHERE
+    r.status <> 'Pending'
+    AND p.payment_status = 'Success';
 
 -- Payment Table
 CREATE TABLE payment (

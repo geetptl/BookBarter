@@ -7,7 +7,27 @@ async function validateUserId(userId) {
 }
 
 async function validateAddress(address) {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address,
+    )}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+
+    const response = await fetch(url);
+    const result = await response.json();
+
+    if (result.status === "OK") {
+        const location = result.results[0].geometry.location;
+        const latitude = location.lat;
+        const longitude = location.lng;
+        return { latitude, longitude };
+    } else {
+        return false;
+    }
+}
+
+async function validateAddress(address) {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+        address,
+    )}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
     const response = await fetch(url);
     const result = await response.json();
@@ -53,11 +73,7 @@ async function create(
         );
         return result;
     } catch (error) {
-        if (
-            error.message.includes(
-                "UNIQUE constraint failed",
-            )
-        ) {
+        if (error.message.includes("UNIQUE constraint failed")) {
             throw new Error(
                 "User with the same user_id, email or phone number already exists",
             );
@@ -106,7 +122,7 @@ async function updateUserInfo(
             address = COALESCE($3, address),
             first_name = COALESCE($4, first_name),
             last_name = COALESCE($5, last_name),
-            latitude = COALESCE($6, latitude),
+            latitude = COALESCE($6, latitude),;
             longitude = COALESCE($7, longitude),
             is_auth = COALESCE($8, is_auth),
             password_hash = COALESCE($10, password_hash),
@@ -139,7 +155,9 @@ async function updateUserInfo(
 }
 
 async function login(user_id, password) {
-    const result = await db.query("SELECT * FROM users WHERE user_id = ?", [user_id]);
+    const result = await db.query("SELECT * FROM users WHERE user_id = ?", [
+        user_id,
+    ]);
 
     if (result.length === 0) {
         // User not found
@@ -159,8 +177,9 @@ async function login(user_id, password) {
 }
 
 async function getUsername(id) {
-
-    const result = await db.query('SELECT user_id FROM users WHERE id = ?', [id]);
+    const result = await db.query("SELECT user_id FROM users WHERE id = ?", [
+        id,
+    ]);
     if (result.length === 0) {
         // User not found
         return null;
@@ -170,8 +189,9 @@ async function getUsername(id) {
 }
 
 async function getUserDetails(user_id) {
-
-    const result = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
+    const result = await db.query("SELECT * FROM users WHERE user_id = ?", [
+        user_id,
+    ]);
     if (result) {
         // User not found
         return null;
@@ -179,7 +199,6 @@ async function getUserDetails(user_id) {
     const user = result[0];
     return user;
 }
-
 
 async function getUserInfo() {
     const query = `SELECT id,created_on,last_updated_on,user_id,email,phone_number,first_name,last_name,latitude,longitude,is_auth,is_admin from users`;
@@ -202,8 +221,10 @@ async function getRequestInfo() {
 }
 
 async function getUserIdfromEmail(email) {
-    const result = await db.query('SELECT id FROM users WHERE email = $1', [email]);
-    console.log(result)
+    const result = await db.query("SELECT id FROM users WHERE email = $1", [
+        email,
+    ]);
+    console.log(result);
     if (result.rows.length === 0) {
         // User not found
         return null;
@@ -214,7 +235,10 @@ async function getUserIdfromEmail(email) {
 }
 
 async function getUserFirstName(id) {
-    const result = await db.query('SELECT first_name FROM users WHERE id = $1', [id]);
+    const result = await db.query(
+        "SELECT first_name FROM users WHERE id = $1",
+        [id],
+    );
     if (result.rows.length === 0) {
         // User not found
         return null;

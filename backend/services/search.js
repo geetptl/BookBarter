@@ -2,7 +2,7 @@ const db = require("../db");
 const bookService = require("./book");
 
 async function filterBooks(keywords, page, limit) {
-    const keywordPattern = keywords ? `%${keywords.toLowerCase()}%` : '%';
+    const keywordPattern = keywords ? `%${keywords.toLowerCase()}%` : "%";
     const queryStr = `
         SELECT id, title, author, image_url
         FROM book
@@ -12,7 +12,12 @@ async function filterBooks(keywords, page, limit) {
         OFFSET ?
     `;
     const offset = (page - 1) * limit;
-    const bookResults = await db.query(queryStr, [keywordPattern, keywordPattern, limit, offset]);
+    const bookResults = await db.query(queryStr, [
+        keywordPattern,
+        keywordPattern,
+        limit,
+        offset,
+    ]);
 
     if (!bookResults) {
         return null;

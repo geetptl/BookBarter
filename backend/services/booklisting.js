@@ -63,7 +63,7 @@ async function getBookListing(bookid) {
 
 async function getBooksbyUserid(userid) {
     try {
-        console.log(userid)
+        console.log(userid);
         const result = await db.query(`SELECT b.*, bl.*
                                         FROM book b
                                         INNER JOIN book_listing bl ON b.id = bl.book_id
@@ -82,25 +82,20 @@ async function getBooksbyUserid(userid) {
     }
 }
 
-
 async function updateStatus(bookListingData) {
     try {
         const bookId = bookListingData.book_id;
         const userId = bookListingData.owner_id;
-        const status =  bookListingData.status;
+        const status = bookListingData.status;
         const result = await db.query(
             "UPDATE book_listing SET status = ? WHERE owner_id = ? AND book_id = ? RETURNING *;",
-            [
-                status,
-                userId,
-                bookId,
-            ]
+            [status, userId, bookId],
         );
         if (result) {
             console.log("Update Successful");
-            console.log(result)
+            console.log(result);
             return true;
-        } else {     
+        } else {
             console.log("Failed to update");
             return false;
         }
