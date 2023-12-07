@@ -61,6 +61,4 @@ router.put("/updateBookStatus", requireAuth, async (req, res) => {
     }
 });
 
-
-
 module.exports = router;

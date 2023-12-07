@@ -82,8 +82,8 @@ function raiseRequest(userId, listingId, bookId) {
     fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            authorization: `${token}`,
+            'Content-Type': 'application/json',
+            'authorization': `${token}`
         },
         body: JSON.stringify(data),
     })
