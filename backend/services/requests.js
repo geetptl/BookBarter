@@ -281,5 +281,5 @@ module.exports = {
     getBorrowerIdFromRequestId,
     declinePayment,
     handleShipBook,
-    handleShipmentReceive
+    handleShipmentReceive,
 };

@@ -41,24 +41,25 @@ router.post("/raiseBorrowRequest", requireAuth, async (req, res) => {
 
                 if (result) {
                     res.status(201).json({
-                        "status": "Success"
+                        status: "Success",
                     }); // Status code 200 for success
                 } else {
                     res.status(400).json({
-                        "status": "Fail",
-                        "Failure Reason": "Failed to create request due to server",
+                        status: "Fail",
+                        "Failure Reason":
+                            "Failed to create request due to server",
                     }); // Status code 400 for bad request
                 }
             } else {
                 res.status(404).json({
-                    "status": "Listing not found"
+                    status: "Listing not found",
                 }); // Status code 404 for not found
             }
         }
     } catch (error) {
         console.error("Error while creating borrow request:", error);
         res.status(500).json({
-            "status": "Internal Server Error"
+            status: "Internal Server Error",
         }); // Status code 500 for internal server error
     }
 });
@@ -70,7 +71,8 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
         var userId = req.user_session.user.id;
 
         // Call the getPendingActionsByLenderId service to fetch requests for the lender
-        const requestsByLender = await requestService.getPendingActionsByLenderId(userId);
+        const requestsByLender =
+            await requestService.getPendingActionsByLenderId(userId);
 
         if (requestsByLender) {
             for (const action of requestsByLender) {
@@ -80,7 +82,8 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
         }
 
         // Call the getPendingActionsByBorrowerId service to fetch requests for the borrower
-        const requestsByBorrower = await requestService.getPendingActionsByBorrowerId(userId);
+        const requestsByBorrower =
+            await requestService.getPendingActionsByBorrowerId(userId);
 
         if (requestsByBorrower) {
             for (const action of requestsByBorrower) {
@@ -88,20 +91,20 @@ router.get("/getPendingActions", requireAuth, async (req, res) => {
                 pendingActions.push(action);
             }
         }
-        
+
         if (pendingActions) {
             res.status(200).json({
-                "Actions": pendingActions.sort((a, b) => a.id - b.id)
+                Actions: pendingActions.sort((a, b) => a.id - b.id),
             });
         } else {
             res.status(200).json({
-                "Actions": "No requests found"
+                Actions: "No requests found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -113,8 +116,8 @@ router.delete("/closeRequest", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -123,17 +126,17 @@ router.delete("/closeRequest", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(204).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -144,17 +147,17 @@ router.delete("/invalidateOldRequests", requireAuth, async (req, res) => {
 
         if (requests) {
             res.status(204).json({
-                "status": "All requests successfully invalidated",
+                status: "All requests successfully invalidated",
             });
         } else {
             res.status(204).json({
-                "status": "No old requests found",
+                status: "No old requests found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -167,8 +170,8 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -177,21 +180,20 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(200).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
-
 
 // Define a route to approve a request
 router.put("/handleShipmentReceive", requireAuth, async (req, res) => {
@@ -201,8 +203,8 @@ router.put("/handleShipmentReceive", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -211,17 +213,17 @@ router.put("/handleShipmentReceive", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(200).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -234,8 +236,8 @@ router.put("/handleShipBook", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -244,17 +246,17 @@ router.put("/handleShipBook", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(200).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -267,8 +269,8 @@ router.put("/rejectRequest", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -277,17 +279,17 @@ router.put("/rejectRequest", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(200).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
@@ -300,8 +302,8 @@ router.put("/declinePayment", requireAuth, async (req, res) => {
 
         if (isNaN(requestId)) {
             return res.status(400).json({
-                "status": "Invalid input",
-                "message": "Request ID must be a non-empty string."
+                status: "Invalid input",
+                message: "Request ID must be a non-empty string.",
             });
         }
 
@@ -310,39 +312,43 @@ router.put("/declinePayment", requireAuth, async (req, res) => {
 
         if (result) {
             res.status(200).json({
-                "status": "Success"
+                status: "Success",
             });
         } else {
             res.status(404).json({
-                "status": "Request not found",
+                status: "Request not found",
             });
         }
     } catch (error) {
         console.error("Error handling request:", error);
         res.status(500).json({
-            "status": "Error"
+            status: "Error",
         });
     }
 });
 
-
-router.get("/getBorrowerIdFromRequestId/:requestId", requireAuth, async (req, res) => {
-    try {
+router.get(
+    "/getBorrowerIdFromRequestId/:requestId",
+    requireAuth,
+    async (req, res) => {
+        try {
             // Create a list of pending actions for a user both as a borrower and a lender.
             const requestId = parseInt(req.params.requestId, 10);
 
             if (isNaN(requestId)) {
                 return res.status(400).json({
                     status: "Bad Request",
-                    message: "Invalid requestId format. requestId must be an integer.",
+                    message:
+                        "Invalid requestId format. requestId must be an integer.",
                 });
             }
 
             // Call the getPendingActionsByLenderId service to fetch requests for the lender
-            const borrowerId = await requestService.getBorrowerIdFromRequestId(requestId);
+            const borrowerId =
+                await requestService.getBorrowerIdFromRequestId(requestId);
 
             if (borrowerId) {
-                console.log("borrowerId",borrowerId)
+                console.log("borrowerId", borrowerId);
                 res.status(200).json({
                     status: "Success",
                     borrowerId: borrowerId,

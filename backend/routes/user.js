@@ -135,7 +135,7 @@ router.put("/update", requireAuth, async (req, res) => {
     let longitude = req.body.longitude || 0;
     const is_auth = req.body.is_auth;
     const password = req.body.password;
-    console.log("NEW PASSWORD",password);
+    console.log("NEW PASSWORD", password);
     console.log(userId);
     const hashedPassword = await bcrypt.hash(password, 10);
     try {
@@ -226,7 +226,7 @@ router.post("/login", async (req, res) => {
             const token = jwt.sign(
                 { user: loggedInUser },
                 process.env.JWT_KEY,
-                { expiresIn: process.env.JWT_EXPIRESIN, },
+                { expiresIn: process.env.JWT_EXPIRESIN },
             );
 
             const options = {
@@ -260,16 +260,15 @@ router.get("/getUsername/:userId", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
-router.get("/getUserDetails/:userID", requireAuth, async (req,res) => {
+router.get("/getUserDetails/:userID", requireAuth, async (req, res) => {
     const userID = req.params.userID;
-    console.log(userID)
-    try{
+    console.log(userID);
+    try {
         const result = await userService.getUserDetails(userID);
-        if (result){
+        if (result) {
             res.status(200).json(result);
-        }
-        else{
-            res.status(400).json({"User Details": "User not found"});
+        } else {
+            res.status(400).json({ "User Details": "User not found" });
         }
     } catch (error) {
         res.status(500).json({ error: "Server error" });
