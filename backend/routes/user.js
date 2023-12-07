@@ -256,6 +256,22 @@ router.get("/getUsername/:userId", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+router.get("/getUserDetails/:userID", requireAuth, async (req,res) => {
+    const userID = req.params.userID;
+    console.log(userID)
+    try{
+        const result = await userService.getUserDetails(userID);
+        if (result){
+            res.status(200).json(result);
+        }
+        else{
+            res.status(400).json({"User Details": "User not found"});
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 router.get("/getFirstname/:userId", async (req, res) => {
     const id = req.params.userId;
 
