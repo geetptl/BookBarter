@@ -169,6 +169,18 @@ async function getUsername(id) {
     return user;
 }
 
+async function getUserDetails(user_id) {
+
+    const result = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
+    if (result) {
+        // User not found
+        return null;
+    }
+    const user = result[0];
+    return user;
+}
+
+
 async function getUserInfo() {
     const query = `SELECT id,created_on,last_updated_on,user_id,email,phone_number,first_name,last_name,latitude,longitude,is_auth,is_admin from users`;
     const result = await db.query(query);
@@ -238,6 +250,7 @@ module.exports = {
     updateUserInfo,
     getUserIdfromEmail,
     getUsername,
+    getUserDetails,
     getUserFirstName,
     getUserInfo,
     getRequestInfo,
