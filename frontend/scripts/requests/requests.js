@@ -174,6 +174,19 @@ async function updatePendingActions(newActions) {
                         </div>
                     `;
                 }
+                else if (action.status === "PaymentApproved") {
+                    actionDiv.innerHTML = `
+                        <div class="action-card-left">
+                            <span>
+                                <h3>Did you receive "<i class="book-name">${bookName}</i>"?</h3>
+                                <span class="lender-id">Lender: ${userName}</span>
+                            </span>
+                            <div class="action-cards-controls">
+                                <button data-id="${action.id}" class="btn rec-shipment-btn">Received Shipment</button>
+                            </div>
+                        </div>
+                    `;
+                }
                 else{
                     continue;
                 }
@@ -246,11 +259,34 @@ document.addEventListener("DOMContentLoaded", () => {
             handlePaymentDecline(target.getAttribute("data-id"));
         } else if (target.classList.contains("req-close-btn")) {
             handleRequestClose(target.getAttribute("data-id"));
-        }else if (target.classList.contains("ship-book-btn")) {
+        } else if (target.classList.contains("ship-book-btn")) {
             handleShipBook(target.getAttribute("data-id"));
+        } else if (target.classList.contains("rec-shipment-btn")) {
+            handleShipmentReceive(target.getAttribute("data-id"));
         }
     });
 });
+
+function handleShipmentReceive(requestId) {
+    fetch(`http://localhost:8000/requests/handleShipmentReceive`, {
+        method: "PUT",
+        body: JSON.stringify({ requestId: requestId }),
+        headers: {
+            "Content-Type": "application/json",
+            authorization: `${token}`,
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data["status"] == "Success") {
+                alert("Shipment received.");
+                window.location.reload(); // Refresh the page to reflect the changes
+            } else {
+                alert(data.message || "Server Error.");
+            }
+        })
+        .catch(console.error);
+}
 
 function handleShipBook(requestId) {
     fetch(`http://localhost:8000/requests/handleShipBook`, {
@@ -267,7 +303,7 @@ function handleShipBook(requestId) {
                 alert("Book shipped successfully.");
                 window.location.reload(); // Refresh the page to reflect the changes
             } else {
-                alert(data.message || "Error shipping book.");
+                alert(data.message || "Server Error");
             }
         })
         .catch(console.error);

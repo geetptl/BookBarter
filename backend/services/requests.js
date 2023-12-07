@@ -136,6 +136,25 @@ async function approveRequest(requestId) {
     }
 }
 
+async function handleShipmentReceive(requestId) {
+    try {
+        const query = `
+            UPDATE request
+            SET status = 'ShipmentReceived'
+            WHERE id = ?;
+        `;
+
+        const values = [requestId];
+
+        const result = await db.query(query, values);
+
+        return result.length === 1;
+    } catch (error) {
+        console.error("Error setting status:", error);
+        throw error; // Re-throw the error to handle it at a higher level if needed.
+    }
+}
+
 async function handleShipBook(requestId) {
     try {
         const query = `
@@ -150,7 +169,7 @@ async function handleShipBook(requestId) {
 
         return result.length === 1;
     } catch (error) {
-        console.error("Error approving request:", error);
+        console.error("Error setting status:", error);
         throw error; // Re-throw the error to handle it at a higher level if needed.
     }
 }
@@ -255,5 +274,6 @@ module.exports = {
     closeRequest,
     getBorrowerIdFromRequestId,
     declinePayment,
-    handleShipBook
+    handleShipBook,
+    handleShipmentReceive
 };

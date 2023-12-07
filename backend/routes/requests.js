@@ -192,6 +192,39 @@ router.put("/approveRequest", requireAuth, async (req, res) => {
 
 
 // Define a route to approve a request
+router.put("/handleShipmentReceive", requireAuth, async (req, res) => {
+    try {
+        // Create a list of pending actions for a user both as a borrower and a lender.
+        const requestId = parseInt(req.body.requestId, 10);
+
+        if (isNaN(requestId)) {
+            return res.status(400).json({
+                "status": "Invalid input",
+                "message": "Request ID must be a non-empty string."
+            });
+        }
+
+        // Call the approveRequest service to approve the request
+        const result = await requestService.handleShipmentReceive(requestId);
+
+        if (result) {
+            res.status(200).json({
+                "status": "Success"
+            });
+        } else {
+            res.status(404).json({
+                "status": "Request not found",
+            });
+        }
+    } catch (error) {
+        console.error("Error handling request:", error);
+        res.status(500).json({
+            "status": "Error"
+        });
+    }
+});
+
+// Define a route to approve a request
 router.put("/handleShipBook", requireAuth, async (req, res) => {
     try {
         // Create a list of pending actions for a user both as a borrower and a lender.
