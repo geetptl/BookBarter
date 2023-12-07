@@ -29,28 +29,29 @@ function trimLongText(text, len_) {
 function fetchBestBooks(keyword, page, limit) {
     fetch(`http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
-        .then((data) => displayBooks(data, document.getElementById("results")))
+        .then((data) => displaySpecialBooks(data, document.getElementById("results")))
         .catch(console.error);
 }
 
 function fetchCelebrityBooks(keyword1, keyword2, keyword3, page, limit) {
     fetch(`http://localhost:8000/search/query?keywords=${keyword1}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
-        .then((data) => displayBooks(data, document.getElementById("results1")))
+        .then((data) => displaySpecialBooks(data, document.getElementById("results1")))
         .catch(console.error);
 
     fetch(`http://localhost:8000/search/query?keywords=${keyword2}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
-        .then((data) => displayBooks(data, document.getElementById("results2")))
+        .then((data) => displaySpecialBooks(data, document.getElementById("results2")))
         .catch(console.error);
 
     fetch(`http://localhost:8000/search/query?keywords=${keyword3}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
-        .then((data) => displayBooks(data, document.getElementById("results3")))
+        .then((data) => displaySpecialBooks(data, document.getElementById("results3")))
         .catch(console.error);
 }
 
-function displayBooks(data, resultsDiv) {
+function displaySpecialBooks(data, resultsDiv) {
+    console.log("debug")
     resultsDiv.innerHTML = "";
     data.forEach((book) => {
         const bookDiv = document.createElement("div");
@@ -69,4 +70,11 @@ function displayBooks(data, resultsDiv) {
         });
         resultsDiv.appendChild(bookDiv);
     });
+}
+
+function showBookDetails(bookId) {
+    const currentLocation = window.location.href;
+    if (currentLocation.search("index") > 0)
+        window.location.href = `./templates/listings/booklisting.html?id=${bookId}`;
+    else window.location.href = `../listings/booklisting.html?id=${bookId}`;
 }

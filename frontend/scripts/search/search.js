@@ -104,9 +104,7 @@ function fetchAllBooks(page) {
 }
 
 function fetchFilteredBooks(keyword, page) {
-    fetch(
-        `http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`
-    )
+    fetch(`http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`)
         .then((response) => response.json())
         .then(displayBooks)
         .catch(console.error);
