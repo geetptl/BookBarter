@@ -20,12 +20,6 @@ async function getById(bookId, visitor) {
         return null;
     }
 
-    if (visitor) {
-        console.log("book service (getById) : This is a visitor");
-    } else {
-        console.log("book service (getById) : This is a registered user");
-    }
-
     const usersWithBook = await db.query(
         "SELECT u.*, bl.id as listingId FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available'",
         [bookId],
@@ -36,7 +30,9 @@ async function getById(bookId, visitor) {
 
     return {
         book: bookRes,
-        users: usersWithBook,
+        users: visitor ? null : usersWithBook,
+        visitor: visitor,
+        userCount: usersWithBook.length,
     };
 }
 

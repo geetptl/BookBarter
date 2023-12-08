@@ -96,7 +96,13 @@ function fetchAllBooks(page) {
         fetchFilteredBooks(query, page);
     } else {
         // Original fetch URL
-        fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`)
+        fetch(`http://localhost:8000/search/all?page=${page}&limit=${limit}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": sessionStorage.getItem("token"),
+            },
+        })
             .then((response) => response.json())
             .then(displayBooks)
             .catch(console.error);
@@ -104,7 +110,13 @@ function fetchAllBooks(page) {
 }
 
 function fetchFilteredBooks(keyword, page) {
-    fetch(`http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`)
+    fetch(`http://localhost:8000/search/query?keywords=${keyword}&page=${page}&limit=${limit}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": sessionStorage.getItem("token"),
+        },
+    })
         .then((response) => response.json())
         .then(displayBooks)
         .catch(console.error);
