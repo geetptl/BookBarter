@@ -1,10 +1,10 @@
 const express = require("express");
+const requireAuthUnstrict = require("../middleware/requireAuthUnstrict");
 const bookService = require("../services/book");
 const router = express.Router();
 
-router.get("/get/:bookId", async (req, res) => {
-    const bookData = await bookService.getById(req.params.bookId);
-    console.log(bookData);
+router.get("/get/:bookId", requireAuthUnstrict, async (req, res) => {
+    const bookData = await bookService.getById(req.params.bookId, req.visitor);
     if (bookData) {
         res.json(bookData);
     } else {

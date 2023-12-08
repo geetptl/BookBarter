@@ -12,12 +12,18 @@ async function getGenres(bookId) {
     return Array.from(genres);
 }
 
-async function getById(bookId) {
+async function getById(bookId, visitor) {
     const bookResult = await db.query("SELECT * FROM book WHERE id=$1", [
         bookId,
     ]);
     if (!bookResult) {
         return null;
+    }
+
+    if (visitor) {
+        console.log("book service (getById) : This is a visitor");
+    } else {
+        console.log("book service (getById) : This is a registered user");
     }
 
     const usersWithBook = await db.query(

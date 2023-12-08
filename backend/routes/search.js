@@ -1,11 +1,16 @@
 const searchService = require("../services/search");
-const requireAuth = require("../middleware/requireAuth");
+const requireAuthUnstrict = require("../middleware/requireAuthUnstrict");
 const Router = require("express-promise-router");
 
 const router = new Router();
 
-router.get("/query", requireAuth(false), async (req, res) => {
+router.get("/query", requireAuthUnstrict, async (req, res) => {
     try {
+        if (req.visitor) {
+            console.log("search router (query) : This is a visitor");
+        } else {
+            console.log("search router (query) : This is a registered user");
+        }
         const keywords = req.query.keywords;
         const page = req.query.page || 1;
         const limit = req.query.limit || 18;
@@ -25,8 +30,13 @@ router.get("/query", requireAuth(false), async (req, res) => {
     }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all", requireAuthUnstrict, async (req, res) => {
     try {
+        if (req.visitor) {
+            console.log("search router (all) : This is a visitor");
+        } else {
+            console.log("search router (all) : This is a registered user");
+        }
         const page = req.query.page || 1;
         const limit = req.query.limit || 18;
         const result = await searchService.filterBooks(null, page, limit);
