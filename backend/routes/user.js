@@ -371,4 +371,17 @@ router.delete("/deleteUser", requireAuth, async (req, res) => {
     }
 });
 
+
+
+router.delete("/deleteUserByAdmin", requireAuth, async (req, res) => {
+    var userIdToDelete = req.body.userId;
+    try { 
+       userService.deleteUserById(userIdToDelete);
+        res.status(204).json({ "User Deleted": "Successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Error while processing the request" });
+    }
+});
+
+
 module.exports = router;

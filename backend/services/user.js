@@ -254,11 +254,11 @@ async function deleteUserById(id) {
             db.query("DELETE FROM users WHERE id = ?", [id], function (error) {
                 if (error) {
                     reject(error);
-} else {
-        console.log("Successfully Deleted user ", id);
-resolve({ changes: this.changes });
-                }
-            });
+    } else {
+            console.log("Successfully Deleted user ", id);
+            resolve({ changes: this.changes });
+            }
+        });
         });
         return result;
     } catch (error) {
@@ -266,6 +266,8 @@ resolve({ changes: this.changes });
         throw error;
     }
     }
+
+
     async function getAdmin(id){
         console.log(id);
     const result = await db.query('SELECT IS_ADMIN FROM USERS WHERE ID = $1;', [id]);
