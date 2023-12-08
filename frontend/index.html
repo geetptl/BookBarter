@@ -4,8 +4,9 @@
 <head>
     <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="./styles/styles.css">
-    <link rel="stylesheet" type="text/css" href="./styles/search/search.css">
+        <link rel="stylesheet" type="text/css" href="./styles/search/search.css">
+        <link rel="stylesheet" type="text/css" href="./styles/styles.css">
+    
 </head>
 
 <body>
@@ -116,39 +117,23 @@
             <div class="carousel-item">
                 <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 200px;">
                     <h3 class="mb-4">Top 5 Lenders</h3>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap w-100 px-5">
-                        <!-- First row of lenders -->
-                        <div class="card lender-card mx-2">
-                            <div class="card-body text-center">
-                                <p class="card-text">Mansi</p>
-                            </div>
+                        <div class="d-flex justify-content-center align-items-center flex-wrap w-100 px-5">
+                            <!-- Lender cards will be populated here -->
                         </div>
-                        <div class="card lender-card mx-2">
-                            <div class="card-body text-center">
-                                <p class="card-text">Desmond</p>
-                            </div>
-                        </div>
-                        <div class="card lender-card mx-2">
-                            <div class="card-body text-center">
-                                <p class="card-text">Geet</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Second row of lenders -->
-                    <div class="d-flex justify-content-center align-items-center flex-wrap w-100 px-5">
-                        <div class="card lender-card mx-2">
-                            <div class="card-body text-center">
-                                <p class="card-text">Shreya</p>
-                            </div>
-                        </div>
-                        <div class="card lender-card mx-2">
-                            <div class="card-body text-center">
-                                <p class="card-text">Hasnain</p>
-                            </div>
-                        </div>
+                    
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="d-flex flex-column justify-content-center align-items-center" style="min-height: 200px;">
+                    <h3 class="mb-4">Top 5 Books with Maximum Requests</h3>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap w-100 px-5" id="top-books-container">
+                        
                     </div>
                 </div>
             </div>
+
+
 
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev">
@@ -161,11 +146,46 @@
         </button>
     </div>
     <!-- END OF CAROUSEL -->
+    <div class="container-fluid mt-5">
+        <h2 class="text-center mb-4">Contact Us Form</h2>
+        <form action="https://formspree.io/f/xknlloyy" method="POST" class="card p-4" id="form1" onsubmit="resetForm();">
+            <div class="row mb-3 align-items-start">
+                <label for="name" class="col-sm-2 col-form-label">Customer Name:</label>
+                <div class="col-sm-4">
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required class="form-control" />
+                </div>
+    
+                <label for="phone" class="col-sm-2 col-form-label">Phone Number:</label>
+                <div class="col-sm-4">
+                    <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required class="form-control" />
+                </div>
+            </div>
+    
+            <div class="row mb-3 align-items-start">
+                <label for="issue" class="col-sm-2 col-form-label">Issue Description:</label>
+                <div class="col-sm-10">
+                    <textarea id="issue" name="issue" placeholder="Enter Issue Description" required class="form-control" style="height: 100px;"></textarea>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    
+    
+
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./scripts/search/search.js"></script>
+    <script src="./scripts/home/home.js"></script>
+    
 </body>
 
 </html>

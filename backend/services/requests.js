@@ -16,8 +16,8 @@ async function raiseBorrowRequest(
         const values = [borrowerId, lenderId, listingId, borrowDuration];
         // Execute the query
         const result = await db.query(query, values);
-        // console.log(query);
-        if (result.length === 1) {
+        console.log(result);
+        if (result) {
             console.log("Request created successfully.");
             return true;
         } else {

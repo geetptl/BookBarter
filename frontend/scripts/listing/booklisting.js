@@ -85,7 +85,6 @@ function raiseRequest(userId, listingId, bookId) {
     console.log(userId,listingId,bookId)
     const url = "http://localhost:8000/requests/raiseBorrowRequest";
     const data = {
-        borrowerId: userId,
         borrowDuration: "5",
         listingId: listingId,
     };
@@ -116,7 +115,7 @@ function raiseRequest(userId, listingId, bookId) {
                     authorization: `${token}`,
                 },
                 body: JSON.stringify({
-                    
+
                     book_id: bookId,
                     owner_id: userId,
                     status: "Not_Available",
@@ -129,6 +128,7 @@ function raiseRequest(userId, listingId, bookId) {
                 .catch(console.error);
 
             alert("Request is raised successfully!"); // Show an alert for successful request
+            window.location.reload();
         })
         .catch((error) => {
 
