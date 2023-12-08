@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
-        <link rel="stylesheet" type="text/css" href="../../styles/listing/userlisting.css">
-    </head>
+<head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/listing/userlisting.css">
+</head>
 <body>
     <nav class="navbar bg-light">
         <div class="container-fluid">
@@ -12,11 +12,31 @@
                 <img class="navbar-logo" src="../../assets/favicon.png"></img>
                 <div class="navbar-brand">Book Barter</div>
             </div>
-            
-        </div> 
+        </div>
     </nav>
 
-    <div id="admin-details"></div>
+    <div id="admin-details">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Created On</th>
+                    <th>Last Updated On</th>
+                    <th>User ID</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Is Auth</th>
+                    <th>Is Admin</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="admin-details-body"></tbody>
+        </table>
+    </div>
     <div id="admin-request-details"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
