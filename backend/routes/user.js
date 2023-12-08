@@ -326,7 +326,7 @@ router.get("/getRequestDetailsforAdmin",requireAuth,async (req, res) => {
         if(!getAdminresult)
         {console.log("User is not admin");
         res.status(404).json({ "error": "Unauthorized User" });
-        }
+        } 
         else{
         const getRequestInfo = await userService.getRequestInfo();
         res.status(200).json(getRequestInfo);

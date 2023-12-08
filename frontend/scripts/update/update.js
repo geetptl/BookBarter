@@ -42,7 +42,7 @@ async function getUser() {
     try {
         const data = await fetch("http://localhost:8000/user/getUpdateDetails", {
             method: "POST",
-            headers: {
+            headers: { 
                 "Content-Type": "application/json",
                 'authorization': `${token}`
             },

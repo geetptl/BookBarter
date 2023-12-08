@@ -215,7 +215,7 @@ async function getRequestInfo() {
     const result = await db.query(query);
     if (result.rows && result.rows.length > 0) {
         return result.rows;
-    } else {
+    } else { 
         return null;
     }
     return result;

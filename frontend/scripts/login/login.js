@@ -28,7 +28,7 @@ function validateLogin() {
             if (result["User Login"] == "False") {
                 document.getElementById("customPopup").style.display = "block";
                 document.getElementById("errorMessages").textContent =
-                    "User doesn't exist!";
+                    "User doesn't exist!"; 
                 document.getElementById("username").value = "";
                 document.getElementById("password").value = "";
             } else {

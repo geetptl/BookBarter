@@ -14,7 +14,7 @@ CREATE TABLE users (
     longitude REAL,
     is_auth BOOLEAN DEFAULT FALSE,  
     is_admin BOOLEAN DEFAULT FALSE
-);
+); 
 
 -- Book Table
 CREATE TABLE book (
