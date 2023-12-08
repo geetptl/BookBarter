@@ -39,7 +39,7 @@ async function topLenders() {
                 card.className = 'card lender-card mx-2';
                 card.innerHTML = `
                     <div class="card-body text-center">
-                        <p class="card-text">${lender.first_name}</p> <!-- Assuming 'name' is the property -->
+                        <p class="card-text">${lender.first_name} ${lender.last_name}</p> <!-- Assuming 'name' is the property -->
                     </div>
                 `;
                 lendersContainer.appendChild(card);

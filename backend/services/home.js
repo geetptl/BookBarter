@@ -14,7 +14,7 @@ async function getSuccessfulTransaction(req) {
 
 async function getTopLenders(){
     try {
-        const result = await db.query(`SELECT u.first_name, u.id,
+        const result = await db.query(`SELECT u.first_name, u.last_name, u.id,
                                         COUNT(eh.request_id) AS count FROM exchange_history eh INNER JOIN
                                         users u ON eh.lender_id = u.id WHERE request_status = 'ShipmentReceived'
                                         GROUP BY u.user_id, u.first_name ORDER BY count DESC;`);
