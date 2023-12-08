@@ -37,15 +37,15 @@ router.post("/create", async (req, res) => {
         const isPhoneValid = phoneRegex.test(phone_number);
         const userIdRegex = /^[a-zA-Z0-9!._]{4,20}$/;
         const isUserIdValid = userIdRegex.test(user_id);
-
-        if (!isUserIdValid) {
-            console.log("user invalid");
-            res.status(400).json({
-                "User Created": "False",
-                error: "User ID is not valid! Please enter a valid username, 8-20 characters long with alphanumeric characters and/or any of these symbols [!,.,'_']",
-            });
-            return;
-        }
+        
+        if(!isUserIdValid){
+        console.log("user invalid");
+        res.status(400).json({
+            "User Created": "False",  
+            error: "User ID is not valid! Please enter a valid username, 4-20 characters long with alphanumeric characters and/or any of these symbols [!,.,\'_\']",
+        });
+        return;
+    }
 
         if (!isPhoneValid) {
             console.log("phone invalid");
@@ -291,29 +291,79 @@ router.get("/getFirstname/:userId", async (req, res) => {
     }
 });
 
-router.get("/getUserDetailsforAdmin", async (req, res) => {
+router.get("/getUserDetailsforAdmin",requireAuth,async (req, res) => {
     try {
+        var userId = req.user_session.user.id
+        if(userId) {
+            console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)  
+        {  
+        console.log("User is not admin");
+        res.status(404).json({ "error": "Unauthorized User" });
+        }
+        else{
         const getUserInfo = await userService.getUserInfo();
-        res.status(200).json(getUserInfo.rows);
-    } catch (error) {
+        res.status(200).json(getUserInfo);
+        }}
+        else{
+            res.status(404).json({ "error": "Unauthorized User" });
+
+        }  
+    }
+     catch (error) {
         console.error("Error retrieving users:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-router.get("/getRequestDetailsforAdmin", async (req, res) => {
+router.get("/getRequestDetailsforAdmin",requireAuth,async (req, res) => {
     try {
+        var userId = req.user_session.user.id
+        if(userId) {
+        console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)
+        {console.log("User is not admin");
+        res.status(404).json({ "error": "Unauthorized User" });
+        } 
+        else{
         const getRequestInfo = await userService.getRequestInfo();
         res.status(200).json(getRequestInfo);
-    } catch (error) {
+        }}
+        else{
+            res.status(404).json({ "error": "Unauthorized User" });
+        }
+    } catch (error) {   
         console.error("Error retrieving requests:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
+router.get("/getAdmin",requireAuth,async (req, res) => {
+    try {
+        console.log("hello");
+        console.log(req);
+        var userId = req.user_session.user.id 
+        if(userId) {
+        console.log("User id is valid");
+        const getAdminresult = await userService.getAdmin(userId);
+        if(!getAdminresult)
+        {res.status(200).json({"message":"User is not admin"});
+        }
+        else{
+            res.status(200).json({"message":"User is admin"});
+        }
+    }} catch (error) {   
+        console.error("Error retrieving requests:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 router.delete("/deleteUser", requireAuth, async (req, res) => {
     var userId = req.user_session.user.id;
-    try {
+    try { 
         userService.deleteUserById(userId);
         res.status(204).json({ "User Deleted": "Successfully" });
     } catch (error) {
