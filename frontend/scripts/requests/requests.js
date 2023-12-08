@@ -174,7 +174,7 @@ async function updatePendingActions(newActions) {
                         </div>
                     `;
                 }
-                else if (action.status === "PaymentApproved") {
+                else if (action.status === "Shipped") {
                     actionDiv.innerHTML = `
                         <div class="action-card-left">
                             <span>
