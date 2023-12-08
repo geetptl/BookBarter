@@ -191,7 +191,7 @@ async function getUserDetails(user_id) {
     const result = await db.query("SELECT * FROM users WHERE user_id = ?", [
         user_id,
     ]);
-    if (result) {
+    if (!result) {
         // User not found
         return null;
     }
@@ -213,8 +213,8 @@ async function getUserInfo() {
 async function getRequestInfo() {
     const query = `SELECT * FROM REQUEST`;
     const result = await db.query(query);
-    if (result.rows && result.rows.length > 0) {
-        return result.rows;
+    if (result) {
+        return result;
     } else { 
         return null;
     }
@@ -226,11 +226,11 @@ async function getUserIdfromEmail(email) {
         email,
     ]);
     console.log(result);
-    if (result.rows.length === 0) {
+    if (!result) {
         // User not found
         return null;
     }
-    const user_id = result.rows[0].id;
+    const user_id = result;
     console.log(user_id);
     return user_id;
 }
@@ -240,11 +240,11 @@ async function getUserFirstName(id) {
         "SELECT first_name FROM users WHERE id = $1",
         [id],
     );
-    if (result.rows.length === 0) {
+    if (!result) {
         // User not found
         return null;
     }
-    const user = result.rows[0];
+    const user = result;
     return user;
 }
 

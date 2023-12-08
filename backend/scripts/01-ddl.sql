@@ -82,13 +82,13 @@ CREATE TABLE request (
 );
 
 -- ExchangeHistory View
-CREATE VIEW exchange_history AS
+CREATE VIEW exchange_history AS 
 SELECT
     r.id AS request_id,
     r.created AS request_created,
     r.last_modified AS request_last_modified,
     r.borrower_id,
-    r.lender_id,
+    r.lender_id AS lender_id,
     r.status AS request_status
 FROM
     request r

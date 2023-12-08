@@ -5,6 +5,7 @@ const requests = require("./requests");
 const booklisting = require("./booklisting");
 const payment = require("./payment");
 const book = require("./book");
+const home = require("./home");
 
 const express = require("express");
 
@@ -21,6 +22,7 @@ const mountRoutes = (app) => {
     app.use("/booklisting", booklisting);
     app.use("/payment", payment);
     app.use("/book", book);
+    app.use("/home",home);
 };
 
 module.exports = { mountRoutes };

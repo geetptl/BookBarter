@@ -20,25 +20,27 @@
         </div>
     </nav>
 
+    
     <div class="container my-4">
-        <div class="row equal-height">
-        <div class="row">
-            <div class="col-md-6" id="user-details"></div> 
-            <div class="col-md-6" id="create-listing">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Create New Listing</h5>
-                        <div class="form-group">
-                            <label for="bookSelect">Select a Book:</label>
-                            <select id="bookSelect" class="form-control custom-dropdown">
-                            </select>
+        <form id="create-listing-form" onsubmit="createNewListing(); return false;">
+            <div class="row">
+                <div class="col-md-6" id="user-details"></div> 
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Create New Listing</h5>
+                            <div class="form-group">
+                                <label for="bookSelect">Select a Book:</label>
+                                <select id="bookSelect" class="form-control custom-dropdown" required>
+                                    <!-- Options will be populated here -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add to Your Listing</button>
                         </div>
-                        <button class="btn btn-primary" onclick="createNewListing()">Add to Your Listing</button>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
+        </form>
     </div>
     
     <div class="container my-5">

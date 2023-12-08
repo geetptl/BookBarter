@@ -142,7 +142,6 @@ button {
     padding: 10px; /* Size of the clickable area */
   }
   
-  /* Ensuring the title 'Top 5 Lenders' is centered and styled */
   #statsCarousel h3 {
     margin-bottom: 1rem;
     font-size: 1.75rem; /* Title font size */
@@ -150,4 +149,5 @@ button {
     width: 100%;
     text-align: center;
   }
+
   
