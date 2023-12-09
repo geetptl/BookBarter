@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchRequestDataAdmin();
 });
 
+// ... (Your existing code)
+
 function fetchRequestDataAdmin() {
     var token = sessionStorage.getItem('token');
     console.log(token);
@@ -30,63 +32,51 @@ function fetchRequestDataAdmin() {
 }
 
 function renderRequestData(data) {
-    const adminDetailsDiv = document.getElementById('admin-request-details');
-    adminDetailsDiv.innerHTML = '';
-    const table = document.createElement('table');
-    table.classList.add('table', 'table-striped');
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    const keys = [
-        'id',
-        'created',
-        'last_modified',
-        'borrower_id',
-        'lender_id',
-        'book_listing_Id',
-        'time_to_live',
-        'borrow_duration',
-        'status'
-      ];
-    
-      keys.forEach(key => {
-        const th = document.createElement('th');
-        th.textContent = key.replace(/_/g, ' '); 
-        headerRow.appendChild(th);
-    });
-    
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+    const adminRequestDetailsBody = document.getElementById('admin-request-details-body');
+    adminRequestDetailsBody.innerHTML = ''; // Clear existing data
 
-    const tbody = document.createElement('tbody');
-    if(data){
     data.forEach(item => {
         const row = document.createElement('tr');
-        Object.values(item).forEach(value => {
+        const columnsToRender = [
+            'id',
+            'created',
+            'last_modified',
+            'borrower_id',
+            'lender_id',
+            'book_listing_id',
+            'time_to_live',
+            'borrow_duration',
+            'status'
+        ];
+
+        columnsToRender.forEach(column => {
             const td = document.createElement('td');
-            td.textContent = value;
+            td.textContent = item[column];
             row.appendChild(td);
         });
-        tbody.appendChild(row);
+
+        adminRequestDetailsBody.appendChild(row);
     });
-    table.appendChild(tbody);
-    adminDetailsDiv.appendChild(table);
 }
-}
+
 
 function renderUserData(data) {
     const adminDetailsBody = document.getElementById('admin-details-body');
     adminDetailsBody.innerHTML = ''; // Clear existing data
 
     data.forEach(item => {
+        if (item.is_admin === 1) {
+            return;
+        }
         const row = document.createElement('tr');
-        Object.values(item).forEach(value => {
+        const columnsToRender = ['id', 'created_on', 'last_updated_on', 'user_id', 'email', 'phone_number', 'first_name', 'last_name', 'latitude', 'longitude'];
+        columnsToRender.forEach(column => {
             const td = document.createElement('td');
-            td.textContent = value;
+            td.textContent = item[column];
             row.appendChild(td);
             
         });
 
-        if (item.is_admin !== 1) {
         const deleteTd = document.createElement('td');
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
@@ -94,11 +84,7 @@ function renderUserData(data) {
         deleteBtn.addEventListener('click', () => deleteUser(item.id)); 
         deleteTd.appendChild(deleteBtn);
         row.appendChild(deleteTd);
-        }
-        else{
-            const blankTd = document.createElement('td');
-            row.appendChild(blankTd);
-        }
+
         adminDetailsBody.appendChild(row);
     });
 }
