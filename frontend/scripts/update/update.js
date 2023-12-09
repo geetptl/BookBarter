@@ -38,6 +38,14 @@ function initializeAutocomplete() {
     }
 }
 
+function logout() {
+    sessionStorage.removeItem("token");
+    const currentLocation = window.location.href;
+    if (currentLocation.search("index") > 0)
+        window.location.href = "./index.html";
+    else window.location.href = "../../index.html";
+}
+
 async function getUser() {
     try {
         const data = await fetch("http://localhost:8000/user/getUpdateDetails", {
