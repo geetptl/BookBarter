@@ -106,7 +106,7 @@ function displayUserBookDetails(books, userId){
         const bookCard = document.createElement("div");
         bookCard.className = "card mb-3"; // Use Bootstrap card class
         const selectId = `bookStatus-${index}`;
-        console.log(book)
+        //console.log(book)
         bookCard.innerHTML = `  
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
@@ -125,7 +125,7 @@ function displayUserBookDetails(books, userId){
             </div>
         `;
         bookCard.addEventListener("change", (event) => {
-            handleStatusChange(book.id, event.target.value, userId);
+            handleStatusChange(book.book_id, event.target.value, userId);
         });
         listingdetails.appendChild(bookCard);
     });
@@ -134,7 +134,6 @@ function displayUserBookDetails(books, userId){
 async function createNewListing() {
     const bookSelect = document.getElementById("bookSelect");
     const selectedBookId = bookSelect.value; // Get the selected book ID from the dropdown
-    
     // Check if a book is selected
     if (!selectedBookId) {
         console.error("Please select a book.");
@@ -159,7 +158,6 @@ async function createNewListing() {
             document.getElementById("customPopup").style.display = "block";
             throw result.error;
         }
-        console.log("Listing created:", result);
         alert("Your listing has been successfully created.");
         window.location.reload(); // Refresh the page
     })
@@ -175,7 +173,6 @@ function handleStatusChange(bookId, newStatus, userId) {
     // Update the global state or perform other actions here
     //console.log(`Status for book ${bookId} changed to ${newStatus}`);
     listingStatus[bookId] = newStatus;
-    console.log(listingStatus)
         fetch(`http://localhost:8000/booklisting/updateBookStatus`, {
                 method: "PUT",
                 // body: JSON.stringify({ userId: userId }),

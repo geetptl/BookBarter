@@ -35,15 +35,18 @@
             </form>
         </div>  
     </nav>
-    <div class="row mt-5">
+    <div class="row mt-4">
         <div class="col">
             <div class="d-flex-6 flex-row justify-content-left">
-                <h2 class="card-title list-title">Admin dashboard</h2>
+                <h2 class="card-title list-title mb-5">Admin dashboard</h2>
             </div>
         </div>
     </div>
-    <div id="admin-details">
-        <table class="table table-striped">
+    <div id="users-heading" class="mx-auto text-center mb-4">
+        <h4 class="mb-4">Users</h4>
+    </div>
+    <div id="admin-details" class="mx-4">
+        <table class="table table-striped table-bordered mb-5">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -56,17 +59,32 @@
                     <th>Last Name</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
-                    <th>Is Auth</th>
-                    <th>Is Admin</th>
                     <th>Delete</th>
                 </tr>
             </thead>
             <tbody id="admin-details-body"></tbody>
         </table>
     </div>
-    <div id="admin-request-details">
-
-        <!-- Request details table goes here-->
+    <div id="requests-heading" class="mx-auto text-center mb-4">
+        <h4 class="mb-4">Requests</h4>
+    </div>
+    <div id="admin-request-details" class="mx-4">
+        <table class="table table-striped table-bordered mb-5">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Created</th>
+                    <th>Last Modified</th>
+                    <th>Borrower ID</th>
+                    <th>Lender ID</th>
+                    <th>Book Listing ID</th>
+                    <th>Time to Live</th>
+                    <th>Borrow Duration</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="admin-request-details-body"></tbody>
+        </table>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>

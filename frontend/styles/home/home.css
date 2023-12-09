@@ -1,0 +1,22 @@
+.card-list {
+    background-color: white;
+    border-radius: 2px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    padding: 10px; 
+    margin-top: 10px; 
+}
+
+.card h2 {
+    margin: 0px;
+    font-weight: bolder !important;
+}
+
+.card-body-list {
+    padding: 2% !important;
+}
+
+.card-img-top {
+    height: 290px !important;
+    object-fit: cover;
+    width: 100%;
+}
