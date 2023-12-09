@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchRequestDataAdmin();
 });
 
-// ... (Your existing code)
-
 function fetchRequestDataAdmin() {
     var token = sessionStorage.getItem('token');
     console.log(token);
