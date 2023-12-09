@@ -1,8 +1,9 @@
+const { query } = require("express");
 const db = require("../db");
 async function createNewListing(bookListingData) {
     try {
         const result = await db.query(
-            "INSERT INTO book_listing(owner_id, book_id, status, returns_on) VALUES($1, $2, $3, DATE('now')) RETURNING *",
+            "INSERT INTO book_listing(owner_id, book_id, status) VALUES($1, $2, $3) RETURNING *",
             [
                 bookListingData.owner_id,
                 bookListingData.book_id,
@@ -11,6 +12,7 @@ async function createNewListing(bookListingData) {
         );
         if (result) {
             console.log("Request created successfully.");
+            console.log(result);
             return true;
         } else {
             console.log("Failed to create request.");
@@ -87,13 +89,28 @@ async function updateStatus(bookListingData) {
         const bookId = bookListingData.book_id;
         const userId = bookListingData.owner_id;
         const status = bookListingData.status;
+        console.log(bookId, userId, status)
+        /*const val = await db.query(
+            `SELECT * FROM book_listing where owner_id = ${userId} AND book_id = ${bookId}`
+        );
+        console.log(val)*/
+        const res = `
+            UPDATE book_listing SET 
+                status = $1,
+                last_updated_on = current_timestamp WHERE 
+                owner_id = $2 AND book_id = $3 RETURNING *
+        `;
+
         const result = await db.query(
+            res, [status, userId, bookId]
+        );
+        /*const result = await db.query(
             "UPDATE book_listing SET status = ? WHERE owner_id = ? AND book_id = ? RETURNING *;",
             [status, userId, bookId],
-        );
+        );*/
         if (result) {
             console.log("Update Successful");
-            console.log(result);
+            console.log(result)
             return true;
         } else {
             console.log("Failed to update");

@@ -6,7 +6,7 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="./styles/search/search.css">
         <link rel="stylesheet" type="text/css" href="./styles/styles.css">
-    
+        <link rel="stylesheet" type="text/css" href="./styles/home/home.css">
 </head>
 
 <body>
@@ -42,25 +42,30 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
+    <div class="container my-5 container-list">
         <div class="row">
             <!-- Best Books Section -->
             <div class="col-md-6 d-flex flex-column align-items-left justify-content-left">
-                <h2>Best books of the year</h2>
-                <!-- Placeholder for best books content -->
-                <p>Have a look at our top selections for the year of 2023</p>
-                <a href="#" class="btn btn-primary" onclick="window.location.href='./templates/lists/bestbooks.html'">View Best Books</a>
+                <div class="card card-list" onclick="window.location.href='./templates/lists/bestbooks.html'">
+                    <img src="./assets/best-books.png" class="card-img-top">
+                    <div class="card-body card-body-list">
+                        <h2 class="card-title">Best Books Of The Year</h2>
+                    </div>
+                </div>
             </div>
 
             <!-- Celebrity Book Club Picks Section -->
             <div class="col-md-6 d-flex flex-column align-items-left justify-content-left">
-                <h2>Celebrity Book Club Picks</h2>
-                <!-- Placeholder for celebrity book club picks content -->
-                <p>Have a look at some celebrity book club selections for the year of 2023</p>
-                <a href="#" class="btn btn-primary" onclick="window.location.href='./templates/lists/celebritybooks.html'">View Celebrity Picks</a>
+                <div class="card card-list" onclick="window.location.href='./templates/lists/celebritybooks.html'">
+                    <img src="./assets/celebrity-books.png" class="card-img-top">
+                    <div class="card-body card-body-list">
+                        <h2 class="card-title">Celebrity Book Club Picks</h2>
+                </div>
             </div>
         </div>
+    </div>
 
+    <div class="container my-5">
         <!-- Testimonials in one row -->
         <div class="row mt-5">
             <div class="col">
@@ -133,9 +138,6 @@
                     </div>
                 </div>
             </div>
-
-
-
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#statsCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -177,12 +179,6 @@
         </form>
     </div>
     
-    
-    
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./scripts/search/search.js"></script>
     <script src="./scripts/home/home.js"></script>
