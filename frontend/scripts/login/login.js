@@ -55,7 +55,7 @@ function validateLogin() {
                         if (result.message=="User is admin") {
                             window.location.href = "../admin/admin.html";
                         } else {
-                            window.location.href = "../search/search.html";
+                            window.location.href = "../../index.html";
                         }
                     })
                     .catch((error) => {
