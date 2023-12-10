@@ -1,43 +1,9 @@
-/*
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.container {
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.card {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-}
-
-.card-title {
-    color: #333;
-}
-
-.custom-dropdown {
-    margin-bottom: 15px;
-}
-*/
-
-/* Custom styles for Book Barter */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
     background-color: #f7f7f7; 
     color: #333; 
-    /*text-align: center;*/
+    text-align: center;
 }
 
 .btn-primary {
