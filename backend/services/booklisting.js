@@ -83,6 +83,36 @@ async function getBooksbyUserid(userid) {
         return false;
     }
 }
+async function getRequestforUser(userId){
+    try{
+        //const userId = req.borrower_id
+        const result = await db.query(` SELECT b.title, 
+        ROW_NUMBER() OVER (ORDER BY r.id) AS seq_num,
+        borrower.first_name || ' ' || borrower.last_name AS borrower_name,
+        lender.first_name || ' ' || lender.last_name AS lender_name,
+        r.status
+ FROM request r
+ JOIN book_listing bl ON r.book_listing_id = bl.id
+ JOIN book b ON bl.book_id = b.id
+ JOIN users borrower ON r.borrower_id = borrower.id
+ JOIN users lender ON r.lender_id = lender.id
+ WHERE r.status = 'ShipmentReceived' 
+       AND (r.borrower_id = ${userId} OR r.lender_id = ${userId});`);
+
+        if (result) {
+            console.log("Retrieved requests for given user");
+            return result;
+        } else {
+            console.log("No entries");
+            return result;
+        }
+    }
+    catch{
+        console.log("user id doesnt exist.");
+        return false;
+    }
+
+}
 
 async function updateStatus(bookListingData) {
     try {
@@ -128,4 +158,5 @@ module.exports = {
     getBookListing,
     getBooksbyUserid,
     updateStatus,
+    getRequestforUser
 };
