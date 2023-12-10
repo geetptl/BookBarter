@@ -12,7 +12,7 @@ async function getGenres(bookId) {
     return Array.from(genres);
 }
 
-async function getById(bookId, visitor) {
+async function getById(bookId, visitor, user_id) {
     const bookResult = await db.query("SELECT * FROM book WHERE id=$1", [
         bookId,
     ]);
@@ -20,13 +20,21 @@ async function getById(bookId, visitor) {
         return null;
     }
 
-    const usersWithBook = await db.query(
-        "SELECT u.*, bl.id as listingId FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available'",
-        [bookId],
-    );
-
     let bookRes = bookResult[0];
     bookRes.genres = await getGenres(bookId);
+
+    let usersWithBook;
+    if (!visitor) {
+        usersWithBook = await db.query(
+            "SELECT u.*, bl.id as listingId FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available' AND bl.owner_id<>$2",
+            [bookId, user_id],
+        );
+    } else {
+        usersWithBook = await db.query(
+            "SELECT u.*, bl.id as listingId FROM users u JOIN book_listing bl ON bl.owner_id=u.id WHERE bl.book_id=$1 AND bl.status='Available'",
+            [bookId],
+        );
+    }
 
     return {
         book: bookRes,
