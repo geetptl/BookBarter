@@ -61,4 +61,19 @@ router.put("/updateBookStatus", requireAuth, async (req, res) => {
     }
 });
 
+router.get("/getRequestDetailsforUser",requireAuth,async (req, res) => {
+    try {
+        var userId = req.user_session.user.id;
+        console.log(userId);
+        const val = await listingService.getRequestforUser(userId);
+        if (val){
+            console.log(val);
+            res.send(val);
+        }
+    } catch (error) {   
+        console.error("Error retrieving requests:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 module.exports = router;

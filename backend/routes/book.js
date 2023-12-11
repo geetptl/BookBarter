@@ -4,7 +4,11 @@ const bookService = require("../services/book");
 const router = express.Router();
 
 router.get("/get/:bookId", requireAuthUnstrict, async (req, res) => {
-    const bookData = await bookService.getById(req.params.bookId, req.visitor);
+    let user_id;
+    if (!req.visitor) {
+        user_id = req.user_session.user.id;
+    }
+    const bookData = await bookService.getById(req.params.bookId, req.visitor, user_id);
     if (bookData) {
         res.json(bookData);
     } else {
