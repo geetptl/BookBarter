@@ -1,6 +1,6 @@
 # BookBarter
 
-### Backend
+### Frontend
 
 ## How to Run
 
