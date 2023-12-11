@@ -1,6 +1,7 @@
 # BookBarter
 
-### Backend
+### Frontend
+Simple front end using HTML, CSS and JS
 
 ## How to Run
 
