@@ -227,7 +227,7 @@ async function handlePayment(event) {
             // Update modal with success message and show the "Okay" button
             const modalMessages = document.getElementById("modal-messages");
             modalMessages.innerHTML =
-                "<p>Your Payment for request_details has been received successfully.</p>";
+                "<p>Your Payment has been received successfully.</p>";
 
             const okButton = document.getElementById("ok-button");
             okButton.style.display = "block";
